@@ -130,7 +130,7 @@
     "seeCases": "Read the case studies"
   },
   "generate": {
-    "title": "Three systems, explained from the inside",
+    "title": "Three systems, from the inside",
     "lead": "What each one solves, how it is built, the decisions that shaped it and what it still cannot do. Every fact comes from the repository's README or code.",
     "problem": "Problem",
     "approach": "Approach",
