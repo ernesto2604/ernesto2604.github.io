@@ -1,6 +1,6 @@
 # Design brief: "The pipeline that presents me"
 
-Status: DRAFT, awaiting approval (Phase 2 gate). Date: 2026-10-23.
+Status: APPROVED 2026-10-23 (see section 13 for follow-up answers).
 
 ## 1. Intent
 
@@ -258,7 +258,13 @@ transparency honored, full keyboard flow including the agent.
 
 ## 13. Pending inputs from Ernesto
 
-CV PDF (EN, and ES if available), photo, project screenshots/GIFs/demo links.
-Until they arrive: experience/education come only from the profile README
-(CEU internship Feb-Jun 2025; BSc (Hons) First Class, York St John University;
-DAM higher technician), marked for review.
+Status: APPROVED 2026-10-23 (including the three stack changes).
+
+Follow-up answers (2026-10-23):
+- Positioning: full-time roles only. No mention of internships.
+- Inputs only from inside this repo. Ernesto will place CV PDF(s) and photo in
+  `assets-src/`. Until then: no CV link, monogram instead of photo, and
+  experience/education only from the public profile README, marked for review.
+- Ring media: a YouTube link from Ernesto, embedded click-to-load (no request to
+  YouTube until the visitor clicks; `youtube-nocookie.com`).
+- hybrid-rag-api: the repo has no `.github/workflows`, so the site does not claim CI.
