@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "title": "Ernesto Contreras · AI Engineer y Forward Deployed Engineer",
+    "description": "Ernesto Contreras construye sistemas de IA de principio a fin: RAG híbrido, agentes sobre Amazon Bedrock y los backends que los sostienen. En Madrid, disponible ya.",
+    "ogAlt": "Ernesto Contreras, AI Engineer y Forward Deployed Engineer"
+  },
+  "a11y": {
+    "skip": "Saltar al contenido",
+    "primaryNav": "Principal",
+    "pipelineNav": "Etapas del pipeline",
+    "currentStage": "etapa actual"
+  },
+  "lang": {
+    "switchTo": "Read in English",
+    "short": "EN",
+    "name": "Español"
+  },
+  "nav": {
+    "home": "Ernesto Contreras, inicio",
+    "work": "Proyectos",
+    "about": "Sobre mí",
+    "contact": "Contacto",
+    "agent": "Pregunta al agente"
+  },
+  "stages": {
+    "input": "Entrada",
+    "retrieval": "Recuperación",
+    "rerank": "Reordenación",
+    "generate": "Generación",
+    "output": "Salida"
+  },
+  "hero": {
+    "queryLabel": "Consulta entrante",
+    "query": "¿Quién es Ernesto y qué ha construido?",
+    "name": "Ernesto Contreras",
+    "role": "AI Engineer · Forward Deployed Engineer",
+    "valueProp": "Construyo sistemas de IA de principio a fin: recuperación, agentes y el backend que los mantiene honestos. Y dejo por escrito lo que todavía no saben hacer.",
+    "location": "Madrid, España",
+    "availability": "Disponible ya · abierto a reubicación y modelo híbrido",
+    "ctaAgent": "Pregunta al agente",
+    "ctaWork": "Ver proyectos",
+    "monogramAlt": "Monograma EC"
+  },
+  "retrieval": {
+    "eyebrow": "02 · Recuperación",
+    "title": "Seis repositorios recuperados",
+    "expansionLabel": "Consulta ampliada a",
+    "expansionNote": "Ampliación escrita a mano para esta página.",
+    "scoreNote": "Las puntuaciones las calcula el buscador léxico de esta web (BM25 con tolerancia a erratas), en tu navegador, sobre los términos seleccionados arriba. Aquí no interviene ningún LLM.",
+    "filterLabel": "Volver a puntuar con un término",
+    "allTerms": "Todos los términos",
+    "score": "puntuación",
+    "language": "Lenguaje",
+    "updated": "Actualizado",
+    "stars": "Estrellas",
+    "noMatch": "Ninguna coincidencia con este término",
+    "openRepo": "Abrir {name} en GitHub",
+    "dataNote": "Datos de los repositorios obtenidos de la API de GitHub al compilar ({date})."
+  },
+  "rerank": {
+    "eyebrow": "03 · Reordenación",
+    "title": "Reordenado: primero lo que más importa",
+    "rule": "Regla: primero los tres proyectos que el autor destaca y después el resto, del más reciente al más antiguo.",
+    "featured": "Destacados",
+    "alsoBuilt": "También he construido",
+    "readCase": "Leer el caso de estudio"
+  }
+}

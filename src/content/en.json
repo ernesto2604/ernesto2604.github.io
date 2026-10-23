@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "title": "Ernesto Contreras · AI Engineer & Forward Deployed Engineer",
+    "description": "Ernesto Contreras builds AI systems end to end: hybrid RAG, agents on Amazon Bedrock and the backends around them. Based in Madrid, available now.",
+    "ogAlt": "Ernesto Contreras, AI Engineer and Forward Deployed Engineer"
+  },
+  "a11y": {
+    "skip": "Skip to content",
+    "primaryNav": "Primary",
+    "pipelineNav": "Pipeline stages",
+    "currentStage": "current stage"
+  },
+  "lang": {
+    "switchTo": "Leer en español",
+    "short": "ES",
+    "name": "English"
+  },
+  "nav": {
+    "home": "Ernesto Contreras, home",
+    "work": "Work",
+    "about": "About",
+    "contact": "Contact",
+    "agent": "Ask the agent"
+  },
+  "stages": {
+    "input": "Input",
+    "retrieval": "Retrieval",
+    "rerank": "Rerank",
+    "generate": "Generate",
+    "output": "Output"
+  },
+  "hero": {
+    "queryLabel": "Incoming query",
+    "query": "Who is Ernesto and what has he built?",
+    "name": "Ernesto Contreras",
+    "role": "AI Engineer · Forward Deployed Engineer",
+    "valueProp": "I build AI systems end to end: retrieval, agents and the backend that keeps them honest. And I write down what they can't do yet.",
+    "location": "Madrid, Spain",
+    "availability": "Available now · open to relocation and hybrid",
+    "ctaAgent": "Ask the agent",
+    "ctaWork": "See the work",
+    "monogramAlt": "Monogram EC"
+  },
+  "retrieval": {
+    "eyebrow": "02 · Retrieval",
+    "title": "Six repositories retrieved",
+    "expansionLabel": "Query expanded to",
+    "expansionNote": "Hand-written expansion for this page.",
+    "scoreNote": "Scores come from this site's own lexical scorer (BM25 with typo tolerance), run in your browser on the terms selected above. No LLM is involved.",
+    "filterLabel": "Re-score with a term",
+    "allTerms": "All terms",
+    "score": "score",
+    "language": "Lang",
+    "updated": "Updated",
+    "stars": "Stars",
+    "noMatch": "No match for this term",
+    "openRepo": "Open {name} on GitHub",
+    "dataNote": "Repository data fetched from the GitHub API at build time ({date})."
+  },
+  "rerank": {
+    "eyebrow": "03 · Rerank",
+    "title": "Reranked: what matters most first",
+    "rule": "Rule: the author's three featured projects first, then everything else by most recent update.",
+    "featured": "Featured",
+    "alsoBuilt": "Also built",
+    "readCase": "Read the case study"
+  }
+}
