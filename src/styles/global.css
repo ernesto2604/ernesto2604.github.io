@@ -190,6 +190,8 @@
     user-select: none;
     pointer-events: none;
   }
+  /* Pseudo-content: decorative, so contrast checkers and screen readers skip it. */
+  .ghost-numeral::before { content: attr(data-n); }
 
   /* Load sequence (spec §6). H1 animates transform only so LCP is not delayed. */
   .rise { animation: rise var(--dur-5) var(--ease-out) both; }

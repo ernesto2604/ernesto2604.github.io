@@ -20,7 +20,7 @@ const ANCHOR_AT = { input: 0, retrieval: 0.4, rerank: 0.76 } as const;
 const phaseFor = (p: number): Phase => PHASE_AT.filter(([, at]) => p >= at).at(-1)![0];
 
 function Ghost({ n }: { n: number }) {
-  return <span aria-hidden="true" className="ghost-numeral">{String(n).padStart(2, '0')}</span>;
+  return <span aria-hidden="true" className="ghost-numeral" data-n={String(n).padStart(2, '0')} />;
 }
 
 function Caption({ stage, active, className = '', children }: { stage: 'input' | 'retrieval' | 'rerank'; active: boolean; className?: string; children: ReactNode }) {

@@ -84,7 +84,7 @@ export default function Output() {
       <div className="mx-auto grid max-w-6xl gap-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
         <div>
           <header className="relative">
-            <span aria-hidden="true" className="ghost-numeral">05</span>
+            <span aria-hidden="true" className="ghost-numeral" data-n="05" />
             <h2 id="output-title" className="relative font-display text-3xl font-light leading-[1.05] tracking-tight">{o.title}</h2>
           </header>
           <div className="mt-8 grid max-w-[62ch] gap-4 text-lg leading-relaxed">

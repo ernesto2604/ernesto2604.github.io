@@ -124,7 +124,7 @@ export default function Generate() {
     <section id="generate" data-stage="generate" aria-labelledby="generate-title" className="scroll-mt-24 px-5 py-24 sm:px-8 md:py-36">
       <div className="mx-auto max-w-6xl">
         <header className="relative mb-16 md:mb-24">
-          <span aria-hidden="true" className="ghost-numeral">04</span>
+          <span aria-hidden="true" className="ghost-numeral" data-n="04" />
           <h2 id="generate-title" className="relative max-w-3xl font-display text-3xl font-light leading-[1.05] tracking-tight">
             {t('generate.title')}
           </h2>

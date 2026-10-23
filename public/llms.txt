@@ -1,0 +1,22 @@
+# Ernesto Contreras
+
+> AI Engineer and Forward Deployed Engineer based in Madrid, Spain. Builds AI systems end to end: hybrid retrieval, agents on Amazon Bedrock and the backends around them. Available now for full-time roles; open to relocation and hybrid work.
+
+The site is static and bilingual. Every project fact on it comes from the linked repositories.
+
+## Pages
+
+- [Portfolio in English](https://ernesto2604.github.io/): projects, case studies, experience and contact
+- [Portfolio in Spanish](https://ernesto2604.github.io/es/): the same content in Spanish
+
+## Featured projects
+
+- [Ring TelemetryOps](https://github.com/ernesto2604/ring-telemetryops): diagnostic agent for Ring video doorbells (OpenCV metrics, deterministic pre-check, Claude Haiku 4.5 on Amazon Bedrock, local fallback). Amazon Developer Hackathon 2026.
+- [Hybrid RAG API](https://github.com/ernesto2604/hybrid-rag-api): RAG engine written from scratch with FastAPI, PostgreSQL 16, pgvector (HNSW), GIN full-text search and Reciprocal Rank Fusion; page-level citations.
+- [WakeMap](https://github.com/ernesto2604/lastVersionWakeMap): Flutter prototype with geofenced alarms, voice-created alarms and an AI travel guide through a Node.js/Express proxy to Gemini.
+
+## Contact
+
+- [Email](mailto:ercoal04@gmail.com)
+- [LinkedIn](https://www.linkedin.com/in/ernesto-contreras-237bb71a4)
+- [GitHub](https://github.com/ernesto2604)

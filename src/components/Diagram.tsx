@@ -31,7 +31,7 @@ export default function Diagram({ slug, scrollDriven = false }: { slug: string; 
   const id = `dg-${slug}`;
   return (
     <figure className="m-0">
-      <div className="-mx-1 overflow-x-auto px-1 pb-1">
+      <div className="-mx-1 overflow-x-auto px-1 pb-1" tabIndex={0} role="region" aria-label={t(`cases.${slug}.diagramTitle`)}>
       <svg
         ref={ref}
         viewBox="0 0 720 420"

@@ -32,10 +32,10 @@ function LangToggle() {
       hrefLang={other}
       lang={other}
       onClick={onClick}
-      aria-label={t('lang.switchTo')}
       className="grid h-10 min-w-10 place-items-center rounded-full px-3 text-sm font-medium text-muted transition-colors duration-200 hover:bg-white/5 hover:text-text"
     >
       {t('lang.short')}
+      <span className="sr-only"> · {t('lang.switchTo')}</span>
     </a>
   );
 }
