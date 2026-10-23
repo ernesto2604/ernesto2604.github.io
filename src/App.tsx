@@ -3,6 +3,7 @@ import Nav from './components/Nav';
 import PipelineIndicator from './components/PipelineIndicator';
 import SmoothScroll from './components/SmoothScroll';
 import { I18nProvider, useT, type Locale, type Messages } from './i18n';
+import AgentHost from './agent/AgentHost';
 import Footer from './components/Footer';
 import Generate from './sections/Generate';
 import Output from './sections/Output';
@@ -22,6 +23,7 @@ function Page() {
         <Output />
       </main>
       <Footer />
+      <AgentHost />
       <SmoothScroll />
     </>
   );

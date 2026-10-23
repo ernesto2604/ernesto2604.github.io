@@ -431,5 +431,30 @@
     "source": "Código de esta web",
     "top": "Volver arriba",
     "rights": "© {year} Ernesto Contreras"
+  },
+  "agent": {
+    "title": "Pregunta sobre Ernesto",
+    "placeholder": "Pregunta por proyectos, tecnologías, experiencia…",
+    "label": "Tu pregunta",
+    "send": "Preguntar",
+    "close": "Cerrar",
+    "suggestions": "Prueba a preguntar",
+    "you": "Tú",
+    "assistant": "Agente",
+    "working": "Consultando",
+    "howTitle": "Cómo funciona",
+    "how": "Este agente tiene guion y se ejecuta entero en tu navegador. Puntúa tu pregunta contra una pequeña base de conocimiento bilingüe con el mismo buscador BM25 que usa esta página, enseña las consultas reales que hace a datos locales y después escribe una respuesta preparada de antemano. Sin LLM, sin peticiones de red y sin guardar nada.",
+    "source": "Ver el código",
+    "targets": {
+      "rerank": "Ver los proyectos",
+      "ring-telemetryops": "Abrir el caso de Ring",
+      "hybrid-rag-api": "Abrir el caso de RAG",
+      "wakemap": "Abrir el caso de WakeMap",
+      "output": "Ir a Sobre mí",
+      "skills": "Ver las tecnologías",
+      "contact": "Ir a contacto",
+      "es": "Cambiar a español",
+      "en": "Cambiar a inglés"
+    }
   }
 }

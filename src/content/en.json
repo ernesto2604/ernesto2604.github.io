@@ -431,5 +431,30 @@
     "source": "Source of this site",
     "top": "Back to the top",
     "rights": "© {year} Ernesto Contreras"
+  },
+  "agent": {
+    "title": "Ask about Ernesto",
+    "placeholder": "Ask about projects, stack, experience…",
+    "label": "Your question",
+    "send": "Ask",
+    "close": "Close",
+    "suggestions": "Try asking",
+    "you": "You",
+    "assistant": "Agent",
+    "working": "Looking it up",
+    "howTitle": "How this works",
+    "how": "This agent is scripted and runs entirely in your browser. It scores your question against a small bilingual knowledge base with the same BM25 scorer used on this page, shows the real lookups it makes in local data, then streams a pre-written answer. No LLM, no network requests, nothing stored.",
+    "source": "See the code",
+    "targets": {
+      "rerank": "See the projects",
+      "ring-telemetryops": "Open the Ring case study",
+      "hybrid-rag-api": "Open the RAG case study",
+      "wakemap": "Open the WakeMap case study",
+      "output": "Go to About",
+      "skills": "Show the stack",
+      "contact": "Go to contact",
+      "es": "Switch to Spanish",
+      "en": "Switch to English"
+    }
   }
 }

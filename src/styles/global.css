@@ -358,3 +358,16 @@ html[data-pinned] .scene .diagram.scroll-driven {
   color: var(--accent);
   margin-bottom: -0.18em;
 }
+
+/* Agent dialog (native <dialog>, glass). */
+.agent-dialog { max-height: none; overflow: visible; }
+.agent-dialog::backdrop { background: rgb(4 6 10 / 0.62); }
+.agent-dialog[open] { animation: dialog-in var(--dur-3) var(--ease-out); }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(-8px) scale(0.985); } }
+
+/* Agent "highlight" action. */
+.flash { animation: flash 2.4s var(--ease-out); }
+@keyframes flash {
+  0%, 30% { background-color: var(--accent-soft); box-shadow: 0 0 0 2px var(--accent); }
+  100% { background-color: transparent; box-shadow: 0 0 0 2px transparent; }
+}

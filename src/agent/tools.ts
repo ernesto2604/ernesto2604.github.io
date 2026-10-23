@@ -40,7 +40,7 @@ export function planTools(match: Match, query: string): ToolCall[] {
 
   for (const tool of intent.tools) {
     if (tool === 'search_projects') {
-      const lookup = intent.searchQuery ?? (intent.project ? `${q} ${intent.project}` : q);
+      const lookup = intent.searchQuery ?? intent.project ?? q;
       const hits = search(repoIndex, lookup, { limit: 3 });
       calls.push({
         name: 'search_projects',

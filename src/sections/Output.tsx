@@ -94,7 +94,7 @@ export default function Output() {
           </div>
 
           <h3 className="mt-16 text-xl font-medium tracking-tight">{o.skillsTitle}</h3>
-          <dl className="mt-6 grid gap-x-10 gap-y-7 sm:grid-cols-2">
+          <dl id="skills" className="mt-6 -mx-3 rounded-card p-3 grid gap-x-10 gap-y-7 sm:grid-cols-2">
             {o.skills.map((g) => (
               <div key={g.group}>
                 <dt className={h4}>{g.group}</dt>

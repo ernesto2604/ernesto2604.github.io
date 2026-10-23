@@ -3,7 +3,7 @@ import { Search } from 'lucide-react';
 import { localePath, otherLocale, useLocale, useT } from '../i18n';
 
 // Flipped to true when the agent panel ships (Phase 6); until then no control promises it.
-export const AGENT_READY = false;
+export const AGENT_READY = true;
 
 export const openAgent = () => window.dispatchEvent(new CustomEvent('agent:open'));
 
