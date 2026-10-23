@@ -1,0 +1,53 @@
+{
+  "owner": "ernesto2604",
+  "projects": [
+    {
+      "slug": "ring-telemetryops",
+      "repo": "ring-telemetryops",
+      "rank": 1,
+      "stack": ["Python", "FastAPI", "OpenCV", "Amazon Bedrock", "Claude Haiku 4.5", "pytest", "Node test runner"],
+      "tags": ["agent", "agents", "agentic", "bedrock", "claude", "llm", "computer vision", "opencv", "telemetry", "diagnostics", "retrieval", "hackathon", "aws", "fastapi", "python", "iot"],
+      "links": { "video": "" }
+    },
+    {
+      "slug": "hybrid-rag-api",
+      "repo": "hybrid-rag-api",
+      "rank": 2,
+      "stack": ["Python", "FastAPI", "PostgreSQL 16", "pgvector", "Gemini embeddings", "Docker Compose", "pytest"],
+      "tags": ["rag", "retrieval", "hybrid search", "vector", "embeddings", "pgvector", "postgresql", "rrf", "llm", "gemini", "citations", "fastapi", "python", "api"],
+      "links": { "video": "https://github.com/user-attachments/assets/bdc6d437-14d3-45b0-8133-c0f624e9f236" }
+    },
+    {
+      "slug": "wakemap",
+      "repo": "lastVersionWakeMap",
+      "rank": 3,
+      "stack": ["Flutter", "Dart", "Node.js", "Express", "Gemini API", "OpenStreetMap", "OSRM"],
+      "tags": ["mobile", "flutter", "llm", "gemini", "geofencing", "maps", "voice", "travel", "node", "express", "backend", "proxy"],
+      "links": { "video": "" }
+    },
+    {
+      "slug": "ai-surveillance-hub",
+      "repo": "AI_surveillance_hub",
+      "rank": null,
+      "stack": ["Python", "YOLOv8", "Raspberry Pi", "Arduino", "Flask"],
+      "tags": ["computer vision", "yolo", "object detection", "iot", "raspberry pi", "arduino", "flask", "python", "telegram"],
+      "links": { "video": "" }
+    },
+    {
+      "slug": "secure-auth-go",
+      "repo": "secure-auth-go",
+      "rank": null,
+      "stack": ["Go", "SQLite", "bcrypt", "html/template"],
+      "tags": ["security", "authentication", "go", "sqlite", "csrf", "sessions", "backend"],
+      "links": { "video": "" }
+    },
+    {
+      "slug": "mediterranean-churros",
+      "repo": "mediterraneanChurros",
+      "rank": null,
+      "stack": ["Next.js", "TypeScript", "Tailwind CSS", "next-intl", "Sanity"],
+      "tags": ["frontend", "nextjs", "typescript", "i18n", "landing page", "cms", "web"],
+      "links": { "video": "" }
+    }
+  ]
+}
