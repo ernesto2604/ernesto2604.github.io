@@ -34,7 +34,7 @@
     "query": "Who is Ernesto and what has he built?",
     "name": "Ernesto Contreras",
     "role": "AI Engineer · Forward Deployed Engineer",
-    "valueProp": "I build AI systems end to end: retrieval, agents and the backend that keeps them honest. And I write down what they can't do yet.",
+    "valueProp": "I build AI systems end to end: retrieval, agents and the backend that makes them reliable. And I write down what they cannot do yet.",
     "location": "Madrid, Spain",
     "availability": "Available now · open to relocation and hybrid",
     "ctaAgent": "Ask the agent",
@@ -71,7 +71,7 @@
   },
   "rerank": {
     "title": "Reranked: what matters most first",
-    "rule": "Rule: the author's three featured projects first, then everything else by most recent update.",
+    "rule": "Rule: my three featured projects first, then the rest by most recent update.",
     "featured": "Featured",
     "alsoBuilt": "Also built",
     "readCase": "Read the case study",
@@ -97,7 +97,7 @@
     },
     "hybrid-rag-api": {
       "name": "Hybrid RAG API",
-      "summary": "A hybrid RAG engine written from scratch, without LangChain or LlamaIndex. Dense search (pgvector, HNSW) and lexical search (PostgreSQL GIN) are fused with Reciprocal Rank Fusion, and every answer cites document and page.",
+      "summary": "A hybrid RAG engine written from scratch, without LangChain or LlamaIndex. Dense search (pgvector, HNSW) and lexical search (PostgreSQL GIN) are fused with Reciprocal Rank Fusion, and the prompt requires a document-and-page citation for every claim.",
       "fact": "RRF with k = 60 over HNSW and GIN"
     },
     "wakemap": {
@@ -135,7 +135,7 @@
     "problem": "Problem",
     "approach": "Approach",
     "decisions": "Key decisions",
-    "limitations": "Honest limitations",
+    "limitations": "Known limitations",
     "next": "Next steps",
     "stack": "Stack",
     "diagram": "Architecture",
@@ -146,7 +146,7 @@
   },
   "cases": {
     "ring-telemetryops": {
-      "problem": "When a Ring video doorbell degrades (dropped frames, low bitrate, a blurred lens, weak Wi-Fi or a failing transformer), the owner sees a bad picture and little else. The diagnosis needs measurements, not guesses.",
+      "problem": "When a Ring video doorbell degrades (dropped frames, low bitrate, a dirty lens, weak Wi-Fi or a failing transformer), the owner sees a bad picture and little else. The diagnosis needs measurements, not guesses.",
       "approach": "A deterministic layer measures first and an LLM reasons second. OpenCV extracts frame rate, bitrate, brightness, Laplacian sharpness and rolling-shutter banding. A pre-check grades every metric as green, degraded or critical against thresholds kept in one JSON file. Healthy streams return without calling the model. When something is wrong, the agent ranks 15 Ring-informed troubleshooting procedures by the measured signals and sends them, with a keyframe and the metrics, to Claude Haiku 4.5 on Amazon Bedrock. The answer must match a report contract, with one corrective retry; if Bedrock is unavailable, a labelled local fallback produces the same schema.",
       "decisions": [
         {
@@ -154,7 +154,7 @@
           "body": "Severity and the root-cause domain come from the deterministic pre-check. The model explains and recommends inside those bounds."
         },
         {
-          "title": "Structured retrieval over embeddings",
+          "title": "Structured retrieval, not embeddings",
           "body": "Troubleshooting depends on measurable operating ranges, so procedures are ranked by explicit device and network signals instead of semantic similarity."
         },
         {
@@ -266,7 +266,7 @@
         "A question runs dense and lexical search concurrently.",
         "Reciprocal Rank Fusion (k = 60) merges both rankings.",
         "The top chunks and the conversation history go to Gemini at temperature 0.",
-        "The answer cites document and page for every claim."
+        "The prompt requires a document-and-page citation for every claim."
       ]
     },
     "wakemap": {
@@ -294,13 +294,13 @@
         "It is a dissertation prototype evaluated in controlled scenarios, not a production app.",
         "AI features need the backend and an internet connection.",
         "Geocoding and routing depend on public Nominatim and OSRM services.",
-        "Alarm accuracy depends on device GPS and location permissions; testing used simulated locations on emulators and an iPhone."
+        "Alarm accuracy depends on device GPS and location permissions; it was evaluated with simulated locations on an Android emulator, an iOS simulator and an iPhone."
       ],
       "next": [
         "Move alarm monitoring to background location so it works with the app closed.",
         "Cache plans and map tiles for use offline."
       ],
-      "context": "Android and iOS builds were produced; the Android build connects to the deployed backend.",
+      "context": "Android and iOS release builds were produced; both connect to the deployed backend.",
       "diagramTitle": "WakeMap architecture",
       "diagramDesc": "The Flutter app handles alarms, voice input and maps on the device and calls a Node.js proxy for Gemini; maps and routes come from OpenStreetMap, Nominatim and OSRM.",
       "nodes": {
@@ -363,7 +363,7 @@
         ]
       },
       {
-        "group": "Cloud and delivery",
+        "group": "Cloud and deployment",
         "items": [
           "Docker",
           "AWS",

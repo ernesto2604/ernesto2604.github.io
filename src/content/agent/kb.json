@@ -41,7 +41,7 @@
       ],
       "answer": {
         "en": "Ernesto Contreras is an AI Engineer and Forward Deployed Engineer based in Madrid. He builds AI systems end to end: hybrid retrieval, agents on Amazon Bedrock and the backends around them, and he documents what they cannot do yet. He holds a First Class BSc (Hons) from York St John University and is available now.",
-        "es": "Ernesto Contreras es AI Engineer y Forward Deployed Engineer y vive en Madrid. Construye sistemas de IA de principio a fin: recuperación híbrida, agentes sobre Amazon Bedrock y los backends que los rodean, y documenta lo que todavía no saben hacer. Tiene un BSc (Hons) con First Class por York St John University y está disponible ya."
+        "es": "Ernesto Contreras es AI Engineer y Forward Deployed Engineer, con base en Madrid. Construye sistemas de IA de principio a fin: recuperación híbrida, agentes sobre Amazon Bedrock y los backends que los rodean, y documenta lo que todavía no saben hacer. Tiene un BSc (Hons) con First Class Honours, la máxima calificación en el Reino Unido, por York St John University, y tiene incorporación inmediata."
       },
       "actions": [
         {
@@ -149,8 +149,8 @@
         "show_architecture"
       ],
       "answer": {
-        "en": "The Hybrid RAG API answers questions over PDFs with page citations. It runs dense search (pgvector, HNSW) and lexical search (PostgreSQL GIN) in parallel, fuses them with Reciprocal Rank Fusion (k = 60) and asks Gemini at temperature 0. It is written from scratch, without LangChain or LlamaIndex.",
-        "es": "Hybrid RAG API responde preguntas sobre PDFs citando la página. Lanza en paralelo una búsqueda densa (pgvector, HNSW) y una léxica (GIN en PostgreSQL), las combina con Reciprocal Rank Fusion (k = 60) y pregunta a Gemini con temperatura 0. Está escrito desde cero, sin LangChain ni LlamaIndex."
+        "en": "The Hybrid RAG API answers questions over PDFs and its prompt requires page citations. It runs dense search (pgvector, HNSW) and lexical search (PostgreSQL GIN) in parallel, fuses them with Reciprocal Rank Fusion (k = 60) and asks Gemini at temperature 0. It is written from scratch, without LangChain or LlamaIndex.",
+        "es": "Hybrid RAG API responde preguntas sobre PDFs y su prompt exige citar la página. Lanza en paralelo una búsqueda densa (pgvector, HNSW) y una léxica (GIN en PostgreSQL), las combina con Reciprocal Rank Fusion (k = 60) y pregunta a Gemini con temperatura 0. Está escrito desde cero, sin LangChain ni LlamaIndex."
       },
       "actions": [
         {
@@ -335,7 +335,7 @@
       ],
       "answer": {
         "en": "A First Class BSc (Hons) from York St John University in the UK, after a Higher Technician diploma in multiplatform app development (DAM) in Spain.",
-        "es": "Un BSc (Hons) con First Class por York St John University (Reino Unido), después de un ciclo de Técnico Superior en Desarrollo de Aplicaciones Multiplataforma (DAM) en España."
+        "es": "Un BSc (Hons) con First Class Honours, la máxima calificación en el Reino Unido, por York St John University, después de un ciclo de Técnico Superior en Desarrollo de Aplicaciones Multiplataforma (DAM) en España."
       },
       "actions": [
         {
@@ -373,7 +373,7 @@
       ],
       "answer": {
         "en": "Yes. He is available now for AI Engineer, Forward Deployed Engineer and related full-time roles, and open to relocation and hybrid work.",
-        "es": "Sí. Está disponible ya para puestos de AI Engineer, Forward Deployed Engineer y similares a jornada completa, y abierto a reubicarse o a trabajar en modelo híbrido."
+        "es": "Sí. Tiene incorporación inmediata para puestos de AI Engineer, Forward Deployed Engineer y similares a jornada completa, y está abierto a cambiar de ciudad o a trabajar en modelo híbrido."
       },
       "actions": [
         {
@@ -406,7 +406,7 @@
       ],
       "answer": {
         "en": "Madrid, Spain. He is open to relocation and hybrid work.",
-        "es": "En Madrid. Está abierto a reubicarse y a trabajar en modelo híbrido."
+        "es": "En Madrid. Está abierto a cambiar de ciudad y a trabajar en modelo híbrido."
       }
     },
     {
@@ -493,7 +493,7 @@
       "tools": [],
       "answer": {
         "en": "I'm a scripted assistant, not an LLM. Your question is normalised and scored against a small bilingual knowledge base with the same BM25 scorer that ranks the repositories on this page, with typo tolerance. The tool calls you see are the real lookups I make in local data. Everything runs in your browser and nothing is sent anywhere.",
-        "es": "Soy un asistente con guion, no un LLM. Tu pregunta se normaliza y se puntúa contra una pequeña base de conocimiento bilingüe con el mismo buscador BM25 que ordena los repositorios de esta página, con tolerancia a erratas. Las llamadas a herramientas que ves son las consultas reales que hago a datos locales. Todo se ejecuta en tu navegador y no se envía nada a ningún sitio."
+        "es": "Soy un asistente con guion, no un LLM. Tu pregunta se normaliza y se compara con una pequeña base de conocimiento bilingüe usando el mismo buscador BM25 que ordena los repositorios de esta página, con tolerancia a erratas. Las llamadas a herramientas que ves son las consultas reales que hago a datos locales. Todo se ejecuta en tu navegador y no se envía nada a ningún sitio."
       }
     },
     {
@@ -536,7 +536,7 @@
       "tools": [],
       "answer": {
         "en": "Hi! Ask me about Ernesto's projects, his stack, his experience or how to contact him.",
-        "es": "¡Hola! Pregúntame por los proyectos de Ernesto, sus tecnologías, su experiencia o cómo contactarle."
+        "es": "¡Hola! Pregúntame por los proyectos de Ernesto, sus tecnologías, su experiencia o cómo contactar con él."
       }
     },
     {

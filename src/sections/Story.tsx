@@ -5,7 +5,7 @@ import ScoreBar from '../components/ScoreBar';
 import { useShortcutLabel, openAgent, AGENT_READY } from '../components/Nav';
 import { fetchedAt } from '../data/repos';
 import { useFlip } from '../hooks/useFlip';
-import { useMessages, useT } from '../i18n';
+import { useLocale, useMessages, useT } from '../i18n';
 import { projects, repoIndex, shortDate, type Project } from '../lib/projects';
 import { rankDeltas, rerank } from '../lib/rerank';
 import { PINNED_QUERY, isPinned, resolveAnchor, scrollToElement } from '../lib/scroll';
@@ -54,6 +54,8 @@ export default function Story() {
   const t = useT();
   const shortcut = useShortcutLabel();
   const terms = useMessages().retrieval.terms;
+  const locale = useLocale();
+  const fmt = (n: number) => (locale === 'es' ? n.toFixed(3).replace('.', ',') : n.toFixed(3));
   const [term, setTerm] = useState<string | null>(null);
   // Server HTML holds the finished state, so no-JS readers and crawlers get scores and the final order.
   const [phase, setPhase] = useState<Phase>('rerank');
@@ -167,7 +169,7 @@ export default function Story() {
             {AGENT_READY && (
               <button type="button" onClick={openAgent} className="no-js-hide inline-flex h-12 items-center gap-3 rounded-full bg-surface-2 pl-5 pr-2 font-medium transition-colors duration-200 hover:bg-line">
                 {t('hero.ctaAgent')}
-                <kbd className="kbd-hint rounded-full bg-bg-0 px-2.5 py-1 font-mono text-[0.8125rem] text-muted">{shortcut}</kbd>
+                <kbd className="kbd-hint whitespace-nowrap rounded-full bg-bg-0 px-2.5 py-1 font-mono text-[0.8125rem] text-muted">{shortcut}</kbd>
               </button>
             )}
           </div>
@@ -223,7 +225,7 @@ export default function Story() {
                       <div className="flex items-baseline justify-between gap-2">
                         <span className="font-mono text-[0.8125rem] tabular-nums">
                           <span className="sr-only">{t('retrieval.score')} </span>
-                          {score.toFixed(3)}
+                          {fmt(score)}
                         </span>
                         <span className={`transition-opacity duration-300 ${phase === 'rerank' ? 'opacity-100' : 'opacity-0'}`}>
                           <Delta n={deltas[p.slug]} />

@@ -47,12 +47,12 @@ export default function Nav() {
   return (
     <header className="fixed inset-x-3 top-3 z-40 mx-auto max-w-5xl">
       <nav aria-label={t('a11y.primaryNav')} className="glass flex h-14 items-center justify-between rounded-full pl-5 pr-2">
-        <a href="#input" aria-label={t('nav.home')} className="flex items-center gap-2.5 text-sm font-medium tracking-tight">
+        <a href="#input" aria-label={t('nav.home')} className="flex items-center gap-2.5 whitespace-nowrap text-sm font-medium tracking-tight">
           <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
           Ernesto Contreras
         </a>
         <div className="flex items-center gap-1">
-          <div className="hidden items-center md:flex">
+          <div className="hidden items-center lg:flex">
             <a className={link} href="#rerank">{t('nav.work')}</a>
             <a className={link} href="#output">{t('nav.about')}</a>
             <a className={link} href="#contact">{t('nav.contact')}</a>
@@ -65,9 +65,9 @@ export default function Nav() {
             className="no-js-hide group flex h-10 items-center gap-2 rounded-full border border-line-strong/60 pl-3 pr-2 text-sm transition-colors duration-200 hover:border-accent/60"
           >
             <Search className="size-4 text-accent" aria-hidden="true" strokeWidth={1.75} />
-            <span className="hidden sm:inline">{t('nav.agent')}</span>
-            <span className="sr-only sm:hidden">{t('nav.agent')}</span>
-            <kbd className="kbd-hint hidden rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[0.8125rem] text-muted sm:inline">{shortcut}</kbd>
+            <span className="hidden lg:inline">{t('nav.agent')}</span>
+            <span className="sr-only lg:hidden">{t('nav.agent')}</span>
+            <kbd className="kbd-hint hidden whitespace-nowrap rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[0.8125rem] text-muted lg:inline">{shortcut}</kbd>
           </button>
           )}
         </div>

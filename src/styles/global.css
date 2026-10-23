@@ -267,11 +267,12 @@ html[data-pinned] .story-cap,
 html[data-pinned] .story-list-wrap { grid-row: 1; }
 html[data-pinned] .story-cap {
   grid-column: 1;
-  transition: opacity var(--dur-4) var(--ease-out), transform var(--dur-4) var(--ease-out), visibility var(--dur-4);
+  transition: opacity var(--dur-4) var(--ease-out), transform var(--dur-4) var(--ease-out);
 }
+/* Hidden captions stay focusable and readable by screen readers; focusing one scrolls to its phase (Story.tsx). */
 html[data-pinned] .story-cap:not(.is-active) {
   opacity: 0;
-  visibility: hidden;
+  pointer-events: none;
   transform: translateY(18px);
 }
 /* Before hydration the server state is "rerank"; on a pinned page the hero must still paint first. */

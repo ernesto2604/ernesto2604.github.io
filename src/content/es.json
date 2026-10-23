@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Ernesto Contreras · AI Engineer y Forward Deployed Engineer",
-    "description": "Ernesto Contreras construye sistemas de IA de principio a fin: RAG híbrido, agentes sobre Amazon Bedrock y los backends que los sostienen. En Madrid, disponible ya.",
+    "description": "Ernesto Contreras construye sistemas de IA de principio a fin: RAG híbrido, agentes sobre Amazon Bedrock y los backends que los sostienen. En Madrid, con incorporación inmediata.",
     "ogAlt": "Ernesto Contreras, AI Engineer y Forward Deployed Engineer"
   },
   "a11y": {
@@ -34,9 +34,9 @@
     "query": "¿Quién es Ernesto y qué ha construido?",
     "name": "Ernesto Contreras",
     "role": "AI Engineer · Forward Deployed Engineer",
-    "valueProp": "Construyo sistemas de IA de principio a fin: recuperación, agentes y el backend que los mantiene honestos. Y dejo por escrito lo que todavía no saben hacer.",
+    "valueProp": "Construyo sistemas de IA de principio a fin: recuperación, agentes y el backend que los hace fiables. Y dejo por escrito lo que todavía no saben hacer.",
     "location": "Madrid, España",
-    "availability": "Disponible ya · abierto a reubicación y modelo híbrido",
+    "availability": "Incorporación inmediata · abierto a cambiar de ciudad y a modelo híbrido",
     "ctaAgent": "Pregunta al agente",
     "ctaWork": "Ver proyectos",
     "kbdHint": "Ctrl K"
@@ -45,7 +45,7 @@
     "title": "Seis repositorios recuperados",
     "expansionLabel": "Consulta ampliada a",
     "expansionNote": "Ampliación escrita a mano para esta página.",
-    "scoreNote": "Las puntuaciones las calcula el buscador léxico de esta web (BM25 con tolerancia a erratas), en tu navegador. 1.000 es la mejor coincidencia con los términos elegidos, no una nota perfecta. Aquí no interviene ningún LLM.",
+    "scoreNote": "Las puntuaciones las calcula el buscador léxico de esta web (BM25 con tolerancia a erratas), en tu navegador. 1,000 es la mejor coincidencia con los términos elegidos, no una nota perfecta. Aquí no interviene ningún LLM.",
     "filterLabel": "Volver a puntuar con un solo término",
     "allTerms": "Todos los términos",
     "score": "puntuación",
@@ -71,13 +71,13 @@
   },
   "rerank": {
     "title": "Reordenado: primero lo que más importa",
-    "rule": "Regla: primero los tres proyectos que el autor destaca y después el resto, del más reciente al más antiguo.",
+    "rule": "Regla: primero mis tres proyectos destacados y después el resto, del más reciente al más antiguo.",
     "featured": "Destacados",
-    "alsoBuilt": "También he construido",
+    "alsoBuilt": "Otros proyectos",
     "readCase": "Leer el caso de estudio",
     "keyFact": "Dato clave",
     "stack": "Tecnologías",
-    "lead": "La relevancia no lo es todo: una segunda pasada aplica una regla que he elegido yo y enseña cada movimiento que hace."
+    "lead": "La relevancia no lo es todo: una segunda pasada aplica una regla que he elegido yo y muestra cada cambio de posición."
   },
   "notFound": {
     "title": "Página no encontrada",
@@ -97,7 +97,7 @@
     },
     "hybrid-rag-api": {
       "name": "Hybrid RAG API",
-      "summary": "Un motor de RAG híbrido escrito desde cero, sin LangChain ni LlamaIndex. Combina búsqueda densa (pgvector, HNSW) y léxica (GIN en PostgreSQL) con Reciprocal Rank Fusion, y cada respuesta cita documento y página.",
+      "summary": "Un motor de RAG híbrido escrito desde cero, sin LangChain ni LlamaIndex. Combina búsqueda densa (pgvector, HNSW) y léxica (GIN en PostgreSQL) con Reciprocal Rank Fusion, y el prompt exige citar documento y página en cada afirmación.",
       "fact": "RRF con k = 60 sobre HNSW y GIN"
     },
     "wakemap": {
@@ -135,7 +135,7 @@
     "problem": "Problema",
     "approach": "Enfoque",
     "decisions": "Decisiones clave",
-    "limitations": "Limitaciones honestas",
+    "limitations": "Limitaciones conocidas",
     "next": "Siguientes pasos",
     "stack": "Tecnologías",
     "diagram": "Arquitectura",
@@ -146,8 +146,8 @@
   },
   "cases": {
     "ring-telemetryops": {
-      "problem": "Cuando un timbre con vídeo Ring se degrada (fotogramas perdidos, bitrate bajo, la lente sucia, wifi débil o un transformador que falla), el dueño solo ve una imagen mala. Para diagnosticarlo hacen falta medidas, no suposiciones.",
-      "approach": "Primero mide una capa determinista y después razona un LLM. OpenCV extrae los fotogramas por segundo, el bitrate, el brillo, la nitidez (varianza del laplaciano) y las bandas del rolling shutter. Una comprobación previa clasifica cada métrica como verde, degradada o crítica según umbrales guardados en un único JSON. Si todo está bien, responde sin llamar al modelo. Si algo falla, el agente ordena 15 procedimientos de diagnóstico basados en Ring según las señales medidas y se los envía, junto a un fotograma y las métricas, a Claude Haiku 4.5 en Amazon Bedrock. La respuesta debe cumplir un contrato de informe, con un reintento de corrección; si Bedrock no está disponible, un fallback local etiquetado genera el mismo formato.",
+      "problem": "Cuando un timbre con vídeo Ring se degrada (fotogramas perdidos, bitrate bajo, la lente sucia, wifi débil o un transformador que falla), el propietario solo ve una imagen de mala calidad. Para diagnosticarlo hacen falta medidas, no suposiciones.",
+      "approach": "Primero mide una capa determinista y después razona un LLM. OpenCV extrae los fotogramas por segundo, el bitrate, el brillo, la nitidez (varianza del laplaciano) y las bandas del rolling shutter. Una comprobación previa clasifica cada métrica como verde, degradada o crítica según umbrales guardados en un único JSON. Si todo está bien, responde sin llamar al modelo. Si algo falla, el agente ordena 15 procedimientos de diagnóstico elaborados a partir de documentación de Ring según las señales medidas y se los envía, junto a un fotograma y las métricas, a Claude Haiku 4.5 en Amazon Bedrock. La respuesta debe cumplir un contrato de informe, con un reintento de corrección; si Bedrock no está disponible, un fallback local etiquetado genera el mismo formato.",
       "decisions": [
         {
           "title": "El modelo nunca decide la gravedad",
@@ -159,11 +159,11 @@
         },
         {
           "title": "Pagar por razonar solo cuando hace falta",
-          "body": "La telemetría normal sale antes de tiempo. Una métrica crítica se diagnostica en el primer latido de 15 segundos; una degradada necesita tres seguidos, lo que filtra fallos pasajeros."
+          "body": "Con telemetría normal, el flujo termina ahí. Una métrica crítica se diagnostica en el primer heartbeat (cada 15 s); una degradada necesita tres seguidos, lo que filtra fallos pasajeros."
         },
         {
           "title": "Una única fuente de verdad, vigilada por tests",
-          "body": "Los umbrales viven en un solo JSON. Los tests fallan si aparece un umbral escrito en el código o si la tabla del README se desvía del fichero."
+          "body": "Los umbrales viven en un solo JSON. Los tests fallan si aparece un umbral escrito en el código o si la tabla del README deja de coincidir con el fichero."
         }
       ],
       "limitations": [
@@ -178,7 +178,7 @@
         "Calibrar el umbral de nitidez por resolución.",
         "Recibir webhooks reales mediante una app registrada en un endpoint público."
       ],
-      "context": "Creado para el Build, Ship, Shape: Amazon Developer Hackathon 2026 (pista Ring). El README indica 869 tests de pytest y 195 de Node en verde, sin credenciales ni red.",
+      "context": "Creado para el Build, Ship, Shape: Amazon Developer Hackathon 2026 (categoría Ring). El README indica 869 tests de pytest y 195 de Node en verde, sin credenciales ni red.",
       "diagramTitle": "Pipeline de diagnóstico de Ring TelemetryOps",
       "diagramDesc": "OpenCV mide el stream de la cámara, una comprobación determinista lo clasifica y solo las anomalías llegan a la recuperación en la base de conocimiento y a Claude en Bedrock; un fallback local mantiene el mismo contrato de informe.",
       "nodes": {
@@ -209,12 +209,12 @@
       ]
     },
     "hybrid-rag-api": {
-      "problem": "Responder preguntas sobre PDFs solo sirve si cada afirmación se puede rastrear hasta una página. La búsqueda vectorial sola pierde términos exactos; la búsqueda por palabras sola pierde el significado.",
+      "problem": "Responder preguntas sobre PDFs solo sirve si cada afirmación se puede rastrear hasta una página. La búsqueda vectorial, por sí sola, pierde términos exactos; y la léxica, por sí sola, no capta el significado.",
       "approach": "Construido desde cero, sin LangChain ni LlamaIndex. Los PDFs se dividen por páginas y en fragmentos solapados, se convierten en embeddings con gemini-embedding-001 en lotes de hasta 100 (con backoff exponencial ante 429 y 503) y se guardan en PostgreSQL 16. Cada pregunta lanza a la vez una búsqueda densa (pgvector, HNSW, coseno, 768 dimensiones) y una léxica (GIN sobre tsvector), combina ambos rankings con Reciprocal Rank Fusion (k = 60) y envía los mejores fragmentos y el historial de la conversación a Gemini con temperatura 0. Las respuestas deben citar [documento, página].",
       "decisions": [
         {
           "title": "RRF en lugar de una suma ponderada",
-          "body": "La similitud coseno y la puntuación de texto viven en escalas distintas y no lineales. RRF combina posiciones, no puntuaciones, así que ningún método domina por accidente."
+          "body": "La similitud coseno y la puntuación de texto están en escalas distintas y no lineales. RRF combina posiciones, no puntuaciones, así que ningún método domina por accidente."
         },
         {
           "title": "HNSW antes que IVFFlat",
@@ -231,8 +231,8 @@
       ],
       "limitations": [
         "El índice léxico usa el diccionario español de PostgreSQL, así que la lematización es peor para documentos en otros idiomas.",
-        "El repositorio no publica una evaluación de la recuperación (recall o precisión en k): la calidad se enseña con la demo, no se mide.",
-        "El repositorio no tiene un workflow de CI."
+        "El repositorio no publica una evaluación de la recuperación (recall@k o precision@k): la calidad se muestra en la demo, no se mide.",
+        "El repositorio no tiene CI configurada."
       ],
       "next": [
         "Añadir un pequeño conjunto de preguntas etiquetadas y medir recall@k de la búsqueda densa, la léxica y la combinada.",
@@ -266,7 +266,7 @@
         "Cada pregunta lanza a la vez la búsqueda densa y la léxica.",
         "Reciprocal Rank Fusion (k = 60) combina ambos rankings.",
         "Los mejores fragmentos y el historial van a Gemini con temperatura 0.",
-        "La respuesta cita documento y página en cada afirmación."
+        "El prompt exige citar documento y página en cada afirmación."
       ]
     },
     "wakemap": {
@@ -294,13 +294,13 @@
         "Es un prototipo de trabajo de fin de grado evaluado en escenarios controlados, no una app en producción.",
         "Las funciones de IA necesitan el backend y conexión a internet.",
         "La geocodificación y las rutas dependen de los servicios públicos de Nominatim y OSRM.",
-        "La precisión de las alarmas depende del GPS y de los permisos de ubicación; se probó con ubicaciones simuladas en emuladores y en un iPhone."
+        "La precisión de las alarmas depende del GPS y de los permisos de ubicación; se evaluó con ubicaciones simuladas en un emulador de Android, un simulador de iOS y un iPhone."
       ],
       "next": [
         "Vigilar las alarmas con ubicación en segundo plano para que funcionen con la app cerrada.",
-        "Guardar planes y mapas para usarlos sin conexión."
+        "Guardar en caché los planes y las teselas del mapa para usarlos sin conexión."
       ],
-      "context": "Se generaron builds para Android e iOS; la de Android se conecta al backend desplegado.",
+      "context": "Se generaron builds para Android e iOS; ambas se conectan al backend desplegado.",
       "diagramTitle": "Arquitectura de WakeMap",
       "diagramDesc": "La app en Flutter gestiona alarmas, voz y mapas en el dispositivo y llama a un proxy en Node.js para usar Gemini; los mapas y rutas vienen de OpenStreetMap, Nominatim y OSRM.",
       "nodes": {
@@ -326,11 +326,11 @@
     }
   },
   "output": {
-    "title": "La respuesta, en corto",
+    "title": "La respuesta, en pocas palabras",
     "about": [
-      "Soy Ernesto, un ingeniero que construye sistemas de IA de principio a fin: la recuperación, el agente, el backend que los rodea y los tests que dicen qué sigue fallando.",
-      "Me gradué en York St John University (Reino Unido) con un BSc (Hons) con First Class, después de un ciclo de Técnico Superior en Desarrollo de Aplicaciones Multiplataforma en España. En mis prácticas en el departamento de Innovación IT del CEU trabajé en un tutor con IA que conectaba datos institucionales en Snowflake con modelos de OpenAI en Azure.",
-      "Vivo en Madrid, estoy disponible ya y abierto a reubicarme o a trabajar en modelo híbrido. Busco puestos de AI Engineer, Forward Deployed Engineer y similares."
+      "Soy Ernesto, ingeniero. Construyo sistemas de IA de principio a fin: la recuperación, el agente, el backend que los rodea y los tests que dicen qué sigue fallando.",
+      "Me gradué en York St John University (Reino Unido) con un BSc (Hons) con First Class Honours, la máxima calificación en el Reino Unido, después de un ciclo de Técnico Superior en Desarrollo de Aplicaciones Multiplataforma en España. En mis prácticas en el departamento de Innovación IT del CEU trabajé en un tutor con IA que conectaba datos institucionales en Snowflake con modelos de OpenAI en Azure.",
+      "Vivo en Madrid, tengo incorporación inmediata y estoy abierto a cambiar de ciudad o a trabajar en modelo híbrido. Busco puestos de AI Engineer, Forward Deployed Engineer y similares."
     ],
     "skillsTitle": "Con qué trabajo",
     "skills": [
@@ -363,7 +363,7 @@
         ]
       },
       {
-        "group": "Cloud y entrega",
+        "group": "Cloud y despliegue",
         "items": [
           "Docker",
           "AWS",
@@ -443,7 +443,7 @@
     "assistant": "Agente",
     "working": "Consultando",
     "howTitle": "Cómo funciona",
-    "how": "Este agente tiene guion y se ejecuta entero en tu navegador. Puntúa tu pregunta contra una pequeña base de conocimiento bilingüe con el mismo buscador BM25 que usa esta página, enseña las consultas reales que hace a datos locales y después escribe una respuesta preparada de antemano. Sin LLM, sin peticiones de red y sin guardar nada.",
+    "how": "Este agente funciona con respuestas guionizadas y se ejecuta entero en tu navegador. Compara tu pregunta con una pequeña base de conocimiento bilingüe usando el mismo buscador BM25 de esta página, enseña las consultas reales que hace a datos locales y después escribe una respuesta preparada de antemano. Sin LLM, sin peticiones de red y sin guardar nada.",
     "source": "Ver el código",
     "targets": {
       "rerank": "Ver los proyectos",

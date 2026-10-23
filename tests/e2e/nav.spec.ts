@@ -40,3 +40,13 @@ test('without JavaScript the hero and projects are readable and JS-only buttons 
   await expect(page.getByRole('button', { name: /Ask the agent/ })).toHaveCount(0);
   await context.close();
 });
+
+test('keyboard reaches the re-score chips in the pinned story and focus reveals their phase', async ({ page }, info) => {
+  test.skip(info.project.name === 'mobile', 'pinned mode is desktop only');
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+  const chip = page.getByRole('button', { name: 'All terms' });
+  await chip.focus();
+  await expect(chip).toBeFocused();
+  await expect(page.locator('.story-cap-retrieval')).toHaveClass(/is-active/, { timeout: 3000 });
+});
