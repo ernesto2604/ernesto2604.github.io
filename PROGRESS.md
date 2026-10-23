@@ -1,14 +1,14 @@
 # PROGRESS
 
 Resume point for long sessions. Updated at the end of each phase.
-Execution ledger with every ruling (git-ignored): `.superpowers/sdd/2026-10-23-portfolio/progress.md`.
+Rulings and deferred minors are listed in the final delivery report (the execution ledger was removed after the final review).
 
 ## Status (2026-10-24)
 - Phases 0-6: done. Spec (approved + §12b gate revision): `docs/superpowers/specs/2026-10-23-portfolio-design.md`.
   Plan: `docs/superpowers/plans/2026-10-23-portfolio.md`. Branch: `feat/portfolio` (not pushed).
 - Phase 7: Lighthouse, axe, keyboard sweep, reduced motion and transparency, link check, bilingual copy
-  review, impeccable detector and design-taste-frontend inspector all done; whole-branch code review running.
-- Phase 8: final verification and report pending.
+  review, impeccable detector and design-taste-frontend inspector all done; whole-branch code review done (0 critical; 2 important fixed with tests).
+- Phase 8: done. Build OK, 109 unit + 43 e2e passing, Lighthouse mobile EN 96/100/100/100, ES 97/100/100/100.
 
 ## Built
 - Pinned scroll story for Input, Retrieval (real BM25 scores) and Rerank (rank deltas), stacked on small
