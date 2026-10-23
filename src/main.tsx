@@ -5,10 +5,11 @@ import type { Locale } from './i18n';
 import './styles/global.css';
 
 const locale: Locale = location.pathname.startsWith('/es') ? 'es' : 'en';
+const messages = (locale === 'es' ? await import('./content/es.json') : await import('./content/en.json')).default;
 const root = document.getElementById('root')!;
 const app = (
   <StrictMode>
-    <App locale={locale} />
+    <App locale={locale} messages={messages} />
   </StrictMode>
 );
 

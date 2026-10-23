@@ -72,6 +72,8 @@
     text-rendering: optimizeLegibility;
     min-height: 100dvh;
   }
+  /* Programmatic focus targets (skip link, in-page anchors) get no ring: they are not controls. */
+  [tabindex="-1"]:focus { outline: none; }
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
@@ -299,6 +301,48 @@ html[data-pinned] .story-cap-retrieval:not(.is-active) .story-chips > * { opacit
 .story-chips > :nth-child(8) { transition-delay: 280ms; }
 .story-chips > :nth-child(9) { transition-delay: 320ms; }
 
+
+/* Architecture diagrams (Diagram.tsx). --p is drawing progress 0..1. */
+@property --p {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+.diagram { --p: 1; transition: --p 2.2s var(--ease-std); }
+.diagram[data-drawn="false"] { --p: 0; transition: none; }
+.diagram .d-node { opacity: clamp(0, calc((var(--p) * var(--n) - var(--s)) * 3), 1); }
+.diagram .d-edge { opacity: clamp(0, calc((var(--p) * var(--n) - var(--s)) * 4), 1); }
+.diagram .d-edge path:not([stroke-dasharray]) {
+  stroke-dasharray: 1;
+  stroke-dashoffset: clamp(0, calc(1 - (var(--p) * var(--n) - var(--s))), 1);
+}
+.diagram .d-text { font-family: var(--font-sans); font-size: 15px; font-weight: 500; }
+.diagram .d-label {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  fill: var(--text-muted);
+  paint-order: stroke;
+  stroke: var(--bg-0);
+  stroke-width: 4px;
+}
+/* Generate scene: the top project expands from a result-row strip, then its diagram draws. */
+html[data-pinned] .scene { height: 300vh; }
+html[data-pinned] .scene-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  align-items: center;
+  padding-top: 4.5rem;
+}
+html[data-pinned] .scene .scene-panel {
+  --e: clamp(0, calc(var(--sp, 1) * 5), 1);
+  clip-path: inset(calc((1 - var(--e)) * 32%) calc((1 - var(--e)) * 4%) round 20px);
+}
+html[data-pinned] .scene .diagram.scroll-driven {
+  --p: clamp(0, calc((var(--sp, 1) - 0.22) / 0.6), 1);
+  transition: none;
+}
 
 @media (max-height: 860px) {
   html[data-pinned] .story-matched { display: none; }

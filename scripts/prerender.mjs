@@ -9,6 +9,10 @@ const { render, buildHead, messagesFor } = await import(new URL('entry-server.js
 const template = await readFile(new URL('index.html', dist), 'utf8');
 const boot = (await readFile(new URL('boot.js', dist), 'utf8')).replace(/^\/\/.*\n/, '').trim();
 
+const manifest = JSON.parse(await readFile(new URL('.vite/manifest.json', dist), 'utf8'));
+// Preload the active locale's message chunk so it is not fetched only after main.js runs.
+const localePreload = (locale) => `<link rel="modulepreload" href="/${manifest[`src/content/${locale}.json`].file}">`;
+
 const page = (locale, head, body) =>
   template
     .replace('<html lang="en"', `<html lang="${locale}"`)
@@ -19,7 +23,8 @@ const page = (locale, head, body) =>
 for (const locale of ['en', 'es']) {
   const dir = locale === 'en' ? dist : new URL('es/', dist);
   await mkdir(dir, { recursive: true });
-  await writeFile(new URL('index.html', dir), page(locale, buildHead(locale), render(locale)));
+  await writeFile(new URL('index.html', dir), page(locale, `${buildHead(locale)}
+    ${localePreload(locale)}`, render(locale)));
 }
 
 // 404: static, bilingual, no app bundle.
@@ -52,5 +57,6 @@ await writeFile(
 );
 
 await rm(new URL('boot.js', dist));
+await rm(new URL('.vite/', dist), { recursive: true, force: true });
 await rm(ssr, { recursive: true, force: true });
 console.log('[prerender] wrote index.html, es/index.html, 404.html, sitemap.xml');

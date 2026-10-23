@@ -4,12 +4,13 @@ import App from './App';
 import type { Locale } from './i18n';
 
 export { buildHead } from './seo/head';
-export { messagesFor } from './i18n';
+export { messagesFor } from './i18n/messages';
+import { messagesFor } from './i18n/messages';
 
 export function render(locale: Locale): string {
   return renderToString(
     <StrictMode>
-      <App locale={locale} />
+      <App locale={locale} messages={messagesFor(locale)} />
     </StrictMode>,
   );
 }

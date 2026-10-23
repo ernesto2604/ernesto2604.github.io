@@ -26,3 +26,17 @@ test('unknown paths get the bilingual 404 page', async ({ request }) => {
   expect(html).toContain('Page not found');
   expect(html).toContain('Página no encontrada');
 });
+
+for (const path of ['/', '/es/']) {
+  test(`${path} hydrates without page errors or console errors`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+    await page.goto(path);
+    await page.waitForLoadState('networkidle');
+    await page.mouse.wheel(0, 4000);
+    await page.waitForTimeout(500);
+    expect(errors).toEqual([]);
+    expect(await page.locator('#root').innerHTML()).not.toBe('');
+  });
+}

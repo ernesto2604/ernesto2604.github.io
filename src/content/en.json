@@ -128,5 +128,201 @@
     "movedDown": "Moved down {n}",
     "same": "Same position",
     "seeCases": "Read the case studies"
+  },
+  "generate": {
+    "title": "Three systems, explained from the inside",
+    "lead": "What each one solves, how it is built, the decisions that shaped it and what it still cannot do. Every fact comes from the repository's README or code.",
+    "problem": "Problem",
+    "approach": "Approach",
+    "decisions": "Key decisions",
+    "limitations": "Honest limitations",
+    "next": "Next steps",
+    "stack": "Stack",
+    "diagram": "Architecture",
+    "diagramText": "Architecture as a list",
+    "repo": "Source on GitHub",
+    "demo": "Watch the demo",
+    "nextNote": "Next steps are my own reading of the limitations above, not shipped work."
+  },
+  "cases": {
+    "ring-telemetryops": {
+      "problem": "When a Ring video doorbell degrades (dropped frames, low bitrate, a blurred lens, weak Wi-Fi or a failing transformer), the owner sees a bad picture and little else. The diagnosis needs measurements, not guesses.",
+      "approach": "A deterministic layer measures first and an LLM reasons second. OpenCV extracts frame rate, bitrate, brightness, Laplacian sharpness and rolling-shutter banding. A pre-check grades every metric as green, degraded or critical against thresholds kept in one JSON file. Healthy streams return without calling the model. When something is wrong, the agent ranks 15 Ring-informed troubleshooting procedures by the measured signals and sends them, with a keyframe and the metrics, to Claude Haiku 4.5 on Amazon Bedrock. The answer must match a report contract, with one corrective retry; if Bedrock is unavailable, a labelled local fallback produces the same schema.",
+      "decisions": [
+        {
+          "title": "The model never decides severity",
+          "body": "Severity and the root-cause domain come from the deterministic pre-check. The model explains and recommends inside those bounds."
+        },
+        {
+          "title": "Structured retrieval over embeddings",
+          "body": "Troubleshooting depends on measurable operating ranges, so procedures are ranked by explicit device and network signals instead of semantic similarity."
+        },
+        {
+          "title": "Pay for reasoning only when needed",
+          "body": "Nominal telemetry exits early. A critical metric is diagnosed on the first 15-second heartbeat; a degraded one needs three in a row, which filters transient glitches."
+        },
+        {
+          "title": "One source of truth, enforced by tests",
+          "body": "Thresholds live in one JSON file. Tests fail if a threshold literal appears in code or if the README table drifts from the file."
+        }
+      ],
+      "limitations": [
+        "Sharpness scores are not comparable across resolutions; the threshold is calibrated for sources of 720 px or more.",
+        "With night mode and a dirty lens together, infrared noise inflates sharpness and the dirty lens goes undetected.",
+        "The 15 knowledge-base articles are marked unverified until they are re-checked against official sources.",
+        "Signed webhooks are tested with fixtures only; live Ring webhooks need a public HTTPS endpoint.",
+        "Confidence is self-assessed by the model, or fixed at 0.86 in the fallback."
+      ],
+      "next": [
+        "Re-verify the knowledge base against official Ring documentation.",
+        "Calibrate the sharpness threshold per resolution.",
+        "Receive live webhooks through a registered app on a public endpoint."
+      ],
+      "context": "Built for the Build, Ship, Shape: Amazon Developer Hackathon 2026 (Ring track). The README reports 869 pytest and 195 Node tests passing, with no credentials or network needed.",
+      "diagramTitle": "Ring TelemetryOps diagnostic pipeline",
+      "diagramDesc": "A camera stream is measured by OpenCV, graded by a deterministic pre-check, and only anomalies reach knowledge-base retrieval and Claude on Bedrock; a local fallback keeps the same report contract.",
+      "nodes": {
+        "stream": "Camera stream or Digital Twin",
+        "metrics": "OpenCV metrics",
+        "precheck": "Deterministic pre-check",
+        "healthy": "Healthy: report, no model call",
+        "kb": "Rank 15 KB procedures",
+        "llm": "Claude Haiku 4.5 on Bedrock",
+        "contract": "Report contract, one retry",
+        "fallback": "Local fallback, same schema",
+        "report": "Diagnostic report"
+      },
+      "edges": {
+        "anomaly": "anomaly",
+        "nominal": "nominal",
+        "keyframe": "keyframe",
+        "unavailable": "unavailable"
+      },
+      "steps": [
+        "A frame from the camera stream (or the Digital Twin simulator) is analysed by OpenCV: frame rate, bitrate, brightness, sharpness and banding.",
+        "A deterministic pre-check grades each metric against thresholds kept in one JSON file.",
+        "Nominal results return a healthy report without calling the model.",
+        "Anomalies trigger ranking of 15 troubleshooting procedures by the measured signals.",
+        "Claude Haiku 4.5 on Amazon Bedrock reasons over the keyframe, metrics and procedures.",
+        "The answer is validated against a report contract with one corrective retry.",
+        "If Bedrock is unavailable, a local fallback produces the same report schema, labelled as such."
+      ]
+    },
+    "hybrid-rag-api": {
+      "problem": "Answering questions over PDFs is only useful if every claim can be traced to a page. Vector search alone misses exact terms; keyword search alone misses meaning.",
+      "approach": "Built from scratch, without LangChain or LlamaIndex. PDFs are split by page and chunked with overlap, embedded with gemini-embedding-001 in batches of up to 100 with exponential backoff on 429 and 503, and stored in PostgreSQL 16. Each question runs dense search (pgvector, HNSW, cosine, 768 dimensions) and lexical search (GIN over tsvector) concurrently, fuses both rankings with Reciprocal Rank Fusion (k = 60) and sends the top chunks plus the conversation history to Gemini at temperature 0. Answers must cite [document, page].",
+      "decisions": [
+        {
+          "title": "RRF instead of a weighted sum",
+          "body": "Cosine similarity and text-rank scores live on different, non-linear scales. RRF combines positions, not raw scores, so neither method dominates by accident."
+        },
+        {
+          "title": "HNSW over IVFFlat",
+          "body": "The vector index was chosen for query latency over cluster-based IVFFlat."
+        },
+        {
+          "title": "Isolation in the database",
+          "body": "Per-document filtering happens in SQL on JSONB metadata, so one document cannot leak into another's answers."
+        },
+        {
+          "title": "Refuse rather than invent",
+          "body": "The system prompt requires a citation for every claim and tells the model to decline when the retrieved context does not contain the answer."
+        }
+      ],
+      "limitations": [
+        "The lexical index uses PostgreSQL's Spanish dictionary, so stemming is weaker for documents in other languages.",
+        "The repository publishes no retrieval evaluation (recall or precision at k), so quality is shown by demo, not measured.",
+        "There is no CI workflow in the repository."
+      ],
+      "next": [
+        "Add a small labelled question set and report recall@k for dense, lexical and fused retrieval.",
+        "Pick the text-search dictionary per document language.",
+        "Run the existing test scripts in CI."
+      ],
+      "context": "FastAPI exposes four endpoints: list documents, upload a PDF, pure hybrid search and the full RAG answer. A demo video in the README shows ingestion, hybrid search, citations, isolation and multi-turn memory.",
+      "diagramTitle": "Hybrid RAG API architecture",
+      "diagramDesc": "PDFs are chunked and embedded into PostgreSQL; each question runs vector and full-text search in parallel, fuses them with RRF and asks Gemini for an answer with page citations.",
+      "nodes": {
+        "pdf": "PDF upload",
+        "chunk": "Page split and chunking",
+        "embed": "Gemini embeddings, batched",
+        "pg": "PostgreSQL 16",
+        "dense": "Dense: pgvector HNSW",
+        "lexical": "Lexical: GIN tsvector",
+        "rrf": "Reciprocal Rank Fusion, k = 60",
+        "context": "Top-K chunks + history",
+        "llm": "Gemini, temperature 0",
+        "answer": "Answer with [doc, page] citations",
+        "question": "Question"
+      },
+      "edges": {
+        "ingest": "ingest",
+        "query": "query"
+      },
+      "steps": [
+        "A PDF is uploaded through FastAPI and split by page, then into overlapping chunks.",
+        "Chunks are embedded with gemini-embedding-001 in batches, with exponential backoff on rate limits.",
+        "Text and vectors are stored in PostgreSQL 16 with an HNSW index and a GIN full-text index.",
+        "A question runs dense and lexical search concurrently.",
+        "Reciprocal Rank Fusion (k = 60) merges both rankings.",
+        "The top chunks and the conversation history go to Gemini at temperature 0.",
+        "The answer cites document and page for every claim."
+      ]
+    },
+    "wakemap": {
+      "problem": "Two everyday moments: a commuter who must not miss their stop, and a traveller who wants a plan for the day without planning it. Both need location, and the second needs an LLM that returns something a map can draw.",
+      "approach": "A Flutter app with two modes. Commuter mode sets location alarms with a 100 to 1,000 m radius, triggers local notifications through geofencing and stores alarms on the device; alarms can be dictated, and the transcript is turned into structured JSON by Gemini. Traveller mode is a conversational guide that produces a plan with stops, coordinates, duration and budget, drawn on an OpenStreetMap map with numbered stops and OSRM route lines. A Node.js/Express proxy holds the Gemini key, so the app never ships it.",
+      "decisions": [
+        {
+          "title": "The key stays on the server",
+          "body": "The app calls a small Express proxy deployed on Render; only the backend knows the Gemini API key."
+        },
+        {
+          "title": "Structured output the app can trust",
+          "body": "Voice alarms come back as JSON with a name, a place, a geocoding query and a radius, and fill the alarm form for the user to review before saving."
+        },
+        {
+          "title": "Useful without the model",
+          "body": "If the backend is down, voice parsing falls back to local rules and the guide falls back to a built-in mock, so the rest of the app keeps working."
+        },
+        {
+          "title": "Open map stack",
+          "body": "Tiles from OpenStreetMap, geocoding with Nominatim and routes from OSRM."
+        }
+      ],
+      "limitations": [
+        "It is a dissertation prototype evaluated in controlled scenarios, not a production app.",
+        "AI features need the backend and an internet connection.",
+        "Geocoding and routing depend on public Nominatim and OSRM services.",
+        "Alarm accuracy depends on device GPS and location permissions; testing used simulated locations on emulators and an iPhone."
+      ],
+      "next": [
+        "Move alarm monitoring to background location so it works with the app closed.",
+        "Cache plans and map tiles for use offline."
+      ],
+      "context": "Android and iOS builds were produced; the Android build connects to the deployed backend.",
+      "diagramTitle": "WakeMap architecture",
+      "diagramDesc": "The Flutter app handles alarms, voice input and maps on the device and calls a Node.js proxy for Gemini; maps and routes come from OpenStreetMap, Nominatim and OSRM.",
+      "nodes": {
+        "app": "Flutter app",
+        "commuter": "Commuter: geofenced alarms",
+        "traveller": "Traveller: AI guide",
+        "voice": "Speech to text",
+        "proxy": "Node.js/Express proxy",
+        "llm": "Gemini API",
+        "json": "Structured JSON",
+        "maps": "OSM tiles, Nominatim, OSRM",
+        "notify": "Local notification"
+      },
+      "edges": {},
+      "steps": [
+        "The Flutter app runs two modes: commuter alarms and a traveller guide.",
+        "Commuter alarms use geofencing with a 100 to 1,000 m radius and fire local notifications.",
+        "Spoken alarms are transcribed on the device and sent to the Node.js proxy.",
+        "The proxy, which holds the API key, asks Gemini for structured JSON.",
+        "Traveller plans come back with stops, coordinates, duration and budget.",
+        "Places are geocoded with Nominatim and routes drawn with OSRM on OpenStreetMap tiles."
+      ]
+    }
   }
 }

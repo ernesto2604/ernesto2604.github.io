@@ -1,5 +1,6 @@
 import profile from '../content/profile.json';
-import { messagesFor, type Locale } from '../i18n';
+import type { Locale } from '../i18n';
+import { messagesFor } from '../i18n/messages';
 import { translate } from '../i18n/translate';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

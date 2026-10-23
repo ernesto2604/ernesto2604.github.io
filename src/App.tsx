@@ -2,7 +2,8 @@ import Background from './components/Background';
 import Nav from './components/Nav';
 import PipelineIndicator from './components/PipelineIndicator';
 import SmoothScroll from './components/SmoothScroll';
-import { I18nProvider, useT, type Locale } from './i18n';
+import { I18nProvider, useT, type Locale, type Messages } from './i18n';
+import Generate from './sections/Generate';
 import Story from './sections/Story';
 
 function Page() {
@@ -15,15 +16,16 @@ function Page() {
       <PipelineIndicator />
       <main id="main" tabIndex={-1}>
         <Story />
+        <Generate />
       </main>
       <SmoothScroll />
     </>
   );
 }
 
-export default function App({ locale }: { locale: Locale }) {
+export default function App({ locale, messages }: { locale: Locale; messages: Messages }) {
   return (
-    <I18nProvider locale={locale}>
+    <I18nProvider locale={locale} messages={messages}>
       <Page />
     </I18nProvider>
   );

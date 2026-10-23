@@ -128,5 +128,201 @@
     "movedDown": "Baja {n}",
     "same": "Misma posición",
     "seeCases": "Leer los casos de estudio"
+  },
+  "generate": {
+    "title": "Tres sistemas, explicados por dentro",
+    "lead": "Qué resuelve cada uno, cómo está construido, las decisiones que le dieron forma y lo que todavía no sabe hacer. Cada dato sale del README o del código del repositorio.",
+    "problem": "Problema",
+    "approach": "Enfoque",
+    "decisions": "Decisiones clave",
+    "limitations": "Limitaciones honestas",
+    "next": "Siguientes pasos",
+    "stack": "Tecnologías",
+    "diagram": "Arquitectura",
+    "diagramText": "La arquitectura en forma de lista",
+    "repo": "Código en GitHub",
+    "demo": "Ver la demo",
+    "nextNote": "Los siguientes pasos son mi lectura de las limitaciones anteriores, no trabajo ya hecho."
+  },
+  "cases": {
+    "ring-telemetryops": {
+      "problem": "Cuando un timbre con vídeo Ring se degrada (fotogramas perdidos, bitrate bajo, la lente sucia, wifi débil o un transformador que falla), el dueño solo ve una imagen mala. Para diagnosticarlo hacen falta medidas, no suposiciones.",
+      "approach": "Primero mide una capa determinista y después razona un LLM. OpenCV extrae los fotogramas por segundo, el bitrate, el brillo, la nitidez (varianza del laplaciano) y las bandas del rolling shutter. Una comprobación previa clasifica cada métrica como verde, degradada o crítica según umbrales guardados en un único JSON. Si todo está bien, responde sin llamar al modelo. Si algo falla, el agente ordena 15 procedimientos de diagnóstico basados en Ring según las señales medidas y se los envía, junto a un fotograma y las métricas, a Claude Haiku 4.5 en Amazon Bedrock. La respuesta debe cumplir un contrato de informe, con un reintento de corrección; si Bedrock no está disponible, un fallback local etiquetado genera el mismo formato.",
+      "decisions": [
+        {
+          "title": "El modelo nunca decide la gravedad",
+          "body": "La gravedad y el área de la causa salen de la comprobación determinista. El modelo explica y recomienda dentro de esos límites."
+        },
+        {
+          "title": "Recuperación estructurada, no embeddings",
+          "body": "El diagnóstico depende de rangos de funcionamiento medibles, así que los procedimientos se ordenan por señales explícitas del dispositivo y la red, no por similitud semántica."
+        },
+        {
+          "title": "Pagar por razonar solo cuando hace falta",
+          "body": "La telemetría normal sale antes de tiempo. Una métrica crítica se diagnostica en el primer latido de 15 segundos; una degradada necesita tres seguidos, lo que filtra fallos pasajeros."
+        },
+        {
+          "title": "Una única fuente de verdad, vigilada por tests",
+          "body": "Los umbrales viven en un solo JSON. Los tests fallan si aparece un umbral escrito en el código o si la tabla del README se desvía del fichero."
+        }
+      ],
+      "limitations": [
+        "La nitidez no es comparable entre resoluciones; el umbral está calibrado para fuentes de 720 px o más.",
+        "Con el modo noche y la lente sucia a la vez, el ruido infrarrojo infla la nitidez y la suciedad no se detecta.",
+        "Los 15 artículos de la base de conocimiento están marcados como no verificados hasta revisarlos con fuentes oficiales.",
+        "Los webhooks firmados solo se han probado con fixtures; los webhooks reales de Ring necesitan un endpoint HTTPS público.",
+        "La confianza la estima el propio modelo, o es fija (0,86) en el fallback."
+      ],
+      "next": [
+        "Volver a verificar la base de conocimiento con la documentación oficial de Ring.",
+        "Calibrar el umbral de nitidez por resolución.",
+        "Recibir webhooks reales mediante una app registrada en un endpoint público."
+      ],
+      "context": "Creado para el Build, Ship, Shape: Amazon Developer Hackathon 2026 (pista Ring). El README indica 869 tests de pytest y 195 de Node en verde, sin credenciales ni red.",
+      "diagramTitle": "Pipeline de diagnóstico de Ring TelemetryOps",
+      "diagramDesc": "OpenCV mide el stream de la cámara, una comprobación determinista lo clasifica y solo las anomalías llegan a la recuperación en la base de conocimiento y a Claude en Bedrock; un fallback local mantiene el mismo contrato de informe.",
+      "nodes": {
+        "stream": "Stream de cámara o Digital Twin",
+        "metrics": "Métricas con OpenCV",
+        "precheck": "Comprobación determinista",
+        "healthy": "Sano: informe sin llamar al modelo",
+        "kb": "Ordenar 15 procedimientos",
+        "llm": "Claude Haiku 4.5 en Bedrock",
+        "contract": "Contrato de informe, un reintento",
+        "fallback": "Fallback local, mismo formato",
+        "report": "Informe de diagnóstico"
+      },
+      "edges": {
+        "anomaly": "anomalía",
+        "nominal": "normal",
+        "keyframe": "fotograma",
+        "unavailable": "no disponible"
+      },
+      "steps": [
+        "OpenCV analiza un fotograma del stream de la cámara (o del simulador Digital Twin): fotogramas por segundo, bitrate, brillo, nitidez y bandas.",
+        "Una comprobación determinista clasifica cada métrica según umbrales guardados en un único JSON.",
+        "Si todo es normal, devuelve un informe sano sin llamar al modelo.",
+        "Las anomalías activan la ordenación de 15 procedimientos de diagnóstico según las señales medidas.",
+        "Claude Haiku 4.5 en Amazon Bedrock razona sobre el fotograma, las métricas y los procedimientos.",
+        "La respuesta se valida contra un contrato de informe con un reintento de corrección.",
+        "Si Bedrock no está disponible, un fallback local genera el mismo formato de informe, marcado como tal."
+      ]
+    },
+    "hybrid-rag-api": {
+      "problem": "Responder preguntas sobre PDFs solo sirve si cada afirmación se puede rastrear hasta una página. La búsqueda vectorial sola pierde términos exactos; la búsqueda por palabras sola pierde el significado.",
+      "approach": "Construido desde cero, sin LangChain ni LlamaIndex. Los PDFs se dividen por páginas y en fragmentos solapados, se convierten en embeddings con gemini-embedding-001 en lotes de hasta 100 (con backoff exponencial ante 429 y 503) y se guardan en PostgreSQL 16. Cada pregunta lanza a la vez una búsqueda densa (pgvector, HNSW, coseno, 768 dimensiones) y una léxica (GIN sobre tsvector), combina ambos rankings con Reciprocal Rank Fusion (k = 60) y envía los mejores fragmentos y el historial de la conversación a Gemini con temperatura 0. Las respuestas deben citar [documento, página].",
+      "decisions": [
+        {
+          "title": "RRF en lugar de una suma ponderada",
+          "body": "La similitud coseno y la puntuación de texto viven en escalas distintas y no lineales. RRF combina posiciones, no puntuaciones, así que ningún método domina por accidente."
+        },
+        {
+          "title": "HNSW antes que IVFFlat",
+          "body": "El índice vectorial se eligió por latencia de consulta frente a IVFFlat, basado en clústeres."
+        },
+        {
+          "title": "Aislamiento en la base de datos",
+          "body": "El filtro por documento se hace en SQL sobre metadatos JSONB, así que un documento no se cuela en las respuestas de otro."
+        },
+        {
+          "title": "Negarse antes que inventar",
+          "body": "El prompt de sistema exige una cita por cada afirmación y pide al modelo que no responda si el contexto recuperado no contiene la respuesta."
+        }
+      ],
+      "limitations": [
+        "El índice léxico usa el diccionario español de PostgreSQL, así que la lematización es peor para documentos en otros idiomas.",
+        "El repositorio no publica una evaluación de la recuperación (recall o precisión en k): la calidad se enseña con la demo, no se mide.",
+        "El repositorio no tiene un workflow de CI."
+      ],
+      "next": [
+        "Añadir un pequeño conjunto de preguntas etiquetadas y medir recall@k de la búsqueda densa, la léxica y la combinada.",
+        "Elegir el diccionario de búsqueda de texto según el idioma de cada documento.",
+        "Ejecutar en CI los scripts de test que ya existen."
+      ],
+      "context": "FastAPI expone cuatro endpoints: listar documentos, subir un PDF, búsqueda híbrida pura y la respuesta RAG completa. Un vídeo en el README muestra la ingesta, la búsqueda híbrida, las citas, el aislamiento y la memoria entre turnos.",
+      "diagramTitle": "Arquitectura de Hybrid RAG API",
+      "diagramDesc": "Los PDFs se fragmentan y se guardan como embeddings en PostgreSQL; cada pregunta lanza en paralelo búsqueda vectorial y de texto, las combina con RRF y pide a Gemini una respuesta con citas por página.",
+      "nodes": {
+        "pdf": "Subida de PDF",
+        "chunk": "División por página y fragmentos",
+        "embed": "Embeddings de Gemini, por lotes",
+        "pg": "PostgreSQL 16",
+        "dense": "Densa: pgvector HNSW",
+        "lexical": "Léxica: GIN tsvector",
+        "rrf": "Reciprocal Rank Fusion, k = 60",
+        "context": "Top-K fragmentos + historial",
+        "llm": "Gemini, temperatura 0",
+        "answer": "Respuesta con citas [doc, pág.]",
+        "question": "Pregunta"
+      },
+      "edges": {
+        "ingest": "ingesta",
+        "query": "consulta"
+      },
+      "steps": [
+        "Se sube un PDF a través de FastAPI y se divide por páginas y en fragmentos solapados.",
+        "Los fragmentos se convierten en embeddings con gemini-embedding-001 por lotes, con backoff exponencial ante límites de uso.",
+        "Texto y vectores se guardan en PostgreSQL 16 con un índice HNSW y un índice de texto GIN.",
+        "Cada pregunta lanza a la vez la búsqueda densa y la léxica.",
+        "Reciprocal Rank Fusion (k = 60) combina ambos rankings.",
+        "Los mejores fragmentos y el historial van a Gemini con temperatura 0.",
+        "La respuesta cita documento y página en cada afirmación."
+      ]
+    },
+    "wakemap": {
+      "problem": "Dos momentos cotidianos: quien va en tren y no puede pasarse de parada, y quien viaja y quiere un plan para el día sin tener que planificarlo. Los dos necesitan ubicación, y el segundo necesita un LLM que devuelva algo que un mapa pueda dibujar.",
+      "approach": "Una app en Flutter con dos modos. El modo trayecto crea alarmas por ubicación con un radio de 100 a 1.000 m, lanza notificaciones locales mediante geofencing y guarda las alarmas en el dispositivo; las alarmas se pueden dictar, y Gemini convierte la transcripción en JSON estructurado. El modo viajero es una guía conversacional que genera un plan con paradas, coordenadas, duración y presupuesto, dibujado en un mapa de OpenStreetMap con paradas numeradas y rutas de OSRM. Un proxy en Node.js/Express guarda la clave de Gemini, así que la app nunca la lleva dentro.",
+      "decisions": [
+        {
+          "title": "La clave se queda en el servidor",
+          "body": "La app llama a un pequeño proxy en Express desplegado en Render; solo el backend conoce la clave de la API de Gemini."
+        },
+        {
+          "title": "Una salida estructurada en la que la app puede confiar",
+          "body": "Las alarmas por voz vuelven como JSON con nombre, lugar, consulta de geocodificación y radio, y rellenan el formulario de la alarma para que el usuario lo revise antes de guardarla."
+        },
+        {
+          "title": "Útil sin el modelo",
+          "body": "Si el backend no responde, el dictado recurre a reglas locales y la guía a un modo de demostración integrado, así que el resto de la app sigue funcionando."
+        },
+        {
+          "title": "Mapas abiertos",
+          "body": "Teselas de OpenStreetMap, geocodificación con Nominatim y rutas con OSRM."
+        }
+      ],
+      "limitations": [
+        "Es un prototipo de trabajo de fin de grado evaluado en escenarios controlados, no una app en producción.",
+        "Las funciones de IA necesitan el backend y conexión a internet.",
+        "La geocodificación y las rutas dependen de los servicios públicos de Nominatim y OSRM.",
+        "La precisión de las alarmas depende del GPS y de los permisos de ubicación; se probó con ubicaciones simuladas en emuladores y en un iPhone."
+      ],
+      "next": [
+        "Vigilar las alarmas con ubicación en segundo plano para que funcionen con la app cerrada.",
+        "Guardar planes y mapas para usarlos sin conexión."
+      ],
+      "context": "Se generaron builds para Android e iOS; la de Android se conecta al backend desplegado.",
+      "diagramTitle": "Arquitectura de WakeMap",
+      "diagramDesc": "La app en Flutter gestiona alarmas, voz y mapas en el dispositivo y llama a un proxy en Node.js para usar Gemini; los mapas y rutas vienen de OpenStreetMap, Nominatim y OSRM.",
+      "nodes": {
+        "app": "App en Flutter",
+        "commuter": "Trayecto: alarmas con geofencing",
+        "traveller": "Viajero: guía con IA",
+        "voice": "Voz a texto",
+        "proxy": "Proxy Node.js/Express",
+        "llm": "API de Gemini",
+        "json": "JSON estructurado",
+        "maps": "OSM, Nominatim, OSRM",
+        "notify": "Notificación local"
+      },
+      "edges": {},
+      "steps": [
+        "La app en Flutter tiene dos modos: alarmas de trayecto y guía de viaje.",
+        "Las alarmas de trayecto usan geofencing con un radio de 100 a 1.000 m y lanzan notificaciones locales.",
+        "Las alarmas dictadas se transcriben en el dispositivo y se envían al proxy en Node.js.",
+        "El proxy, que guarda la clave de la API, pide a Gemini un JSON estructurado.",
+        "Los planes de viaje vuelven con paradas, coordenadas, duración y presupuesto.",
+        "Los lugares se geocodifican con Nominatim y las rutas se dibujan con OSRM sobre teselas de OpenStreetMap."
+      ]
+    }
   }
 }
