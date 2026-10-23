@@ -122,8 +122,6 @@
     color: var(--text-muted);
   }
 
-  .no-js-hide { display: none; }
-  html.js .no-js-hide { display: revert; }
 
   .skip-link {
     position: fixed;
@@ -224,6 +222,9 @@
 @media (prefers-reduced-motion: reduce) {
   .orb, .signal-dot { animation: none !important; }
 }
+
+/* Unlayered so it beats Tailwind display utilities: JS-only controls vanish without JS. */
+html:not(.js) .no-js-hide { display: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
