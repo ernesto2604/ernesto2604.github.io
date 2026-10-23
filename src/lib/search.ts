@@ -12,7 +12,8 @@ const STOPWORDS = new Set(
 
 export type Field = { text: string; weight: number };
 export type Doc = { id: string; fields: Field[] };
-export type Hit = { id: string; score: number; matched: string[] };
+// score: normalised to the best hit (1 = top). raw: absolute BM25 sum, comparable across queries.
+export type Hit = { id: string; score: number; raw: number; matched: string[] };
 
 type IndexedDoc = { id: string; tf: Map<string, number>; length: number };
 export type Index = { docs: IndexedDoc[]; df: Map<string, number>; avgLength: number };
@@ -101,10 +102,10 @@ export function search(index: Index, query: string, opts: { limit?: number } = {
         matched.push(q);
       }
     });
-    if (score > 0) hits.push({ id: doc.id, score, matched });
+    if (score > 0) hits.push({ id: doc.id, score, raw: score, matched });
   }
 
   hits.sort((a, b) => b.score - a.score);
   const top = hits[0]?.score ?? 1;
-  return hits.slice(0, opts.limit ?? hits.length).map((h) => ({ ...h, score: Math.round((h.score / top) * 1000) / 1000 }));
+  return hits.slice(0, opts.limit ?? hits.length).map((h) => ({ ...h, score: Math.round((h.score / top) * 1000) / 1000, raw: Math.round(h.raw * 1000) / 1000 }));
 }

@@ -1,0 +1,599 @@
+{
+  "suggestions": {
+    "en": [
+      "What has he built?",
+      "How does the Ring agent work?",
+      "What's his stack?",
+      "Is he available?",
+      "How does this agent work?"
+    ],
+    "es": [
+      "¿Qué ha construido?",
+      "¿Cómo funciona el agente de Ring?",
+      "¿Qué tecnologías usa?",
+      "¿Está disponible?",
+      "¿Cómo funciona este agente?"
+    ]
+  },
+  "fallback": {
+    "en": "I can't answer that from what I know about Ernesto. Try one of these questions:",
+    "es": "No puedo responder a eso con lo que sé de Ernesto. Prueba con una de estas preguntas:"
+  },
+  "intents": [
+    {
+      "id": "who",
+      "triggers": [
+        "who",
+        "ernesto",
+        "yourself",
+        "introduce",
+        "background",
+        "quien",
+        "quién",
+        "eres",
+        "presentate",
+        "preséntate",
+        "sobre ti",
+        "perfil"
+      ],
+      "tools": [
+        "get_profile"
+      ],
+      "answer": {
+        "en": "Ernesto Contreras is an AI Engineer and Forward Deployed Engineer based in Madrid. He builds AI systems end to end: hybrid retrieval, agents on Amazon Bedrock and the backends around them, and he documents what they cannot do yet. He holds a First Class BSc (Hons) from York St John University and is available now.",
+        "es": "Ernesto Contreras es AI Engineer y Forward Deployed Engineer y vive en Madrid. Construye sistemas de IA de principio a fin: recuperación híbrida, agentes sobre Amazon Bedrock y los backends que los rodean, y documenta lo que todavía no saben hacer. Tiene un BSc (Hons) con First Class por York St John University y está disponible ya."
+      },
+      "actions": [
+        {
+          "type": "scrollTo",
+          "target": "#output"
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "triggers": [
+        "projects",
+        "project",
+        "built",
+        "build",
+        "portfolio",
+        "work",
+        "made",
+        "repos",
+        "repositories",
+        "proyectos",
+        "proyecto",
+        "construido",
+        "hecho",
+        "trabajos",
+        "repositorios"
+      ],
+      "tools": [
+        "search_projects"
+      ],
+      "answer": {
+        "en": "Three featured projects: Ring TelemetryOps, a diagnostic agent for Ring doorbells built for the Amazon Developer Hackathon 2026; the Hybrid RAG API, a retrieval engine written from scratch with pgvector, full-text search and Reciprocal Rank Fusion; and WakeMap, a Flutter prototype with location alarms and an AI travel guide. He has also built a YOLOv8 surveillance hub, a secure Go web app and a landing page in five languages.",
+        "es": "Tres proyectos destacados: Ring TelemetryOps, un agente de diagnóstico para timbres Ring creado para el Amazon Developer Hackathon 2026; Hybrid RAG API, un motor de recuperación escrito desde cero con pgvector, búsqueda de texto y Reciprocal Rank Fusion; y WakeMap, un prototipo en Flutter con alarmas por ubicación y una guía de viaje con IA. También ha hecho un sistema de vigilancia con YOLOv8, una aplicación web segura en Go y una landing en cinco idiomas."
+      },
+      "actions": [
+        {
+          "type": "scrollTo",
+          "target": "#rerank"
+        }
+      ],
+      "weight": 0.6,
+      "searchQuery": "agents rag llm retrieval computer vision backend mobile security"
+    },
+    {
+      "id": "ring",
+      "project": "ring-telemetryops",
+      "triggers": [
+        "ring",
+        "telemetryops",
+        "telemetry",
+        "doorbell",
+        "bedrock",
+        "claude",
+        "haiku",
+        "opencv",
+        "hackathon",
+        "amazon",
+        "diagnostic",
+        "timbre",
+        "telemetria",
+        "telemetría",
+        "diagnostico",
+        "diagnóstico"
+      ],
+      "tools": [
+        "search_projects",
+        "read_repo",
+        "show_architecture"
+      ],
+      "answer": {
+        "en": "Ring TelemetryOps diagnoses degraded video doorbells. OpenCV measures the stream, a deterministic pre-check decides severity, and only anomalies go to Claude Haiku 4.5 on Amazon Bedrock together with 15 ranked troubleshooting procedures. A local fallback keeps the same report format when Bedrock is unavailable. The README reports 869 pytest and 195 Node tests.",
+        "es": "Ring TelemetryOps diagnostica timbres con vídeo que funcionan mal. OpenCV mide el stream, una comprobación determinista decide la gravedad y solo las anomalías llegan a Claude Haiku 4.5 en Amazon Bedrock, junto con 15 procedimientos de diagnóstico ordenados. Un fallback local mantiene el mismo formato de informe si Bedrock no está disponible. El README indica 869 tests de pytest y 195 de Node."
+      },
+      "actions": [
+        {
+          "type": "scrollTo",
+          "target": "#ring-telemetryops"
+        }
+      ]
+    },
+    {
+      "id": "rag",
+      "project": "hybrid-rag-api",
+      "triggers": [
+        "rag",
+        "hybrid",
+        "retrieval",
+        "pgvector",
+        "rrf",
+        "fusion",
+        "embeddings",
+        "vector",
+        "pdf",
+        "citations",
+        "gemini",
+        "hibrido",
+        "híbrido",
+        "recuperacion",
+        "recuperación",
+        "citas"
+      ],
+      "tools": [
+        "search_projects",
+        "read_repo",
+        "show_architecture"
+      ],
+      "answer": {
+        "en": "The Hybrid RAG API answers questions over PDFs with page citations. It runs dense search (pgvector, HNSW) and lexical search (PostgreSQL GIN) in parallel, fuses them with Reciprocal Rank Fusion (k = 60) and asks Gemini at temperature 0. It is written from scratch, without LangChain or LlamaIndex.",
+        "es": "Hybrid RAG API responde preguntas sobre PDFs citando la página. Lanza en paralelo una búsqueda densa (pgvector, HNSW) y una léxica (GIN en PostgreSQL), las combina con Reciprocal Rank Fusion (k = 60) y pregunta a Gemini con temperatura 0. Está escrito desde cero, sin LangChain ni LlamaIndex."
+      },
+      "actions": [
+        {
+          "type": "scrollTo",
+          "target": "#hybrid-rag-api"
+        }
+      ]
+    },
+    {
+      "id": "wakemap",
+      "project": "wakemap",
+      "triggers": [
+        "wakemap",
+        "flutter",
+        "dart",
+        "mobile",
+        "app",
+        "alarm",
+        "alarms",
+        "geofencing",
+        "travel",
+        "guide",
+        "maps",
+        "dissertation",
+        "movil",
+        "móvil",
+        "alarma",
+        "alarmas",
+        "viaje",
+        "mapa",
+        "tfg"
+      ],
+      "tools": [
+        "search_projects",
+        "read_repo",
+        "show_architecture"
+      ],
+      "answer": {
+        "en": "WakeMap is a Flutter prototype from his dissertation: geofenced alarms with a 100 to 1,000 m radius, voice-created alarms that Gemini turns into JSON, and an AI travel guide drawn on OpenStreetMap with OSRM routes. A Node.js proxy keeps the API key off the device.",
+        "es": "WakeMap es un prototipo en Flutter de su trabajo de fin de grado: alarmas con geofencing de 100 a 1.000 m de radio, alarmas dictadas que Gemini convierte en JSON y una guía de viaje con IA dibujada sobre OpenStreetMap con rutas de OSRM. Un proxy en Node.js mantiene la clave de la API fuera del dispositivo."
+      },
+      "actions": [
+        {
+          "type": "scrollTo",
+          "target": "#wakemap"
+        }
+      ]
+    },
+    {
+      "id": "others",
+      "triggers": [
+        "other",
+        "others",
+        "surveillance",
+        "yolo",
+        "yolov8",
+        "raspberry",
+        "arduino",
+        "go",
+        "golang",
+        "auth",
+        "security",
+        "churros",
+        "landing",
+        "otros",
+        "otro",
+        "vigilancia",
+        "seguridad"
+      ],
+      "tools": [
+        "search_projects"
+      ],
+      "answer": {
+        "en": "Besides the three featured projects: AI Surveillance Hub (an Arduino trigger, a Raspberry Pi camera running YOLOv8, Telegram alerts and a Flask dashboard), Secure Auth Go (a Go web app with bcrypt, server-side sessions, CSRF tokens and login rate limiting) and Mediterranean Churros (a landing page in five languages with Next.js and next-intl).",
+        "es": "Además de los tres destacados: AI Surveillance Hub (un sensor en Arduino, una cámara en Raspberry Pi con YOLOv8, alertas por Telegram y un panel en Flask), Secure Auth Go (una aplicación web en Go con bcrypt, sesiones en servidor, tokens CSRF y límite de intentos de login) y Mediterranean Churros (una landing en cinco idiomas con Next.js y next-intl)."
+      },
+      "actions": [
+        {
+          "type": "scrollTo",
+          "target": "#rerank"
+        }
+      ]
+    },
+    {
+      "id": "stack",
+      "triggers": [
+        "stack",
+        "skills",
+        "technologies",
+        "tech",
+        "tools",
+        "languages",
+        "programming",
+        "python",
+        "typescript",
+        "frameworks",
+        "tecnologias",
+        "tecnologías",
+        "habilidades",
+        "lenguajes",
+        "herramientas",
+        "programacion",
+        "programación"
+      ],
+      "tools": [
+        "get_profile"
+      ],
+      "answer": {
+        "en": "Python, FastAPI and PostgreSQL with pgvector for backends and retrieval; Amazon Bedrock (Claude), Gemini and the OpenAI API for models; OpenCV and YOLOv8 for vision; Docker, AWS and Azure for delivery; TypeScript, React and Flutter on the front end. The full list is highlighted in the About section.",
+        "es": "Python, FastAPI y PostgreSQL con pgvector para backend y recuperación; Amazon Bedrock (Claude), Gemini y la API de OpenAI para modelos; OpenCV y YOLOv8 para visión; Docker, AWS y Azure para desplegar; TypeScript, React y Flutter en el frontend. La lista completa está resaltada en la sección Sobre mí."
+      },
+      "actions": [
+        {
+          "type": "scrollTo",
+          "target": "#skills"
+        },
+        {
+          "type": "highlight",
+          "target": "#skills"
+        }
+      ]
+    },
+    {
+      "id": "experience",
+      "triggers": [
+        "experience",
+        "internship",
+        "intern",
+        "job",
+        "jobs",
+        "worked",
+        "career",
+        "ceu",
+        "snowflake",
+        "azure",
+        "experiencia",
+        "practicas",
+        "prácticas",
+        "trabajado",
+        "empleo",
+        "laboral"
+      ],
+      "tools": [
+        "get_profile"
+      ],
+      "answer": {
+        "en": "He was an AI Software Developer intern at CEU's IT Innovation Department from February to June 2025. He built an AI tutor that linked institutional data in Snowflake with OpenAI models on Azure, and optimised SQL joins so data retrieval went from days to near-instant.",
+        "es": "Hizo prácticas como desarrollador de software de IA en el departamento de Innovación IT del CEU de febrero a junio de 2025. Desarrolló un tutor con IA que conectaba datos institucionales en Snowflake con modelos de OpenAI en Azure, y optimizó joins de SQL para que la obtención de datos pasara de días a ser casi instantánea."
+      },
+      "actions": [
+        {
+          "type": "scrollTo",
+          "target": "#output"
+        }
+      ]
+    },
+    {
+      "id": "education",
+      "triggers": [
+        "education",
+        "degree",
+        "university",
+        "study",
+        "studied",
+        "bsc",
+        "york",
+        "college",
+        "dam",
+        "formacion",
+        "formación",
+        "estudios",
+        "estudio",
+        "estudiar",
+        "universidad",
+        "grado",
+        "carrera",
+        "titulo",
+        "título"
+      ],
+      "tools": [
+        "get_profile"
+      ],
+      "answer": {
+        "en": "A First Class BSc (Hons) from York St John University in the UK, after a Higher Technician diploma in multiplatform app development (DAM) in Spain.",
+        "es": "Un BSc (Hons) con First Class por York St John University (Reino Unido), después de un ciclo de Técnico Superior en Desarrollo de Aplicaciones Multiplataforma (DAM) en España."
+      },
+      "actions": [
+        {
+          "type": "scrollTo",
+          "target": "#output"
+        }
+      ]
+    },
+    {
+      "id": "availability",
+      "triggers": [
+        "available",
+        "availability",
+        "hiring",
+        "hire",
+        "roles",
+        "role",
+        "relocation",
+        "relocate",
+        "remote",
+        "fde",
+        "forward deployed",
+        "full-time",
+        "disponible",
+        "disponibilidad",
+        "contratar",
+        "puesto",
+        "puestos",
+        "reubicacion",
+        "reubicación",
+        "remoto"
+      ],
+      "tools": [
+        "get_profile"
+      ],
+      "answer": {
+        "en": "Yes. He is available now for AI Engineer, Forward Deployed Engineer and related full-time roles, and open to relocation and hybrid work.",
+        "es": "Sí. Está disponible ya para puestos de AI Engineer, Forward Deployed Engineer y similares a jornada completa, y abierto a reubicarse o a trabajar en modelo híbrido."
+      },
+      "actions": [
+        {
+          "type": "scrollTo",
+          "target": "#contact"
+        }
+      ]
+    },
+    {
+      "id": "location",
+      "triggers": [
+        "based",
+        "live",
+        "lives",
+        "location",
+        "located",
+        "city",
+        "country",
+        "madrid",
+        "spain",
+        "vive",
+        "vives",
+        "ubicacion",
+        "ubicación",
+        "ciudad",
+        "españa"
+      ],
+      "tools": [
+        "get_profile"
+      ],
+      "answer": {
+        "en": "Madrid, Spain. He is open to relocation and hybrid work.",
+        "es": "En Madrid. Está abierto a reubicarse y a trabajar en modelo híbrido."
+      }
+    },
+    {
+      "id": "contact",
+      "triggers": [
+        "contact",
+        "email",
+        "mail",
+        "reach",
+        "phone",
+        "call",
+        "linkedin",
+        "message",
+        "talk",
+        "contacto",
+        "contactar",
+        "correo",
+        "telefono",
+        "teléfono",
+        "llamar",
+        "escribir",
+        "hablar"
+      ],
+      "tools": [
+        "get_contact"
+      ],
+      "answer": {
+        "en": "Email is fastest: ercoal04@gmail.com. He is also on LinkedIn and on GitHub as ernesto2604. The contact section has every link.",
+        "es": "Lo más rápido es el email: ercoal04@gmail.com. También está en LinkedIn y en GitHub como ernesto2604. En la sección de contacto están todos los enlaces."
+      },
+      "actions": [
+        {
+          "type": "scrollTo",
+          "target": "#contact"
+        }
+      ]
+    },
+    {
+      "id": "cv",
+      "triggers": [
+        "cv",
+        "resume",
+        "résumé",
+        "curriculum",
+        "currículum",
+        "curriculo",
+        "download",
+        "descargar"
+      ],
+      "tools": [
+        "get_contact"
+      ],
+      "answer": {
+        "en": "The CV is not published on this site yet. You can request it by email at ercoal04@gmail.com.",
+        "es": "El CV todavía no está publicado en esta web. Puedes pedirlo por email en ercoal04@gmail.com."
+      },
+      "actions": [
+        {
+          "type": "scrollTo",
+          "target": "#contact"
+        }
+      ]
+    },
+    {
+      "id": "agent",
+      "triggers": [
+        "agent",
+        "assistant",
+        "bot",
+        "chatbot",
+        "llm",
+        "gpt",
+        "real",
+        "scripted",
+        "fake",
+        "ai behind",
+        "funciona",
+        "agente",
+        "asistente",
+        "falso",
+        "guion",
+        "guionizado"
+      ],
+      "tools": [],
+      "answer": {
+        "en": "I'm a scripted assistant, not an LLM. Your question is normalised and scored against a small bilingual knowledge base with the same BM25 scorer that ranks the repositories on this page, with typo tolerance. The tool calls you see are the real lookups I make in local data. Everything runs in your browser and nothing is sent anywhere.",
+        "es": "Soy un asistente con guion, no un LLM. Tu pregunta se normaliza y se puntúa contra una pequeña base de conocimiento bilingüe con el mismo buscador BM25 que ordena los repositorios de esta página, con tolerancia a erratas. Las llamadas a herramientas que ves son las consultas reales que hago a datos locales. Todo se ejecuta en tu navegador y no se envía nada a ningún sitio."
+      }
+    },
+    {
+      "id": "site",
+      "triggers": [
+        "site",
+        "website",
+        "page",
+        "vite",
+        "react",
+        "hosted",
+        "github pages",
+        "source code",
+        "web",
+        "pagina",
+        "página",
+        "hecha",
+        "codigo",
+        "código"
+      ],
+      "tools": [],
+      "answer": {
+        "en": "Vite, React and TypeScript, prerendered to static HTML in English and Spanish and hosted on GitHub Pages. Repository data comes from the GitHub API at build time. No backend, no cookies, no trackers.",
+        "es": "Vite, React y TypeScript, prerenderizada a HTML estático en inglés y español y alojada en GitHub Pages. Los datos de los repositorios salen de la API de GitHub al compilar. Sin backend, sin cookies y sin rastreadores."
+      }
+    },
+    {
+      "id": "greeting",
+      "triggers": [
+        "hi",
+        "hello",
+        "hey",
+        "hiya",
+        "good morning",
+        "hola",
+        "buenas",
+        "buenos dias",
+        "saludos"
+      ],
+      "tools": [],
+      "answer": {
+        "en": "Hi! Ask me about Ernesto's projects, his stack, his experience or how to contact him.",
+        "es": "¡Hola! Pregúntame por los proyectos de Ernesto, sus tecnologías, su experiencia o cómo contactarle."
+      }
+    },
+    {
+      "id": "thanks",
+      "triggers": [
+        "thanks",
+        "thank",
+        "cheers",
+        "great",
+        "gracias",
+        "genial",
+        "perfecto"
+      ],
+      "tools": [],
+      "answer": {
+        "en": "You're welcome. Anything else?",
+        "es": "De nada. ¿Algo más?"
+      }
+    },
+    {
+      "id": "lang.es",
+      "triggers": [
+        "spanish",
+        "espanol",
+        "español",
+        "castellano"
+      ],
+      "tools": [],
+      "answer": {
+        "en": "Switching to Spanish.",
+        "es": "Ya estás leyendo en español."
+      },
+      "actions": [
+        {
+          "type": "switchLocale",
+          "target": "es"
+        }
+      ]
+    },
+    {
+      "id": "lang.en",
+      "triggers": [
+        "english",
+        "ingles",
+        "inglés"
+      ],
+      "tools": [],
+      "answer": {
+        "en": "You're already reading in English.",
+        "es": "Cambio a inglés."
+      },
+      "actions": [
+        {
+          "type": "switchLocale",
+          "target": "en"
+        }
+      ]
+    }
+  ]
+}
