@@ -64,5 +64,11 @@
     "featured": "Destacados",
     "alsoBuilt": "También he construido",
     "readCase": "Leer el caso de estudio"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "status": "404 · ningún documento coincide con esta ruta",
+    "body": "El pipeline ha buscado por todas partes y no ha recuperado nada para esta dirección.",
+    "home": "Volver al inicio"
   }
 }

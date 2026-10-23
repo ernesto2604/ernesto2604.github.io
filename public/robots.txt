@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ernesto2604.github.io/sitemap.xml

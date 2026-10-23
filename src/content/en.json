@@ -64,5 +64,11 @@
     "featured": "Featured",
     "alsoBuilt": "Also built",
     "readCase": "Read the case study"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "status": "404 · no document matched this path",
+    "body": "The pipeline searched everywhere and retrieved nothing for this address.",
+    "home": "Back to the home page"
   }
 }
