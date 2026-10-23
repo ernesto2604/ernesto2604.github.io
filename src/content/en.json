@@ -430,7 +430,8 @@
     "built": "Built with Vite, React and TypeScript. Static, hosted on GitHub Pages. No cookies, no trackers.",
     "source": "Source of this site",
     "top": "Back to the top",
-    "rights": "© {year} Ernesto Contreras"
+    "rights": "© {year} Ernesto Contreras",
+    "wordmark": "Ernesto"
   },
   "agent": {
     "title": "Ask about Ernesto",

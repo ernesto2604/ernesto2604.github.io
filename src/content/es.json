@@ -430,7 +430,8 @@
     "built": "Hecha con Vite, React y TypeScript. Estática, alojada en GitHub Pages. Sin cookies ni rastreadores.",
     "source": "Código de esta web",
     "top": "Volver arriba",
-    "rights": "© {year} Ernesto Contreras"
+    "rights": "© {year} Ernesto Contreras",
+    "wordmark": "Ernesto"
   },
   "agent": {
     "title": "Pregunta sobre Ernesto",

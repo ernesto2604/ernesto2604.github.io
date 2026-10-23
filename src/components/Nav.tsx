@@ -49,7 +49,7 @@ export default function Nav() {
       <nav aria-label={t('a11y.primaryNav')} className="glass flex h-14 items-center justify-between rounded-full pl-5 pr-2">
         <a href="#input" aria-label={t('nav.home')} className="flex items-center gap-2.5 whitespace-nowrap text-sm font-medium tracking-tight">
           <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
-          Ernesto Contreras
+          {t('hero.name')}
         </a>
         <div className="flex items-center gap-1">
           <div className="hidden items-center lg:flex">
