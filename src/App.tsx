@@ -3,7 +3,9 @@ import Nav from './components/Nav';
 import PipelineIndicator from './components/PipelineIndicator';
 import SmoothScroll from './components/SmoothScroll';
 import { I18nProvider, useT, type Locale, type Messages } from './i18n';
+import Footer from './components/Footer';
 import Generate from './sections/Generate';
+import Output from './sections/Output';
 import Story from './sections/Story';
 
 function Page() {
@@ -17,7 +19,9 @@ function Page() {
       <main id="main" tabIndex={-1}>
         <Story />
         <Generate />
+        <Output />
       </main>
+      <Footer />
       <SmoothScroll />
     </>
   );

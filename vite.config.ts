@@ -7,6 +7,7 @@ export default defineConfig({
   base: '/',
   plugins: [react(), tailwindcss()],
   build: { manifest: true },
+  define: { __BUILD_YEAR__: JSON.stringify(new Date().getFullYear()) },
   test: {
     include: ['tests/unit/**/*.test.ts'],
     environment: 'node',

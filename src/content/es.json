@@ -324,5 +324,112 @@
         "Los lugares se geocodifican con Nominatim y las rutas se dibujan con OSRM sobre teselas de OpenStreetMap."
       ]
     }
+  },
+  "output": {
+    "title": "La respuesta, en corto",
+    "about": [
+      "Soy Ernesto, un ingeniero que construye sistemas de IA de principio a fin: la recuperación, el agente, el backend que los rodea y los tests que dicen qué sigue fallando.",
+      "Me gradué en York St John University (Reino Unido) con un BSc (Hons) con First Class, después de un ciclo de Técnico Superior en Desarrollo de Aplicaciones Multiplataforma en España. En mis prácticas en el departamento de Innovación IT del CEU trabajé en un tutor con IA que conectaba datos institucionales en Snowflake con modelos de OpenAI en Azure.",
+      "Vivo en Madrid, estoy disponible ya y abierto a reubicarme o a trabajar en modelo híbrido. Busco puestos de AI Engineer, Forward Deployed Engineer y similares."
+    ],
+    "skillsTitle": "Con qué trabajo",
+    "skills": [
+      {
+        "group": "IA y recuperación",
+        "items": [
+          "RAG híbrido (HNSW, GIN, RRF)",
+          "Flujos agénticos",
+          "Amazon Bedrock (Claude)",
+          "Google Gemini",
+          "API de OpenAI",
+          "Prompts estructurados",
+          "OpenCV",
+          "YOLOv8"
+        ]
+      },
+      {
+        "group": "Backend y datos",
+        "items": [
+          "Python",
+          "FastAPI",
+          "Flask",
+          "Node.js / Express",
+          "Go",
+          "Java / Spring Boot",
+          "PostgreSQL + pgvector",
+          "Snowflake",
+          "SQLite",
+          "MySQL"
+        ]
+      },
+      {
+        "group": "Cloud y entrega",
+        "items": [
+          "Docker",
+          "AWS",
+          "Microsoft Azure",
+          "CI/CD",
+          "Git",
+          "Linux"
+        ]
+      },
+      {
+        "group": "Frontend y móvil",
+        "items": [
+          "TypeScript",
+          "React",
+          "Next.js",
+          "Tailwind CSS",
+          "Flutter / Dart"
+        ]
+      }
+    ],
+    "experienceTitle": "Experiencia",
+    "experience": [
+      {
+        "role": "Desarrollador de software de IA (prácticas)",
+        "org": "CEU, departamento de Innovación IT",
+        "dates": "feb. 2025 – jun. 2025",
+        "points": [
+          "Desarrollé un tutor personal con IA que conecta datos institucionales en Snowflake con las APIs de OpenAI en Azure.",
+          "Optimicé joins de SQL y la obtención de datos pasó de tardar días a ser casi instantánea.",
+          "Usé prompts estructurados en XML para que las respuestas fueran más deterministas."
+        ]
+      }
+    ],
+    "educationTitle": "Formación",
+    "education": [
+      {
+        "title": "BSc (Hons), First Class Honours",
+        "org": "York St John University, Reino Unido"
+      },
+      {
+        "title": "Técnico Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)",
+        "org": "España"
+      }
+    ],
+    "languagesTitle": "Idiomas",
+    "languages": [
+      "Español, nativo",
+      "Inglés, grado cursado en el Reino Unido"
+    ]
+  },
+  "contact": {
+    "title": "Hablemos",
+    "lead": "La forma más rápida de contactarme es el email.",
+    "email": "Email",
+    "copy": "Copiar email",
+    "copied": "Email copiado",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "phone": "Teléfono",
+    "cv": "Descargar CV (PDF)"
+  },
+  "footer": {
+    "status": "status 200 · 5 etapas · el agente hace 0 peticiones de red",
+    "built": "Hecha con Vite, React y TypeScript. Estática, alojada en GitHub Pages. Sin cookies ni rastreadores.",
+    "source": "Código de esta web",
+    "top": "Volver arriba",
+    "rights": "© {year} Ernesto Contreras"
   }
 }

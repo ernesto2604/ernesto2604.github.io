@@ -324,5 +324,112 @@
         "Places are geocoded with Nominatim and routes drawn with OSRM on OpenStreetMap tiles."
       ]
     }
+  },
+  "output": {
+    "title": "The answer, in short",
+    "about": [
+      "I'm Ernesto, an engineer who builds AI systems end to end: the retrieval, the agent, the backend around them and the tests that say what still breaks.",
+      "I graduated from York St John University in the UK with a First Class BSc (Hons), after a Higher Technician diploma in multiplatform app development in Spain. During my internship at CEU's IT Innovation department I worked on an AI tutor that connected institutional data in Snowflake with OpenAI models on Azure.",
+      "I'm based in Madrid, available now and open to relocation or hybrid work. I'm looking for AI Engineer, Forward Deployed Engineer and related roles."
+    ],
+    "skillsTitle": "What I work with",
+    "skills": [
+      {
+        "group": "AI and retrieval",
+        "items": [
+          "Hybrid RAG (HNSW, GIN, RRF)",
+          "Agentic workflows",
+          "Amazon Bedrock (Claude)",
+          "Google Gemini",
+          "OpenAI API",
+          "Structured prompting",
+          "OpenCV",
+          "YOLOv8"
+        ]
+      },
+      {
+        "group": "Backend and data",
+        "items": [
+          "Python",
+          "FastAPI",
+          "Flask",
+          "Node.js / Express",
+          "Go",
+          "Java / Spring Boot",
+          "PostgreSQL + pgvector",
+          "Snowflake",
+          "SQLite",
+          "MySQL"
+        ]
+      },
+      {
+        "group": "Cloud and delivery",
+        "items": [
+          "Docker",
+          "AWS",
+          "Microsoft Azure",
+          "CI/CD",
+          "Git",
+          "Linux"
+        ]
+      },
+      {
+        "group": "Frontend and mobile",
+        "items": [
+          "TypeScript",
+          "React",
+          "Next.js",
+          "Tailwind CSS",
+          "Flutter / Dart"
+        ]
+      }
+    ],
+    "experienceTitle": "Experience",
+    "experience": [
+      {
+        "role": "AI Software Developer Intern",
+        "org": "CEU, IT Innovation Department",
+        "dates": "Feb 2025 – Jun 2025",
+        "points": [
+          "Built an AI personal tutor that links institutional data in Snowflake with OpenAI APIs on Azure.",
+          "Optimised SQL joins, taking data retrieval from days to near-instant.",
+          "Used structured XML prompting to make outputs more deterministic."
+        ]
+      }
+    ],
+    "educationTitle": "Education",
+    "education": [
+      {
+        "title": "BSc (Hons), First Class Honours",
+        "org": "York St John University, United Kingdom"
+      },
+      {
+        "title": "Higher Technician in Multiplatform App Development (DAM)",
+        "org": "Spain"
+      }
+    ],
+    "languagesTitle": "Languages",
+    "languages": [
+      "Spanish, native",
+      "English, degree completed in the UK"
+    ]
+  },
+  "contact": {
+    "title": "Let's talk",
+    "lead": "The fastest way to reach me is email.",
+    "email": "Email",
+    "copy": "Copy email",
+    "copied": "Email copied",
+    "linkedin": "LinkedIn",
+    "github": "GitHub",
+    "phone": "Phone",
+    "cv": "Download CV (PDF)"
+  },
+  "footer": {
+    "status": "status 200 · 5 stages · the agent sends 0 network requests",
+    "built": "Built with Vite, React and TypeScript. Static, hosted on GitHub Pages. No cookies, no trackers.",
+    "source": "Source of this site",
+    "top": "Back to the top",
+    "rights": "© {year} Ernesto Contreras"
   }
 }

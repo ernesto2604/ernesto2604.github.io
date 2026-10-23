@@ -351,3 +351,10 @@ html[data-pinned] .scene .diagram.scroll-driven {
   html[data-pinned] .story-hero .fade-up { margin-top: 0.875rem; }
   html[data-pinned] .story-hero .fade-up:last-child { margin-top: 1.5rem; }
 }
+
+/* Footer wordmark: the name returns at full width, cropped by the page edge. */
+.wordmark {
+  font-size: clamp(6rem, 27vw, 26rem);
+  color: var(--accent);
+  margin-bottom: -0.18em;
+}
