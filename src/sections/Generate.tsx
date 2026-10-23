@@ -81,6 +81,8 @@ function CaseStudy({ project, scene }: { project: Project; scene: boolean }) {
     <article id={project.slug} aria-labelledby={titleId} className="scroll-mt-24">
       {scene ? (
         <div ref={sceneRef} className="scene relative">
+          {/* In pinned mode, links to this case land where the panel is open and the diagram drawn. */}
+          <span aria-hidden="true" data-anchor={project.slug} className="story-marker" style={{ ['--at' as string]: 0.85 }} />
           <div className="scene-stage">{panel}</div>
         </div>
       ) : (

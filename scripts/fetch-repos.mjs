@@ -9,14 +9,15 @@ const GENERATED = new URL('src/data/repos.generated.json', root);
 const PROJECTS = new URL('src/content/projects.json', root);
 
 /**
- * @param {{ names: string[], fallback: unknown[], fetchImpl?: typeof fetch, token?: string, owner?: string }} opts
+ * @param {{ names: string[], fallback: unknown[], fetchImpl?: typeof fetch, token?: string, owner?: string, timeoutMs?: number }} opts
  * @returns {Promise<{ repos: any[], warning?: string }>}
  */
-export async function fetchRepos({ names, fallback, fetchImpl = fetch, token, owner = 'ernesto2604' }) {
+export async function fetchRepos({ names, fallback, fetchImpl = fetch, token, owner = 'ernesto2604', timeoutMs = 10000 }) {
   const headers = { accept: 'application/vnd.github+json', 'x-github-api-version': '2022-11-28' };
   if (token) headers.authorization = `Bearer ${token}`;
   const get = async (path) => {
-    const res = await fetchImpl(`https://api.github.com${path}`, { headers });
+    // A hanging API must not hang the build.
+    const res = await fetchImpl(`https://api.github.com${path}`, { headers, signal: AbortSignal.timeout(timeoutMs) });
     if (!res.ok) throw new Error(`GitHub ${res.status} on ${path}`);
     return res.json();
   };

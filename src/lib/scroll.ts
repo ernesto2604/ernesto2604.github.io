@@ -20,6 +20,15 @@ export function resolveAnchor(id: string): HTMLElement | null {
   return document.getElementById(id);
 }
 
+// Moves keyboard focus to an in-page target after navigation (WCAG 2.4.3). Pinned markers hand off to the
+// element with the real id, which may not be focusable by itself.
+export function focusTarget(id: string) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1');
+  el.focus({ preventScroll: true });
+}
+
 export function scrollToElement(el: HTMLElement, immediate = false) {
   const offset = isPinned() && el.hasAttribute('data-anchor') ? 0 : 88;
   const y = el.getBoundingClientRect().top + window.scrollY - offset;

@@ -51,4 +51,12 @@ describe('fetchRepos', () => {
     expect(result.repos).toBe(fallback);
     expect(result.warning).toMatch(/missing/);
   });
+
+  it('gives up on a hanging API after the timeout and uses the fallback', async () => {
+    const hang = (_url: string | URL | Request, init?: RequestInit) =>
+      new Promise<Response>((_, reject) => init?.signal?.addEventListener('abort', () => reject(new Error('aborted'))));
+    const result = await fetchRepos({ names: ['a'], fallback, fetchImpl: hang, timeoutMs: 50 });
+    expect(result.repos).toBe(fallback);
+    expect(result.warning).toMatch(/aborted|timed? ?out/i);
+  });
 });

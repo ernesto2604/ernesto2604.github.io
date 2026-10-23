@@ -12,7 +12,7 @@ async function seriousViolations(page: Page) {
 for (const path of ['/', '/es/']) {
   test(`${path} has no critical or serious axe violations`, async ({ page }) => {
     await page.goto(path);
-    await page.waitForLoadState('networkidle');
+    await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     expect(await seriousViolations(page)).toEqual([]);
   });
 
@@ -20,7 +20,7 @@ for (const path of ['/', '/es/']) {
     const context = await browser.newContext({ reducedMotion: 'reduce' });
     const page = await context.newPage();
     await page.goto(path);
-    await page.waitForLoadState('networkidle');
+    await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     expect(await seriousViolations(page)).toEqual([]);
     await context.close();
   });
@@ -28,7 +28,7 @@ for (const path of ['/', '/es/']) {
 
 test('the open agent panel has no critical or serious axe violations', async ({ page }) => {
   await page.goto('/');
-  await page.waitForLoadState('networkidle');
+  await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   await page.keyboard.press('Control+k');
   await expect(page.getByRole('textbox')).toBeFocused();
   await page.keyboard.type('ring');

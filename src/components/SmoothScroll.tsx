@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { registerScroller, resolveAnchor, scrollToElement } from '../lib/scroll';
+import { focusTarget, registerScroller, resolveAnchor, scrollToElement } from '../lib/scroll';
 
 // In-page links go through resolveAnchor so story stages land on their scroll progress point.
 // Lenis smooths wheel scrolling on fine pointers only; touch keeps native scrolling.
@@ -16,11 +16,7 @@ export default function SmoothScroll() {
       e.preventDefault();
       history.pushState(null, '', `#${id}`);
       scrollToElement(target);
-      const focusTarget = target.hasAttribute('data-anchor') ? document.getElementById(id!) : target;
-      if (focusTarget) {
-        if (!focusTarget.hasAttribute('tabindex')) focusTarget.setAttribute('tabindex', '-1');
-        focusTarget.focus({ preventScroll: true });
-      }
+      focusTarget(id!);
     };
     document.addEventListener('click', onClick);
 

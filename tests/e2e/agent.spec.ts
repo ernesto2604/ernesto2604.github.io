@@ -4,7 +4,7 @@ test.describe('agent', () => {
   test('keyboard only: open with the button, ask, read tool calls and answer, close with Escape', async ({ page }, info) => {
     test.skip(info.project.name === 'mobile', 'nav button text is hidden on small screens; covered on desktop');
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     const button = page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: /Ask the agent/ });
     await button.focus();
     await page.keyboard.press('Enter');
@@ -25,7 +25,7 @@ test.describe('agent', () => {
 
   test('Ctrl+K toggles the panel and the answer follows the page language', async ({ page }) => {
     await page.goto('/es/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     await page.keyboard.press('Control+k');
     await expect(page.getByRole('textbox')).toBeFocused();
     const dialog = page.getByRole('dialog', { name: 'Pregunta sobre Ernesto' });
@@ -39,7 +39,7 @@ test.describe('agent', () => {
 
   test('unknown questions get the fallback with suggested questions', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     await page.keyboard.press('Control+k');
     await expect(page.getByRole('textbox')).toBeFocused();
     await page.keyboard.type('what is the weather in paris');
@@ -53,7 +53,7 @@ test.describe('agent', () => {
     const context = await browser.newContext({ reducedMotion: 'reduce' });
     const page = await context.newPage();
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     await page.keyboard.press('Control+k');
     await expect(page.getByRole('textbox')).toBeFocused();
     await page.keyboard.type('email');
@@ -65,7 +65,7 @@ test.describe('agent', () => {
   test('a scroll action closes the panel and lands on the target', async ({ page }, info) => {
     test.skip(info.project.name === 'mobile');
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     await page.keyboard.press('Control+k');
     await expect(page.getByRole('textbox')).toBeFocused();
     await page.keyboard.type('contact');
@@ -73,5 +73,20 @@ test.describe('agent', () => {
     await page.getByRole('button', { name: 'Go to contact' }).click({ timeout: 15000 });
     await expect(page.getByRole('dialog')).toBeHidden();
     await expect(page.locator('#contact')).toBeInViewport({ timeout: 4000 });
+  });
+
+  test('after a scroll action, keyboard focus moves to the target section', async ({ page }, info) => {
+    test.skip(info.project.name === 'mobile');
+    await page.goto('/');
+    await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+    await page.keyboard.press('Control+k');
+    await expect(page.getByRole('textbox')).toBeFocused();
+    await page.keyboard.type('contact');
+    await page.keyboard.press('Enter');
+    const go = page.getByRole('button', { name: 'Go to contact' });
+    await go.waitFor({ timeout: 15000 });
+    await go.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#contact')).toBeFocused();
   });
 });

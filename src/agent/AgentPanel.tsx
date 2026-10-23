@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { ArrowRight, Check, CornerDownLeft, LoaderCircle, X } from 'lucide-react';
 import { localePath, useLocale, useT } from '../i18n';
-import { resolveAnchor, scrollToElement } from '../lib/scroll';
+import { focusTarget, resolveAnchor, scrollToElement } from '../lib/scroll';
 import { fallbackText, matchIntent, type Action } from './match';
 import { planTools, type ToolCall } from './tools';
 
@@ -74,7 +74,7 @@ export default function AgentPanel({ dialogRef }: { dialogRef: React.RefObject<H
     inputRef.current?.focus();
   }
 
-  function runAction(a: Action) {
+  function runAction(a: Action, turn: Turn) {
     if (a.type === 'switchLocale') {
       try {
         localStorage.setItem('locale', a.target);
@@ -85,10 +85,12 @@ export default function AgentPanel({ dialogRef }: { dialogRef: React.RefObject<H
       return;
     }
     dialogRef.current?.close();
-    const el = resolveAnchor(a.target.slice(1));
+    const id = a.target.slice(1);
+    const el = resolveAnchor(id);
     if (!el) return;
     scrollToElement(el);
-    const highlight = turns.at(-1)?.actions.find((x) => x.type === 'highlight');
+    focusTarget(id);
+    const highlight = turn.actions.find((x) => x.type === 'highlight');
     if (highlight) {
       const target = document.querySelector(highlight.target);
       target?.classList.add('flash');
@@ -174,7 +176,7 @@ export default function AgentPanel({ dialogRef }: { dialogRef: React.RefObject<H
                     {turn.actions
                       .filter((a) => a.type !== 'highlight')
                       .map((a) => (
-                        <button key={a.type + a.target} type="button" onClick={() => runAction(a)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-4 text-sm font-medium text-accent-ink">
+                        <button key={a.type + a.target} type="button" onClick={() => runAction(a, turn)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-4 text-sm font-medium text-accent-ink">
                           {actionLabel(a)}
                           <ArrowRight className="size-4" aria-hidden="true" strokeWidth={2} />
                         </button>
