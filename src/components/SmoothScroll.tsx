@@ -1,17 +1,48 @@
 import { useEffect } from 'react';
+import { registerScroller, resolveAnchor, scrollToElement } from '../lib/scroll';
 
-// Lenis only for fine pointers without reduced motion; touch devices keep native scrolling.
+// In-page links go through resolveAnchor so story stages land on their scroll progress point.
+// Lenis smooths wheel scrolling on fine pointers only; touch keeps native scrolling.
 export default function SmoothScroll() {
   useEffect(() => {
-    if (!matchMedia('(pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.documentElement.setAttribute('data-hydrated', '');
+
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      const a = (e.target as Element).closest?.('a[href^="#"]');
+      const id = a?.getAttribute('href')!.slice(1);
+      const target = id ? resolveAnchor(id) : null;
+      if (!target) return;
+      e.preventDefault();
+      history.pushState(null, '', `#${id}`);
+      scrollToElement(target);
+      const focusTarget = target.hasAttribute('data-anchor') ? document.getElementById(id!) : target;
+      if (focusTarget) {
+        if (!focusTarget.hasAttribute('tabindex')) focusTarget.setAttribute('tabindex', '-1');
+        focusTarget.focus({ preventScroll: true });
+      }
+    };
+    document.addEventListener('click', onClick);
+
+    if (location.hash) {
+      const target = resolveAnchor(location.hash.slice(1));
+      if (target) requestAnimationFrame(() => scrollToElement(target, true));
+    }
+
     let lenis: { destroy(): void } | undefined;
     let cancelled = false;
-    import('lenis').then(({ default: Lenis }) => {
-      if (cancelled) return;
-      lenis = new Lenis({ autoRaf: true, anchors: { offset: -88 }, lerp: 0.12 });
-    });
+    if (matchMedia('(pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      import('lenis').then(({ default: Lenis }) => {
+        if (cancelled) return;
+        const instance = new Lenis({ autoRaf: true, lerp: 0.12 });
+        registerScroller(instance);
+        lenis = instance;
+      });
+    }
     return () => {
       cancelled = true;
+      document.removeEventListener('click', onClick);
+      registerScroller(null);
       lenis?.destroy();
     };
   }, []);

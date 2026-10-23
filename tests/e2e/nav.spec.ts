@@ -35,7 +35,8 @@ test('without JavaScript the hero and projects are readable and JS-only buttons 
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1, name: 'Ernesto Contreras' })).toBeVisible();
   await expect(page.getByText('Who is Ernesto and what has he built?').first()).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Ring TelemetryOps' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Ring TelemetryOps' })).toBeVisible();
+  await expect(page.locator('.story-row').first()).toContainText('1.000');
   await expect(page.getByRole('button', { name: /Ask the agent/ })).toHaveCount(0);
   await context.close();
 });

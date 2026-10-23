@@ -2,6 +2,9 @@ import { useEffect, useState, type MouseEvent } from 'react';
 import { Search } from 'lucide-react';
 import { localePath, otherLocale, useLocale, useT } from '../i18n';
 
+// Flipped to true when the agent panel ships (Phase 6); until then no control promises it.
+export const AGENT_READY = false;
+
 export const openAgent = () => window.dispatchEvent(new CustomEvent('agent:open'));
 
 export function useShortcutLabel() {
@@ -30,7 +33,7 @@ function LangToggle() {
       lang={other}
       onClick={onClick}
       aria-label={t('lang.switchTo')}
-      className="grid h-10 min-w-10 place-items-center rounded-full px-3 font-mono text-xs tracking-wider text-muted transition-colors duration-200 hover:bg-white/5 hover:text-text"
+      className="grid h-10 min-w-10 place-items-center rounded-full px-3 text-sm font-medium text-muted transition-colors duration-200 hover:bg-white/5 hover:text-text"
     >
       {t('lang.short')}
     </a>
@@ -55,6 +58,7 @@ export default function Nav() {
             <a className={link} href="#contact">{t('nav.contact')}</a>
           </div>
           <LangToggle />
+          {AGENT_READY && (
           <button
             type="button"
             onClick={openAgent}
@@ -63,8 +67,9 @@ export default function Nav() {
             <Search className="size-4 text-accent" aria-hidden="true" strokeWidth={1.75} />
             <span className="hidden sm:inline">{t('nav.agent')}</span>
             <span className="sr-only sm:hidden">{t('nav.agent')}</span>
-            <kbd className="hidden rounded-md border border-line px-1.5 py-0.5 font-mono text-[0.6875rem] text-muted sm:inline">{shortcut}</kbd>
+            <kbd className="kbd-hint hidden rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[0.8125rem] text-muted sm:inline">{shortcut}</kbd>
           </button>
+          )}
         </div>
       </nav>
     </header>

@@ -3,9 +3,7 @@ import Nav from './components/Nav';
 import PipelineIndicator from './components/PipelineIndicator';
 import SmoothScroll from './components/SmoothScroll';
 import { I18nProvider, useT, type Locale } from './i18n';
-import Input from './sections/Input';
-import Rerank from './sections/Rerank';
-import Retrieval from './sections/Retrieval';
+import Story from './sections/Story';
 
 function Page() {
   const t = useT();
@@ -16,9 +14,7 @@ function Page() {
       <Nav />
       <PipelineIndicator />
       <main id="main" tabIndex={-1}>
-        <Input />
-        <Retrieval />
-        <Rerank />
+        <Story />
       </main>
       <SmoothScroll />
     </>

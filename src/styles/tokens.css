@@ -14,10 +14,10 @@
   --accent-soft: rgb(255 181 71 / 0.12);
   --ok: #7FD1A8;
 
-  --glass-bg: rgb(17 22 31 / 0.55);
+  --glass-bg: rgb(13 17 25 / 0.74);
   --glass-solid: rgb(17 22 31 / 0.96);
   --glass-edge: rgb(255 255 255 / 0.08);
-  --glass-blur: 18px;
+  --glass-blur: 24px;
 
   --dur-1: 120ms;
   --dur-2: 200ms;

@@ -22,7 +22,7 @@ export default function PipelineIndicator() {
                 href={`#${stage}`}
                 aria-current={isActive ? 'step' : undefined}
                 aria-label={t('indicator.goTo', { n: i + 1, name })}
-                className="group flex h-9 min-w-9 items-center gap-2 rounded-full px-2.5 font-mono text-[0.6875rem] tracking-wider text-muted transition-colors duration-200 hover:text-text aria-[current=step]:text-text"
+                className="group flex h-11 min-w-11 items-center gap-2 rounded-full px-3 text-[0.8125rem] text-muted transition-colors duration-200 hover:text-text aria-[current=step]:text-text"
               >
                 <span
                   aria-hidden="true"
@@ -30,7 +30,7 @@ export default function PipelineIndicator() {
                     isActive ? 'scale-125 bg-accent' : i < activeIndex ? 'bg-muted' : 'bg-line-strong'
                   }`}
                 />
-                <span aria-hidden="true" className={isActive ? 'whitespace-nowrap uppercase' : 'hidden whitespace-nowrap uppercase lg:group-hover:inline lg:group-focus-visible:inline'}>
+                <span aria-hidden="true" className={isActive ? 'whitespace-nowrap lg:max-2xl:hidden' : 'hidden whitespace-nowrap 2xl:group-hover:inline 2xl:group-focus-visible:inline'}>
                   {String(i + 1).padStart(2, '0')} {name}
                 </span>
               </a>

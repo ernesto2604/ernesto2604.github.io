@@ -256,6 +256,38 @@ on everything focusable, 44px targets, WCAG AA contrast (tested), diagrams with
 text alternatives, no information by color alone, reduced motion and reduced
 transparency honored, full keyboard flow including the agent.
 
+## 12b. Phase 4 gate revision (2026-10-24, approved by Ernesto)
+
+Supersedes §2's plain vertical scroll for stages 1-4.
+
+- **Pinned story for stages 1-3.** One tall section with a sticky 100svh stage
+  where native scroll drives time (no wheel hijacking, no scroll snapping):
+  hero query → the query decomposes into search terms → the six repos enter as
+  result rows with live BM25 scores → rows reorder in place with ↑/↓ rank
+  deltas (featured first, then recency) and the rest compact into "Also built".
+  Left column: the narrative text for the current phase. Right column: the
+  result set (fills the half that was empty in the slice).
+- **Stage 4** opens with a second sticky scene: the top project expands and its
+  architecture diagram draws on scroll. Case-study text, the other case studies
+  and About/Output return to normal scroll for reading.
+- **Mobile (< 1024px):** stacked sections, in-view reveals, the reorder plays
+  once when the list enters view. **Reduced motion:** everything stacked, final
+  states, no sticky.
+- One DOM for all modes: CSS decides sticky vs stacked (`html.js` + width +
+  motion query), so prerendered HTML and no-JS stay readable.
+- Hash links into the story (`#input`, `#retrieval`, `#rerank`) scroll to the
+  matching progress point in sticky mode.
+- Until the agent ships, "See the work" is the amber primary CTA; "Ctrl K" hints
+  are hidden on coarse pointers.
+
+Adopted from the design-taste-frontend review (not in conflict with this brief):
+monospace only for scores, metadata values and tool calls (labels go sentence
+case in the sans); no eyebrow index numbers or card numbering (stage numbers
+live only in the ghost numerals and the indicator); surfaces separated by tone
+steps instead of 1px outlines and row hairlines; nothing readable under 13px;
+equal outer margins at every width. Kept on purpose, per this brief: glass on
+nav / indicator / agent, gradient depth layer, three typefaces.
+
 ## 13. Pending inputs from Ernesto
 
 Status: APPROVED 2026-10-23 (including the three stack changes).

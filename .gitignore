@@ -9,3 +9,5 @@ playwright-report
 *.log
 .impeccable/live
 .impeccable/hook.cache.json
+.shots
+.taste-skill
