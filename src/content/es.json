@@ -39,7 +39,9 @@
     "availability": "Disponible ya · abierto a reubicación y modelo híbrido",
     "ctaAgent": "Pregunta al agente",
     "ctaWork": "Ver proyectos",
-    "monogramAlt": "Monograma EC"
+    "monogramAlt": "Monograma EC",
+    "kbdHint": "Ctrl K",
+    "typingLabel": "escribiendo"
   },
   "retrieval": {
     "eyebrow": "02 · Recuperación",
@@ -55,7 +57,20 @@
     "stars": "Estrellas",
     "noMatch": "Ninguna coincidencia con este término",
     "openRepo": "Abrir {name} en GitHub",
-    "dataNote": "Datos de los repositorios obtenidos de la API de GitHub al compilar ({date})."
+    "dataNote": "Datos de los repositorios obtenidos de la API de GitHub al compilar ({date}).",
+    "terms": [
+      "agentes",
+      "RAG",
+      "LLM",
+      "recuperación",
+      "visión por computador",
+      "backend",
+      "móvil",
+      "seguridad"
+    ],
+    "matched": "coincide",
+    "rank": "posición",
+    "viewCard": "Ir a {name}"
   },
   "rerank": {
     "eyebrow": "03 · Reordenación",
@@ -63,12 +78,50 @@
     "rule": "Regla: primero los tres proyectos que el autor destaca y después el resto, del más reciente al más antiguo.",
     "featured": "Destacados",
     "alsoBuilt": "También he construido",
-    "readCase": "Leer el caso de estudio"
+    "readCase": "Leer el caso de estudio",
+    "keyFact": "Dato clave",
+    "stack": "Tecnologías"
   },
   "notFound": {
     "title": "Página no encontrada",
     "status": "404 · ningún documento coincide con esta ruta",
     "body": "El pipeline ha buscado por todas partes y no ha recuperado nada para esta dirección.",
     "home": "Volver al inicio"
+  },
+  "indicator": {
+    "label": "Pipeline",
+    "goTo": "Ir a la etapa {n}: {name}"
+  },
+  "projects": {
+    "ring-telemetryops": {
+      "name": "Ring TelemetryOps",
+      "summary": "Agente de diagnóstico para timbres con vídeo Ring, creado para el Amazon Developer Hackathon 2026. OpenCV mide el stream, una comprobación determinista fija la gravedad y Claude Haiku 4.5 en Amazon Bedrock razona sobre las pruebas. Si Bedrock no está disponible, un fallback local mantiene el mismo formato de informe.",
+      "fact": "869 tests de pytest + 195 de Node, según el README"
+    },
+    "hybrid-rag-api": {
+      "name": "Hybrid RAG API",
+      "summary": "Un motor de RAG híbrido escrito desde cero, sin LangChain ni LlamaIndex. Combina búsqueda densa (pgvector, HNSW) y léxica (GIN en PostgreSQL) con Reciprocal Rank Fusion, y cada respuesta cita documento y página.",
+      "fact": "RRF con k = 60 sobre HNSW y GIN"
+    },
+    "wakemap": {
+      "name": "WakeMap",
+      "summary": "Prototipo en Flutter de mi trabajo de fin de grado: alarmas por ubicación con geofencing, alarmas creadas por voz y una guía de viaje con IA. Un proxy en Node.js/Express mantiene la clave de Gemini en el servidor.",
+      "fact": "Builds para Android e iOS, Gemini detrás de un proxy"
+    },
+    "ai-surveillance-hub": {
+      "name": "AI Surveillance Hub",
+      "summary": "Un sensor de proximidad en Arduino activa una cámara en Raspberry Pi que ejecuta YOLOv8, envía una alerta con foto por Telegram y registra cada detección en un panel con Flask.",
+      "fact": "Arduino, Raspberry Pi, YOLOv8, Flask"
+    },
+    "secure-auth-go": {
+      "name": "Secure Auth Go",
+      "summary": "Aplicación web en Go para gestionar socios de un gimnasio, hecha para una asignatura de seguridad web: bcrypt, sesiones en servidor, tokens CSRF, cabeceras CSP, control de acceso por roles y límite de intentos de login.",
+      "fact": "net/http de la librería estándar, sin framework"
+    },
+    "mediterranean-churros": {
+      "name": "Mediterranean Churros",
+      "summary": "Landing en cinco idiomas para una marca de churros en Suiza, hecha con Next.js, TypeScript, Tailwind CSS y next-intl.",
+      "fact": "Cinco idiomas con next-intl"
+    }
   }
 }

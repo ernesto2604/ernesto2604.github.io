@@ -39,7 +39,9 @@
     "availability": "Available now · open to relocation and hybrid",
     "ctaAgent": "Ask the agent",
     "ctaWork": "See the work",
-    "monogramAlt": "Monogram EC"
+    "monogramAlt": "Monogram EC",
+    "kbdHint": "Ctrl K",
+    "typingLabel": "typing"
   },
   "retrieval": {
     "eyebrow": "02 · Retrieval",
@@ -55,7 +57,20 @@
     "stars": "Stars",
     "noMatch": "No match for this term",
     "openRepo": "Open {name} on GitHub",
-    "dataNote": "Repository data fetched from the GitHub API at build time ({date})."
+    "dataNote": "Repository data fetched from the GitHub API at build time ({date}).",
+    "terms": [
+      "agents",
+      "RAG",
+      "LLM",
+      "retrieval",
+      "computer vision",
+      "backend",
+      "mobile",
+      "security"
+    ],
+    "matched": "matched",
+    "rank": "rank",
+    "viewCard": "Jump to {name}"
   },
   "rerank": {
     "eyebrow": "03 · Rerank",
@@ -63,12 +78,50 @@
     "rule": "Rule: the author's three featured projects first, then everything else by most recent update.",
     "featured": "Featured",
     "alsoBuilt": "Also built",
-    "readCase": "Read the case study"
+    "readCase": "Read the case study",
+    "keyFact": "Key fact",
+    "stack": "Stack"
   },
   "notFound": {
     "title": "Page not found",
     "status": "404 · no document matched this path",
     "body": "The pipeline searched everywhere and retrieved nothing for this address.",
     "home": "Back to the home page"
+  },
+  "indicator": {
+    "label": "Pipeline",
+    "goTo": "Go to stage {n}: {name}"
+  },
+  "projects": {
+    "ring-telemetryops": {
+      "name": "Ring TelemetryOps",
+      "summary": "Diagnostic agent for Ring video doorbells, built for the Amazon Developer Hackathon 2026. OpenCV measures the stream, a deterministic pre-check sets the severity, and Claude Haiku 4.5 on Amazon Bedrock reasons over the evidence. A local fallback keeps the same report contract when Bedrock is unavailable.",
+      "fact": "869 pytest + 195 Node tests, per the README"
+    },
+    "hybrid-rag-api": {
+      "name": "Hybrid RAG API",
+      "summary": "A hybrid RAG engine written from scratch, without LangChain or LlamaIndex. Dense search (pgvector, HNSW) and lexical search (PostgreSQL GIN) are fused with Reciprocal Rank Fusion, and every answer cites document and page.",
+      "fact": "RRF with k = 60 over HNSW and GIN"
+    },
+    "wakemap": {
+      "name": "WakeMap",
+      "summary": "Flutter prototype from my dissertation: location-based alarms with geofencing, voice-created alarms and an AI travel guide. A Node.js/Express proxy keeps the Gemini key on the server.",
+      "fact": "Android and iOS builds, Gemini behind a server proxy"
+    },
+    "ai-surveillance-hub": {
+      "name": "AI Surveillance Hub",
+      "summary": "An Arduino proximity trigger wakes a Raspberry Pi camera that runs YOLOv8, sends a Telegram photo alert and logs each detection to a Flask dashboard.",
+      "fact": "Arduino, Raspberry Pi, YOLOv8, Flask"
+    },
+    "secure-auth-go": {
+      "name": "Secure Auth Go",
+      "summary": "Go web app for gym membership records, built for a web security course: bcrypt, server-side sessions, CSRF tokens, CSP headers, role-based access and login rate limiting.",
+      "fact": "Standard library net/http, no framework"
+    },
+    "mediterranean-churros": {
+      "name": "Mediterranean Churros",
+      "summary": "Landing page in five languages for a churros brand in Switzerland, built with Next.js, TypeScript, Tailwind CSS and next-intl.",
+      "fact": "Five locales with next-intl"
+    }
   }
 }

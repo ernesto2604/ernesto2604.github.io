@@ -1,9 +1,34 @@
-import { I18nProvider, type Locale } from './i18n';
+import Background from './components/Background';
+import Nav from './components/Nav';
+import PipelineIndicator from './components/PipelineIndicator';
+import SmoothScroll from './components/SmoothScroll';
+import { I18nProvider, useT, type Locale } from './i18n';
+import Input from './sections/Input';
+import Rerank from './sections/Rerank';
+import Retrieval from './sections/Retrieval';
+
+function Page() {
+  const t = useT();
+  return (
+    <>
+      <a href="#main" className="skip-link">{t('a11y.skip')}</a>
+      <Background />
+      <Nav />
+      <PipelineIndicator />
+      <main id="main" tabIndex={-1}>
+        <Input />
+        <Retrieval />
+        <Rerank />
+      </main>
+      <SmoothScroll />
+    </>
+  );
+}
 
 export default function App({ locale }: { locale: Locale }) {
   return (
     <I18nProvider locale={locale}>
-      <main id="main" />
+      <Page />
     </I18nProvider>
   );
 }
