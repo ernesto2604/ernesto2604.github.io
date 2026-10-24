@@ -83,6 +83,8 @@ Deliberately avoided:
 
 ## 4. Visual system
 
+> Superseded by §14 (light redesign, 2026-10-24) for palette, type, navigation and the hero. Kept for history.
+
 ### Palette (tokens; contrast verified in code by a unit test)
 
 | Token | Value | Use |
@@ -300,3 +302,79 @@ Follow-up answers (2026-10-23):
 - Ring media: a YouTube link from Ernesto, embedded click-to-load (no request to
   YouTube until the visitor clicks; `youtube-nocookie.com`).
 - hybrid-rag-api: the repo has no `.github/workflows`, so the site does not claim CI.
+
+## 14. Light redesign (2026-10-24, branch `feat/light-redesign`)
+
+Supersedes §4 palette and type, §5 glass on the top bar, and the §2/§12b hero. The dark
+version stays on `feat/portfolio`.
+
+### Palette (light only; tokens in `src/styles/tokens.css`, AA checked by `tests/unit/contrast.test.ts`)
+
+| Token | Value | Use |
+|---|---|---|
+| `--bg-0` | `#F5F6F8` | page base, theme-color |
+| `--bg-1` | `#ECEEF2` | gradient stop, scrollbar track |
+| `--surface` | `#FFFFFF` | reading cards, menu panel, menu button |
+| `--surface-2` | `#EBEEF3` | secondary fills, de-emphasised rows |
+| `--line` / `--line-strong` | `#D9DEE6` / `#7B8494` | hairlines / borders (≥ 3:1 on surface) |
+| `--text` / `--text-muted` | `#0D1015` / `#4B5361` | ink / secondary (≥ 4.5:1 on every ground) |
+| `--accent` | `#8C4A00` | deep amber for text, icons, focus ring |
+| `--accent-fill` | `#FFB547` | signal amber as a fill only: CTA, scores, active dot, model node |
+| `--accent-ink` | `#1A1204` | text on `--accent-fill` |
+| `--ok` | `#1E7547` | "200 OK" status |
+
+Amber `#FFB547` fails AA as text on light grounds, so it is never text. Orbs, grain,
+glass, scrim and shadows are tokens too. A dark palette can return as a second token block
+(`:root[data-theme="dark"]`) without touching components.
+
+### Type
+
+- **Inter** (OFL-1.1, Fontsource `@fontsource-variable/inter` 5.3.0), one file with the
+  `wght` and `opsz` axes, latin subset (U+0000-00FF covers á é í ó ú ñ ü ¿ ¡). With
+  `font-optical-sizing: auto` (the default) large sizes get Inter's display cut.
+  Preloaded; `font-display: swap`.
+- **Geist Mono** stays for scores, metadata values and tool calls only.
+- Newsreader and Geist (sans) are removed.
+- Tokens: `--text-hero` `clamp(3.5rem, 1rem + 8.4vw, 9rem)`, `--font-weight-display` 560,
+  `--font-weight-heading` 580, `--tracking-display` -0.048em, `--tracking-heading` -0.032em,
+  `--text-3xl` max 3.5rem.
+
+### Navigation
+
+No top bar. A solid 48px hamburger button (top right) opens a modal slide-over
+(`<dialog id="site-menu">`): Work, About, Contact, "Ask the agent" (Ctrl/Cmd+K still works and
+closes the menu first) and the language link. `aria-expanded`/`aria-controls`, Tab wraps inside,
+Escape and backdrop click close it, focus returns to the button natively, the background is inert,
+scroll locks with the scrollbar width padded back. On phones a 3rem strip of backdrop stays tappable.
+Without JS the panel renders as a plain block of links. The pipeline indicator is unchanged.
+
+### Hero (stage 01)
+
+Left: "AI Engineer" at `--text-hero`, then "Hi, I'm Ernesto." plus the approved sentence, then
+the two CTAs. Right: the photo on a tinted panel (`--accent-soft`), stacked below the text under
+1024px (max 28rem wide). FDE stays in the title, meta description, JSON-LD `jobTitle` and About.
+No location or availability line in the hero (not confirmed).
+
+The query "Who is Ernesto and what has he built?" no longer types in the hero. It opens the
+Retrieval stage as a small label, followed by the hand-written expansion and the real BM25 scores,
+so every score still answers a visible query. In pinned mode the hero spans both columns and the
+result list appears with the terms phase.
+
+### Photo
+
+`scripts/photo.py` turns `assets-src/foto.png` into `public/photo/ernesto-{400,640,960}.{avif,webp}`
+by copying pixels only (no EXIF/XMP/text chunks; resize only, no retouching). `<picture>` with
+srcset/sizes, width/height, `fetchpriority="high"`, and an AVIF `<link rel="preload">` in the head.
+If `profile.photo` is empty or the files are missing, the hero shows a "Photo pending" panel and
+the build prints a loud warning.
+
+### Welcome loader
+
+`public/welcome.js` (inlined) plays `src/content/greetings.json` one word per 190 ms (10 words,
+1.9 s), ending on the page language (Welcome / Bienvenido), then fades into the hero, whose
+entrance waits under it. Shown only when `boot.js` sets `html[data-welcome]`: JS on, motion
+allowed, storage available and not yet seen this session (`sessionStorage.welcomed`). Click or
+any key skips it. Fixed overlay outside the React root (no layout shift, no effect on
+hydration), `aria-hidden`, never traps focus, CSS failsafe hides it after 3 s. All greetings are
+Latin-1 so Inter's latin subset covers them (unit-tested); Turkish and other scripts were left out
+rather than falling back to another face.

@@ -57,7 +57,7 @@ All visible text lives in `src/content/en.json` and `src/content/es.json`. Compo
 - **Contact:** edit `src/content/profile.json`.
   - The phone number is stored as parts and joined in the browser, so it is not in the static HTML.
   - **CV:** put the PDFs in `public/cv/` and set `"cv": { "en": "/cv/ernesto-contreras-cv-en.pdf", "es": "/cv/..." }`. The download link appears only for locales with a path.
-  - **Photo:** `photo` points to a file in `public/` (now `/photo.webp`, 320×320). Originals live in `assets-src/`, which is git-ignored.
+  - **Photo:** `photo` is the base path of the generated set (`/photo/ernesto`). Put the original in `assets-src/` (git-ignored) and run `python scripts/photo.py` (needs Pillow with AVIF); it writes AVIF/WebP at 400/640/960 px without metadata.
 
 ## Add a project
 
@@ -128,7 +128,7 @@ Unknown paths are served `dist/404.html` by GitHub Pages. That file is a static,
   - Without motion preference, or on smaller screens, the same DOM stacks as normal sections.
   - `html[data-pinned]` is set before first paint in `public/boot.js`.
 - **Glass.** Only the nav, the pipeline indicator and the agent dialog use glass. They become solid with `prefers-reduced-transparency` and on low-memory devices.
-- **Fonts.** Newsreader, Geist and Geist Mono (OFL-1.1), latin subset, self-hosted in `public/fonts/` with their licenses.
+- **Fonts.** Inter (wght + opsz) and Geist Mono (OFL-1.1), latin subset, self-hosted in `public/fonts/` with their licenses.
 - **Icons.** Lucide (ISC).
 
 ---
