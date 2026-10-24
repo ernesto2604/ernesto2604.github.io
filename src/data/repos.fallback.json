@@ -80,20 +80,6 @@
       "topics": [],
       "stars": 0,
       "updatedAt": "2026-02-12T18:42:32Z"
-    },
-    {
-      "name": "mediterraneanChurros",
-      "description": "Premium multilingual landing page for Mediterranean Churros, built with Next.js, TypeScript, Tailwind CSS, next-intl, and Sanity CMS.",
-      "url": "https://github.com/ernesto2604/mediterraneanChurros",
-      "homepage": "https://mediterranean-churros.vercel.app",
-      "languages": {
-        "TypeScript": 52271,
-        "CSS": 6162,
-        "JavaScript": 559
-      },
-      "topics": [],
-      "stars": 0,
-      "updatedAt": "2026-04-10T15:40:30Z"
     }
   ]
 }

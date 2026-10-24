@@ -73,8 +73,8 @@
         "search_projects"
       ],
       "answer": {
-        "en": "Three featured projects: Ring TelemetryOps, a diagnostic agent for Ring doorbells built for the Amazon Developer Hackathon 2026; the Hybrid RAG API, a retrieval engine written from scratch with pgvector, full-text search and Reciprocal Rank Fusion; and WakeMap, a Flutter prototype with location alarms and an AI travel guide. He has also built a YOLOv8 surveillance hub, a secure Go web app and a landing page in five languages.",
-        "es": "Tres proyectos destacados: Ring TelemetryOps, un agente de diagnóstico para timbres Ring creado para el Amazon Developer Hackathon 2026; Hybrid RAG API, un motor de recuperación escrito desde cero con pgvector, búsqueda de texto y Reciprocal Rank Fusion; y WakeMap, un prototipo en Flutter con alarmas por ubicación y una guía de viaje con IA. También ha hecho un sistema de vigilancia con YOLOv8, una aplicación web segura en Go y una landing en cinco idiomas."
+        "en": "Three featured projects: Ring TelemetryOps, a diagnostic agent for Ring doorbells built for the Amazon Developer Hackathon 2026; the Hybrid RAG API, a retrieval engine written from scratch with pgvector, full-text search and Reciprocal Rank Fusion; and WakeMap, a Flutter prototype with location alarms and an AI travel guide. He has also built a YOLOv8 surveillance hub and a secure Go web app.",
+        "es": "Tres proyectos destacados: Ring TelemetryOps, un agente de diagnóstico para timbres Ring creado para el Amazon Developer Hackathon 2026; Hybrid RAG API, un motor de recuperación escrito desde cero con pgvector, búsqueda de texto y Reciprocal Rank Fusion; y WakeMap, un prototipo en Flutter con alarmas por ubicación y una guía de viaje con IA. También ha hecho un sistema de vigilancia con YOLOv8 y una aplicación web segura en Go."
       },
       "actions": [
         {
@@ -213,8 +213,6 @@
         "golang",
         "auth",
         "security",
-        "churros",
-        "landing",
         "otros",
         "otro",
         "vigilancia",
@@ -224,8 +222,8 @@
         "search_projects"
       ],
       "answer": {
-        "en": "Besides the three featured projects: AI Surveillance Hub (an Arduino trigger, a Raspberry Pi camera running YOLOv8, Telegram alerts and a Flask dashboard), Secure Auth Go (a Go web app with bcrypt, server-side sessions, CSRF tokens and login rate limiting) and Mediterranean Churros (a landing page in five languages with Next.js and next-intl).",
-        "es": "Además de los tres destacados: AI Surveillance Hub (un sensor en Arduino, una cámara en Raspberry Pi con YOLOv8, alertas por Telegram y un panel en Flask), Secure Auth Go (una aplicación web en Go con bcrypt, sesiones en servidor, tokens CSRF y límite de intentos de login) y Mediterranean Churros (una landing en cinco idiomas con Next.js y next-intl)."
+        "en": "Besides the three featured projects: AI Surveillance Hub (an Arduino trigger, a Raspberry Pi camera running YOLOv8, Telegram alerts and a Flask dashboard) and Secure Auth Go (a Go web app with bcrypt, server-side sessions, CSRF tokens and login rate limiting).",
+        "es": "Además de los tres destacados: AI Surveillance Hub (un sensor en Arduino, una cámara en Raspberry Pi con YOLOv8, alertas por Telegram y un panel en Flask) y Secure Auth Go (una aplicación web en Go con bcrypt, sesiones en servidor, tokens CSRF y límite de intentos de login)."
       },
       "actions": [
         {
@@ -472,6 +470,7 @@
     },
     {
       "id": "agent",
+      "weight": 1.3,
       "triggers": [
         "agent",
         "assistant",

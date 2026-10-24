@@ -49,10 +49,9 @@
   "retrieval": {
     "queryLabel": "Incoming query",
     "query": "Who is Ernesto and what has he built?",
-    "title": "Six repositories retrieved",
+    "title": "Five repositories retrieved",
     "expansionLabel": "Query expanded to",
     "expansionNote": "Hand-written expansion for this page.",
-    "scoreNote": "Scores come from this site's own lexical scorer (BM25 with typo tolerance), run in your browser. 1.000 is the best match for the selected terms, not a perfect score. No LLM is involved.",
     "filterLabel": "Re-score with a single term",
     "allTerms": "All terms",
     "score": "score",
@@ -61,7 +60,6 @@
     "stars": "Stars",
     "noMatch": "No match for this term",
     "openRepo": "Open {name} on GitHub",
-    "dataNote": "Repository data fetched from the GitHub API at build time ({date}).",
     "terms": [
       "agents",
       "RAG",
@@ -73,8 +71,7 @@
       "security"
     ],
     "matched": "matched",
-    "viewCard": "Jump to {name}",
-    "lead": "The question becomes search terms, and every term is scored against my six public repositories."
+    "viewCard": "Jump to {name}"
   },
   "rerank": {
     "title": "Reranked: what matters most first",
@@ -117,15 +114,9 @@
       "name": "Secure Auth Go",
       "summary": "Go web app for gym membership records, built for a web security course: bcrypt, server-side sessions, CSRF tokens, CSP headers, role-based access and login rate limiting.",
       "fact": "Standard library net/http, no framework"
-    },
-    "mediterranean-churros": {
-      "name": "Mediterranean Churros",
-      "summary": "Landing page in five languages for a churros brand in Switzerland, built with Next.js, TypeScript, Tailwind CSS and next-intl.",
-      "fact": "Five locales with next-intl"
     }
   },
   "story": {
-    "corpus": "Six public repositories, not ranked yet",
     "results": "Ranked by relevance",
     "movedUp": "Moved up {n}",
     "movedDown": "Moved down {n}",
@@ -432,7 +423,7 @@
     ],
     "retrieval": [
       "Expanding the query into terms",
-      "Retrieving 6 public repositories",
+      "Retrieving 5 public repositories",
       "Scoring relevance"
     ],
     "rerank": [

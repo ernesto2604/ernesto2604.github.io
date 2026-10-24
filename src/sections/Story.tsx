@@ -4,19 +4,20 @@ import Hologram from '../components/Hologram';
 import Thinking, { useGenerate, type GenState } from '../components/Thinking';
 import ScoreBar from '../components/ScoreBar';
 import { useShortcutLabel, openAgent, AGENT_READY } from '../components/Nav';
-import { fetchedAt } from '../data/repos';
 import { useFlip } from '../hooks/useFlip';
 import { useLocale, useMessages, useT } from '../i18n';
-import { projects, repoIndex, shortDate, type Project } from '../lib/projects';
+import { projects, repoIndex, type Project } from '../lib/projects';
 import { rankDeltas, rerank } from '../lib/rerank';
 import { PINNED_QUERY, isPinned, resolveAnchor, scrollToElement } from '../lib/scroll';
 import { search, tokenize } from '../lib/search';
 
-type Phase = 'input' | 'terms' | 'retrieval' | 'rerank';
+type Phase = 'input' | 'retrieval' | 'rerank';
 
-// Scroll progress (0..1) through the pinned story where each phase starts. Anchors sit inside each phase.
-const PHASE_AT: [Phase, number][] = [['input', 0], ['terms', 0.1], ['retrieval', 0.3], ['rerank', 0.62]];
-const ANCHOR_AT = { input: 0, retrieval: 0.4, rerank: 0.76 } as const;
+// Scroll progress (0..1) through the pinned story where each phase starts. The hero hands straight over to the
+// ranked results. Anchors sit 0.14 after each start: a marker counts as reached at 45% of the viewport
+// (useActiveStage), 0.45 / 3.4 ≈ 0.13 of the 340vh scroll, so the progress pill flips with the phase.
+const PHASE_AT: [Phase, number][] = [['input', 0], ['retrieval', 0.1], ['rerank', 0.62]];
+const ANCHOR_AT = { input: 0, retrieval: 0.24, rerank: 0.76 } as const;
 
 // How long each block "thinks" before its content streams in (components/Thinking.tsx).
 const HERO_THINK_MS = 3000;
@@ -72,7 +73,7 @@ export default function Story() {
   const [pinned, setPinned] = useState(false);
   // Pinned captions share one sticky stage, so each one generates when its phase is on; stacked ones when scrolled to.
   const heroGen = useGenerate<HTMLDivElement>(HERO_THINK_MS, !pinned || phase === 'input');
-  const retrievalGen = useGenerate<HTMLDivElement>(THINK_MS, !pinned || phase === 'terms' || phase === 'retrieval');
+  const retrievalGen = useGenerate<HTMLDivElement>(THINK_MS, !pinned || phase === 'retrieval');
   const rerankGen = useGenerate<HTMLDivElement>(THINK_MS, !pinned || phase === 'rerank');
   const rootRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLOListElement>(null);
@@ -90,9 +91,8 @@ export default function Story() {
         setPhase(phaseFor(total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 1));
       } else {
         const line = innerHeight * 0.8;
-        const listTop = listRef.current!.getBoundingClientRect().top;
         const rerankTop = rerankRef.current!.getBoundingClientRect().top;
-        setPhase(rerankTop < line ? 'rerank' : listTop < line ? 'retrieval' : 'terms');
+        setPhase(rerankTop < line ? 'rerank' : 'retrieval');
       }
     };
     const onScroll = () => {
@@ -117,17 +117,17 @@ export default function Story() {
   }, []);
 
   const name = (p: Project) => t(`projects.${p.slug}.name`);
-  const { hits, corpus, retrieval, final, deltas } = useMemo(() => {
+  const { hits, retrieval, final, deltas } = useMemo(() => {
     const hits = new Map(search(repoIndex, term ?? terms.join(' ')).map((h) => [h.id, h]));
     const corpus = [...projects].sort((a, b) => t(`projects.${a.slug}.name`).localeCompare(t(`projects.${b.slug}.name`)));
     const retrieval = [...corpus].sort((a, b) => (hits.get(b.slug)?.score ?? 0) - (hits.get(a.slug)?.score ?? 0));
     const final = rerank(projects);
     const deltas = rankDeltas(retrieval.map((p) => p.slug), final.map((p) => p.slug));
-    return { hits, corpus, retrieval, final, deltas };
+    return { hits, retrieval, final, deltas };
   }, [term, terms, t]);
 
-  const order = phase === 'rerank' ? final : phase === 'retrieval' ? retrieval : corpus;
-  const scored = phase === 'retrieval' || phase === 'rerank';
+  const order = phase === 'rerank' ? final : retrieval;
+  const scored = phase !== 'input';
   useFlip(listRef, order.map((p) => p.slug).join());
 
   // Show the chip labels a hit matched (keeps accents), not the normalized tokens.
@@ -142,7 +142,7 @@ export default function Story() {
       active ? 'bg-accent-fill text-accent-ink' : 'bg-surface-2 text-muted hover:text-text'
     }`;
 
-  const listLabel = phase === 'rerank' ? '' : scored ? t('story.results') : t('story.corpus');
+  const listLabel = phase === 'rerank' ? '' : t('story.results');
   const firstOther = final.find((p) => p.rank === null)?.slug;
 
   return (
@@ -175,7 +175,7 @@ export default function Story() {
           <Hologram className="hero-photo lg:order-2" active={(!pinned || phase === 'input') && heroGen.state === 'done'} />
         </Caption>
         {/* 02 · Retrieval */}
-        <Caption stage="retrieval" active={phase === 'terms' || phase === 'retrieval'} gen={retrievalGen} ms={THINK_MS} className="pt-24 lg:pt-0">
+        <Caption stage="retrieval" active={phase === 'retrieval'} gen={retrievalGen} ms={THINK_MS} className="pt-24 lg:pt-0">
           {/* The query the scores answer: it opens Retrieval instead of the hero. */}
           <p className="text-sm text-muted">{t('retrieval.queryLabel')}</p>
           <p className="story-query mt-1 mb-10 text-xl font-medium tracking-tight">{t('retrieval.query')}</p>
@@ -183,7 +183,6 @@ export default function Story() {
             <Ghost n={2} />
             <h2 className="relative font-display text-3xl leading-[1.05]">{t('retrieval.title')}</h2>
           </div>
-          <p className="relative mt-4 max-w-[46ch] text-muted">{t('retrieval.lead')}</p>
           <p className="relative mt-7 text-sm text-muted">{t('retrieval.expansionLabel')}</p>
           <div role="group" aria-label={t('retrieval.filterLabel')} className="story-chips relative mt-3 flex flex-wrap gap-2">
             <button type="button" aria-pressed={term === null} onClick={() => setTerm(null)} className={chip(term === null)}>
@@ -195,9 +194,6 @@ export default function Story() {
               </button>
             ))}
           </div>
-          <p className="relative mt-5 max-w-[56ch] text-sm leading-relaxed text-muted">
-            {t('retrieval.scoreNote')} {fetchedAt && t('retrieval.dataNote', { date: shortDate(fetchedAt) })}
-          </p>
           <p className="sr-only" aria-live="polite">
             {term ? `${term}: ${retrieval.filter((p) => hits.has(p.slug)).map(name).join(', ')}` : ''}
           </p>

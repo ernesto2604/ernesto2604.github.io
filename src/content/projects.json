@@ -26,6 +26,7 @@
         "telemetry",
         "diagnostics",
         "retrieval",
+        "rag",
         "hackathon",
         "aws",
         "fastapi",
@@ -159,31 +160,6 @@
         "backend",
         "seguridad",
         "autenticacion"
-      ],
-      "links": {
-        "video": ""
-      }
-    },
-    {
-      "slug": "mediterranean-churros",
-      "repo": "mediterraneanChurros",
-      "rank": null,
-      "stack": [
-        "Next.js",
-        "TypeScript",
-        "Tailwind CSS",
-        "next-intl",
-        "Sanity"
-      ],
-      "tags": [
-        "frontend",
-        "nextjs",
-        "typescript",
-        "i18n",
-        "landing page",
-        "cms",
-        "web",
-        "web"
       ],
       "links": {
         "video": ""

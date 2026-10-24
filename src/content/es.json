@@ -49,10 +49,9 @@
   "retrieval": {
     "queryLabel": "Consulta entrante",
     "query": "¿Quién es Ernesto y qué ha construido?",
-    "title": "Seis repositorios recuperados",
+    "title": "Cinco repositorios recuperados",
     "expansionLabel": "Consulta ampliada a",
     "expansionNote": "Ampliación escrita a mano para esta página.",
-    "scoreNote": "Las puntuaciones las calcula el buscador léxico de esta web (BM25 con tolerancia a erratas), en tu navegador. 1,000 es la mejor coincidencia con los términos elegidos, no una nota perfecta. Aquí no interviene ningún LLM.",
     "filterLabel": "Volver a puntuar con un solo término",
     "allTerms": "Todos los términos",
     "score": "puntuación",
@@ -61,7 +60,6 @@
     "stars": "Estrellas",
     "noMatch": "Ninguna coincidencia con este término",
     "openRepo": "Abrir {name} en GitHub",
-    "dataNote": "Datos de los repositorios obtenidos de la API de GitHub al compilar ({date}).",
     "terms": [
       "agentes",
       "RAG",
@@ -73,8 +71,7 @@
       "seguridad"
     ],
     "matched": "coinciden",
-    "viewCard": "Ir a {name}",
-    "lead": "La pregunta se convierte en términos de búsqueda y cada término se puntúa contra mis seis repositorios públicos."
+    "viewCard": "Ir a {name}"
   },
   "rerank": {
     "title": "Reordenado: primero lo que más importa",
@@ -117,15 +114,9 @@
       "name": "Secure Auth Go",
       "summary": "Aplicación web en Go para gestionar socios de un gimnasio, hecha para una asignatura de seguridad web: bcrypt, sesiones en servidor, tokens CSRF, cabeceras CSP, control de acceso por roles y límite de intentos de login.",
       "fact": "net/http de la librería estándar, sin framework"
-    },
-    "mediterranean-churros": {
-      "name": "Mediterranean Churros",
-      "summary": "Landing en cinco idiomas para una marca de churros en Suiza, hecha con Next.js, TypeScript, Tailwind CSS y next-intl.",
-      "fact": "Cinco idiomas con next-intl"
     }
   },
   "story": {
-    "corpus": "Seis repositorios públicos, aún sin ordenar",
     "results": "Ordenados por relevancia",
     "movedUp": "Sube {n}",
     "movedDown": "Baja {n}",
@@ -432,7 +423,7 @@
     ],
     "retrieval": [
       "Expandiendo la consulta en términos",
-      "Recuperando 6 repositorios públicos",
+      "Recuperando 5 repositorios públicos",
       "Puntuando la relevancia"
     ],
     "rerank": [
