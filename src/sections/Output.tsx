@@ -1,17 +1,70 @@
-import { useEffect, useState } from 'react';
-import { ArrowUpRight, Check, Copy, Download, Mail, Phone } from 'lucide-react';
+import { useState, type FormEvent } from 'react';
+import { ArrowUpRight, Check, Copy, Mail, Send } from 'lucide-react';
 import Portrait from '../components/Portrait';
 import Thinking, { useGenerate } from '../components/Thinking';
 import profile from '../content/profile.json';
-import { useLocale, useMessages, useT } from '../i18n';
+import { useMessages, useT } from '../i18n';
+
+// Messages go through FormSubmit (free, no account): it emails them to the address in the URL with a fixed
+// subject. The first one triggers a one-time activation email that has to be confirmed. Without JS the form
+// still posts to the same service and its thank-you page.
+const FORM_URL = `https://formsubmit.co/${profile.email}`;
+const SUBJECT = 'Mensaje del Portfolio';
+const MAX = 2000;
+
+type SendState = 'idle' | 'sending' | 'sent' | 'error';
+
+function MessageForm() {
+  const t = useT();
+  const [state, setState] = useState<SendState>('idle');
+
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    if (data.get('_honey')) return; // bots fill the hidden field
+    setState('sending');
+    try {
+      const res = await fetch(FORM_URL.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(Object.fromEntries(data)),
+      });
+      const body = (await res.json().catch(() => ({}))) as { success?: string | boolean };
+      if (!res.ok || String(body.success) !== 'true') throw new Error('send failed');
+      form.reset();
+      setState('sent');
+    } catch {
+      setState('error');
+    }
+  };
+
+  const field = 'w-full rounded-card border border-line bg-surface px-4 text-base transition-colors duration-200 placeholder:text-muted hover:border-line-strong focus:border-line-strong';
+  return (
+    <form action={FORM_URL} method="POST" onSubmit={submit} className="mt-8 grid gap-3">
+      <input type="hidden" name="_subject" value={SUBJECT} />
+      <input type="hidden" name="_template" value="table" />
+      <input type="text" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+      <label htmlFor="msg" className="text-sm text-muted">{t('contact.formTitle')}</label>
+      <textarea id="msg" name="message" required maxLength={MAX} rows={4} placeholder={t('contact.messagePlaceholder')} className={`${field} resize-y py-3 leading-relaxed`} />
+      <label htmlFor="msg-email" className="sr-only">{t('contact.replyTo')}</label>
+      <input id="msg-email" name="email" type="email" autoComplete="email" placeholder={t('contact.replyTo')} className={`${field} h-12`} />
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <button type="submit" disabled={state === 'sending'} className="inline-flex h-12 items-center gap-2 rounded-full bg-text px-6 font-medium text-bg-0 transition-transform duration-200 hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-60">
+          <Send className="size-4" aria-hidden="true" strokeWidth={1.75} />
+          {state === 'sending' ? t('contact.sending') : t('contact.send')}
+        </button>
+        <p role="status" className={`text-sm ${state === 'error' ? 'text-accent' : 'text-ok'}`}>
+          {state === 'sent' ? t('contact.sent') : state === 'error' ? t('contact.sendError', { email: profile.email }) : ''}
+        </p>
+      </div>
+    </form>
+  );
+}
 
 function Contact() {
   const t = useT();
-  const locale = useLocale();
   const [copied, setCopied] = useState(false);
-  // The phone number is joined on the client so it is not sitting in the HTML for scrapers.
-  const [phone, setPhone] = useState<string | null>(null);
-  useEffect(() => setPhone(profile.phone.join(' ')), []);
 
   const copy = async () => {
     try {
@@ -22,7 +75,6 @@ function Contact() {
       /* clipboard blocked: the mailto link still works */
     }
   };
-  const cv = profile.cv[locale as 'en' | 'es'];
   const row = 'flex min-h-14 items-center justify-between gap-4 rounded-card bg-surface px-5 transition-colors duration-200 hover:bg-surface-2';
 
   return (
@@ -40,6 +92,7 @@ function Contact() {
         </button>
         <span className="sr-only" aria-live="polite">{copied ? t('contact.copied') : ''}</span>
       </div>
+      <MessageForm />
       <ul className="mt-8 grid gap-2">
         <li>
           <a href={profile.linkedin} className={row}>
@@ -53,25 +106,6 @@ function Contact() {
             <ArrowUpRight className="size-4 text-muted" aria-hidden="true" strokeWidth={1.75} />
           </a>
         </li>
-        {phone && (
-          <li>
-            <a href={`tel:${phone.replace(/\s/g, '')}`} className={row}>
-              <span>{t('contact.phone')}</span>
-              <span className="flex items-center gap-2 text-muted tabular-nums">
-                {phone}
-                <Phone className="size-4" aria-hidden="true" strokeWidth={1.75} />
-              </span>
-            </a>
-          </li>
-        )}
-        {cv && (
-          <li>
-            <a href={cv} download className={row}>
-              <span>{t('contact.cv')}</span>
-              <Download className="size-4 text-muted" aria-hidden="true" strokeWidth={1.75} />
-            </a>
-          </li>
-        )}
       </ul>
     </div>
   );

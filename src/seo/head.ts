@@ -27,8 +27,9 @@ export function buildHead(locale: Locale): string {
     knowsLanguage: ['es', 'en'],
   };
 
+  // The tab shows just the name; shared links and search snippets keep the role (og/twitter title, description).
   return [
-    `<title>${title}</title>`,
+    `<title>${esc(profile.name)}</title>`,
     `<meta name="description" content="${description}">`,
     `<link rel="canonical" href="${url}">`,
     `<link rel="alternate" hreflang="en" href="${urlFor('en')}">`,

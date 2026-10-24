@@ -3,17 +3,21 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { welcomeMarkup } from './src/lib/welcome';
+import { buildHead } from './src/seo/head';
 
 export default defineConfig({
   base: '/',
   plugins: [
     react(),
     tailwindcss(),
-    // Dev only: the build writes the welcome overlay in scripts/prerender.mjs.
+    // Dev only: the build writes the head and the welcome overlay in scripts/prerender.mjs.
     {
-      name: 'welcome-overlay-dev',
+      name: 'head-and-welcome-dev',
       apply: 'serve',
-      transformIndexHtml: (html, ctx) => html.replace('<!--welcome-->', welcomeMarkup(ctx.originalUrl?.startsWith('/es') ? 'es' : 'en')),
+      transformIndexHtml: (html, ctx) => {
+        const locale = ctx.originalUrl?.startsWith('/es') ? 'es' : 'en';
+        return html.replace('<!--head-->', buildHead(locale)).replace('<!--welcome-->', welcomeMarkup(locale));
+      },
     },
   ],
   // The three.js hologram chunk (~640 kB, lazy-loaded) is expected to exceed the default 500 kB warning.

@@ -29,7 +29,7 @@ test.describe('agent', () => {
     await page.goto('/es/');
     await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     await page.keyboard.press('Control+k');
-    await expect(page.getByRole('textbox')).toBeFocused();
+    await expect(page.getByRole('dialog').getByRole('textbox')).toBeFocused();
     const dialog = page.getByRole('dialog', { name: 'Pregunta sobre Ernesto' });
     await expect(dialog).toBeVisible();
     await page.keyboard.type('qué tecnologías usa');
@@ -43,7 +43,7 @@ test.describe('agent', () => {
     await page.goto('/');
     await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     await page.keyboard.press('Control+k');
-    await expect(page.getByRole('textbox')).toBeFocused();
+    await expect(page.getByRole('dialog').getByRole('textbox')).toBeFocused();
     await page.keyboard.type('what is the weather in paris');
     await page.keyboard.press('Enter');
     const dialog = page.getByRole('dialog');
@@ -57,7 +57,7 @@ test.describe('agent', () => {
     await page.goto('/');
     await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     await page.keyboard.press('Control+k');
-    await expect(page.getByRole('textbox')).toBeFocused();
+    await expect(page.getByRole('dialog').getByRole('textbox')).toBeFocused();
     await page.keyboard.type('email');
     await page.keyboard.press('Enter');
     await expect(page.getByRole('dialog').getByText(/Email is fastest/).first()).toBeVisible({ timeout: 1000 });
@@ -69,7 +69,7 @@ test.describe('agent', () => {
     await page.goto('/');
     await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     await page.keyboard.press('Control+k');
-    await expect(page.getByRole('textbox')).toBeFocused();
+    await expect(page.getByRole('dialog').getByRole('textbox')).toBeFocused();
     await page.keyboard.type('contact');
     await page.keyboard.press('Enter');
     await page.getByRole('button', { name: 'Go to contact' }).click({ timeout: 15000 });
@@ -82,7 +82,7 @@ test.describe('agent', () => {
     await page.goto('/');
     await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     await page.keyboard.press('Control+k');
-    await expect(page.getByRole('textbox')).toBeFocused();
+    await expect(page.getByRole('dialog').getByRole('textbox')).toBeFocused();
     await page.keyboard.type('contact');
     await page.keyboard.press('Enter');
     const go = page.getByRole('button', { name: 'Go to contact' });

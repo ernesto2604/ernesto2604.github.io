@@ -463,8 +463,13 @@
     "copied": "Email copiado",
     "linkedin": "LinkedIn",
     "github": "GitHub",
-    "phone": "Teléfono",
-    "cv": "Descargar CV (PDF)"
+    "formTitle": "O déjame un mensaje aquí",
+    "messagePlaceholder": "¿Qué quieres contarme?",
+    "replyTo": "Tu email, para poder responderte (opcional)",
+    "send": "Enviar mensaje",
+    "sending": "Enviando…",
+    "sent": "Enviado. Gracias, te responderé pronto.",
+    "sendError": "No se pudo enviar. Escríbeme a {email}."
   },
   "footer": {
     "status": "status 200 · 5 etapas · el agente hace 0 peticiones de red",

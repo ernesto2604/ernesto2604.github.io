@@ -48,7 +48,7 @@ test('/es/ with the agent panel open has no critical or serious axe violations',
   await page.goto('/es/');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   await page.keyboard.press('Control+k');
-  await expect(page.getByRole('textbox')).toBeFocused();
+  await expect(page.getByRole('dialog').getByRole('textbox')).toBeFocused();
   await page.keyboard.type('ring');
   await page.keyboard.press('Enter');
   await expect(page.getByRole('dialog').getByText(/Ring TelemetryOps/).first()).toBeVisible({ timeout: 15000 });
@@ -59,7 +59,7 @@ test('the open agent panel has no critical or serious axe violations', async ({ 
   await page.goto('/');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   await page.keyboard.press('Control+k');
-  await expect(page.getByRole('textbox')).toBeFocused();
+  await expect(page.getByRole('dialog').getByRole('textbox')).toBeFocused();
   await page.keyboard.type('ring');
   await page.keyboard.press('Enter');
   await expect(page.getByRole('dialog').getByText(/Ring TelemetryOps diagnoses/).first()).toBeVisible({ timeout: 15000 });

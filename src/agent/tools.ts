@@ -63,7 +63,7 @@ export function planTools(match: Match, query: string): ToolCall[] {
     } else if (tool === 'get_profile') {
       calls.push({ name: 'get_profile', args: {}, result: `${profile.name} · ${profile.location.city}, ${profile.location.country}`, ms: duration(2) });
     } else if (tool === 'get_contact') {
-      const channels = ['email', 'linkedin', 'github', 'phone', ...(profile.cv.en || profile.cv.es ? ['cv'] : [])];
+      const channels = ['email', 'message form', 'linkedin', 'github'];
       calls.push({ name: 'get_contact', args: {}, result: channels.join(', '), ms: duration(channels.length) });
     }
   }

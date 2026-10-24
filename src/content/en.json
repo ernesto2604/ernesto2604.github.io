@@ -463,8 +463,13 @@
     "copied": "Email copied",
     "linkedin": "LinkedIn",
     "github": "GitHub",
-    "phone": "Phone",
-    "cv": "Download CV (PDF)"
+    "formTitle": "Or leave me a message here",
+    "messagePlaceholder": "What would you like to tell me?",
+    "replyTo": "Your email, so I can reply (optional)",
+    "send": "Send message",
+    "sending": "Sending…",
+    "sent": "Sent. Thanks, I will get back to you soon.",
+    "sendError": "It could not be sent. Write to me at {email}."
   },
   "footer": {
     "status": "status 200 · 5 stages · the agent sends 0 network requests",
