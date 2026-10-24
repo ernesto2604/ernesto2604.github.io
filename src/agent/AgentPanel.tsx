@@ -122,7 +122,8 @@ export default function AgentPanel({ dialogRef }: { dialogRef: React.RefObject<H
         </button>
       </header>
 
-      <div ref={logRef} className="min-h-0 flex-1 overflow-y-auto px-5" aria-busy={busy}>
+      {/* Focusable so keyboard users can scroll a long answer (axe: scrollable-region-focusable). */}
+      <div ref={logRef} tabIndex={0} role="region" aria-label={t('agent.title')} className="min-h-0 flex-1 overflow-y-auto px-5" aria-busy={busy}>
         {turns.length === 0 && (
           <div className="pb-4">
             <p className="text-sm text-muted">{t('agent.suggestions')}</p>
