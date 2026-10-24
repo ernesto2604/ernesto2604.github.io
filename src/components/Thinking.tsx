@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useMessages, useT } from '../i18n';
 
 export type GenState = 'idle' | 'thinking' | 'done';
-type Block = 'hero' | 'retrieval' | 'rerank' | 'generate' | 'output';
+type Block = 'hero' | 'retrieval' | 'generate' | 'stack' | 'output';
 
 // Revealed in order once a block is done: its direct children, or the children of [data-stream] wrappers.
 const STREAM = ':scope > :not(.thinking):not([data-stream]), :scope [data-stream] > :not([data-stream])';

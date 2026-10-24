@@ -7,16 +7,16 @@ test('deep link to a stage lands on that section after hydration', async ({ page
 });
 
 test('language toggle keeps the hash and stores the choice', async ({ page }) => {
-  await page.goto('/#rerank');
+  await page.goto('/#retrieval');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   await page.getByRole('button', { name: 'Open menu' }).click();
   await page.getByRole('link', { name: /Leer en español/ }).click();
-  await expect(page).toHaveURL(/\/es\/#rerank$/);
+  await expect(page).toHaveURL(/\/es\/#retrieval$/);
   expect(await page.evaluate(() => localStorage.getItem('locale'))).toBe('es');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   await page.getByRole('button', { name: 'Abrir menú' }).click();
   await page.getByRole('link', { name: /Read in English/ }).click();
-  await expect(page).toHaveURL(/localhost:\d+\/#rerank$/);
+  await expect(page).toHaveURL(/localhost:\d+\/#retrieval$/);
 });
 
 test('first Tab press reaches the skip link', async ({ page, browserName }) => {
@@ -28,14 +28,14 @@ test('first Tab press reaches the skip link', async ({ page, browserName }) => {
 
 
 test('progress pill shows the stage in view and its list jumps to a section', async ({ page }) => {
-  await page.goto('/#rerank');
+  await page.goto('/#generate');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   const pill = page.getByRole('navigation', { name: 'Progress' });
   const button = pill.getByRole('button');
-  await expect(button).toContainText('Rerank');
+  await expect(button).toContainText('Generate');
   await button.click();
   await expect(button).toHaveAttribute('aria-expanded', 'true');
-  await expect(pill.locator('[aria-current="step"]')).toHaveAttribute('href', '#rerank');
+  await expect(pill.locator('[aria-current="step"]')).toHaveAttribute('href', '#generate');
   await pill.getByRole('link', { name: /Output/ }).click();
   await expect(pill.getByRole('list')).toBeHidden();
   await expect(button).toContainText('Output', { timeout: 5000 });

@@ -31,7 +31,6 @@
   "stages": {
     "input": "Input",
     "retrieval": "Retrieval",
-    "rerank": "Rerank",
     "generate": "Generate",
     "output": "Output"
   },
@@ -74,14 +73,8 @@
     "viewCard": "Jump to {name}"
   },
   "rerank": {
-    "title": "Reranked: what matters most first",
-    "rule": "Rule: my three featured projects first, then the rest by most recent update.",
     "featured": "Featured",
-    "alsoBuilt": "Also built",
-    "readCase": "Read the case study",
-    "keyFact": "Key fact",
-    "stack": "Stack",
-    "lead": "Relevance is not the whole story, so a second pass applies a rule I chose and shows every move it makes."
+    "alsoBuilt": "Also built"
   },
   "notFound": {
     "title": "Page not found",
@@ -118,9 +111,6 @@
   },
   "story": {
     "results": "Ranked by relevance",
-    "movedUp": "Moved up {n}",
-    "movedDown": "Moved down {n}",
-    "same": "Same position",
     "seeCases": "Read the case studies"
   },
   "generate": {
@@ -133,6 +123,159 @@
     "demo": "Watch the demo",
     "viewList": "View as list",
     "viewDiagram": "View diagram"
+  },
+  "stack": {
+    "label": "My stack",
+    "groups": [
+      {
+        "group": "AI and retrieval",
+        "items": [
+          {
+            "name": "Hybrid RAG (HNSW, GIN, RRF)",
+            "icon": "rag"
+          },
+          {
+            "name": "Agentic workflows",
+            "icon": "agents"
+          },
+          {
+            "name": "Claude on Amazon Bedrock",
+            "icon": "claude"
+          },
+          {
+            "name": "OpenAI API",
+            "icon": "openai"
+          },
+          {
+            "name": "Google Gemini",
+            "icon": "googlegemini"
+          },
+          {
+            "name": "Structured prompting",
+            "icon": "prompting"
+          },
+          {
+            "name": "OpenCV",
+            "icon": "opencv"
+          },
+          {
+            "name": "YOLOv8",
+            "icon": "ultralytics"
+          }
+        ]
+      },
+      {
+        "group": "Backend and data",
+        "items": [
+          {
+            "name": "Python",
+            "icon": "python"
+          },
+          {
+            "name": "FastAPI",
+            "icon": "fastapi"
+          },
+          {
+            "name": "Flask",
+            "icon": "flask"
+          },
+          {
+            "name": "Node.js",
+            "icon": "nodedotjs"
+          },
+          {
+            "name": "Express",
+            "icon": "express"
+          },
+          {
+            "name": "Go",
+            "icon": "go"
+          },
+          {
+            "name": "Java",
+            "icon": "java"
+          },
+          {
+            "name": "Spring Boot",
+            "icon": "springboot"
+          },
+          {
+            "name": "PostgreSQL + pgvector",
+            "icon": "postgresql"
+          },
+          {
+            "name": "Snowflake",
+            "icon": "snowflake"
+          },
+          {
+            "name": "SQLite",
+            "icon": "sqlite"
+          },
+          {
+            "name": "MySQL",
+            "icon": "mysql"
+          }
+        ]
+      },
+      {
+        "group": "Cloud and deployment",
+        "items": [
+          {
+            "name": "Docker",
+            "icon": "docker"
+          },
+          {
+            "name": "AWS",
+            "icon": "aws"
+          },
+          {
+            "name": "Microsoft Azure",
+            "icon": "azure"
+          },
+          {
+            "name": "CI/CD",
+            "icon": "cicd"
+          },
+          {
+            "name": "Git",
+            "icon": "git"
+          },
+          {
+            "name": "Linux",
+            "icon": "linux"
+          }
+        ]
+      },
+      {
+        "group": "Frontend and mobile",
+        "items": [
+          {
+            "name": "TypeScript",
+            "icon": "typescript"
+          },
+          {
+            "name": "React",
+            "icon": "react"
+          },
+          {
+            "name": "Next.js",
+            "icon": "nextdotjs"
+          },
+          {
+            "name": "Tailwind CSS",
+            "icon": "tailwindcss"
+          },
+          {
+            "name": "Flutter",
+            "icon": "flutter"
+          },
+          {
+            "name": "Dart",
+            "icon": "dart"
+          }
+        ]
+      }
+    ]
   },
   "cases": {
     "ring-telemetryops": {
@@ -245,58 +388,6 @@
       "I graduated from York St John University in the UK with a First Class BSc (Hons), after a Higher Technician diploma in multiplatform app development in Spain. During my internship at CEU's IT Innovation department I worked on an AI tutor that connected institutional data in Snowflake with OpenAI models on Azure.",
       "I'm based in Madrid, available now and open to relocation or hybrid work. I'm looking for AI Engineer, Forward Deployed Engineer and related roles."
     ],
-    "skillsTitle": "What I work with",
-    "skills": [
-      {
-        "group": "AI and retrieval",
-        "items": [
-          "Hybrid RAG (HNSW, GIN, RRF)",
-          "Agentic workflows",
-          "Amazon Bedrock (Claude)",
-          "Google Gemini",
-          "OpenAI API",
-          "Structured prompting",
-          "OpenCV",
-          "YOLOv8"
-        ]
-      },
-      {
-        "group": "Backend and data",
-        "items": [
-          "Python",
-          "FastAPI",
-          "Flask",
-          "Node.js / Express",
-          "Go",
-          "Java / Spring Boot",
-          "PostgreSQL + pgvector",
-          "Snowflake",
-          "SQLite",
-          "MySQL"
-        ]
-      },
-      {
-        "group": "Cloud and deployment",
-        "items": [
-          "Docker",
-          "AWS",
-          "Microsoft Azure",
-          "CI/CD",
-          "Git",
-          "Linux"
-        ]
-      },
-      {
-        "group": "Frontend and mobile",
-        "items": [
-          "TypeScript",
-          "React",
-          "Next.js",
-          "Tailwind CSS",
-          "Flutter / Dart"
-        ]
-      }
-    ],
     "experienceTitle": "Experience",
     "experience": [
       {
@@ -345,10 +436,6 @@
       "Retrieving 5 public repositories",
       "Scoring relevance"
     ],
-    "rerank": [
-      "Reranking by evidence",
-      "Checking demos, tests and docs"
-    ],
     "generate": [
       "Opening the case studies",
       "Drawing the architecture",
@@ -357,6 +444,10 @@
     "output": [
       "Summarizing the profile",
       "Preparing contact details"
+    ],
+    "stack": [
+      "Listing the tools I use",
+      "Grouping them by layer"
     ]
   },
   "progress": {
@@ -397,7 +488,7 @@
     "how": "This agent is scripted and runs entirely in your browser. It scores your question against a small bilingual knowledge base with the same BM25 scorer used on this page, shows the real lookups it makes in local data, then streams a pre-written answer. No LLM, no network requests, nothing stored.",
     "source": "See the code",
     "targets": {
-      "rerank": "See the projects",
+      "retrieval": "See the projects",
       "ring-telemetryops": "Open the Ring case study",
       "hybrid-rag-api": "Open the RAG case study",
       "wakemap": "Open the WakeMap case study",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { rankDeltas, rerank } from '../../src/lib/rerank';
+import { rerank } from '../../src/lib/rerank';
 
 const p = (slug: string, rank: number | null, updatedAt: string) => ({ slug, rank, data: { updatedAt } });
 
@@ -17,14 +17,3 @@ describe('rerank', () => {
   });
 });
 
-describe('rankDeltas', () => {
-  it('reports how far each item moved from its retrieval position (positive = up)', () => {
-    const retrieval = ['auth', 'ring', 'hub', 'rag', 'wake'];
-    const final = ['ring', 'rag', 'wake', 'hub', 'auth'];
-    expect(rankDeltas(retrieval, final)).toEqual({ ring: 1, rag: 2, wake: 2, hub: -1, auth: -4 });
-  });
-
-  it('is zero for an unchanged order', () => {
-    expect(rankDeltas(['a', 'b'], ['a', 'b'])).toEqual({ a: 0, b: 0 });
-  });
-});

@@ -31,7 +31,6 @@
   "stages": {
     "input": "Entrada",
     "retrieval": "Recuperación",
-    "rerank": "Reordenación",
     "generate": "Generación",
     "output": "Salida"
   },
@@ -74,14 +73,8 @@
     "viewCard": "Ir a {name}"
   },
   "rerank": {
-    "title": "Reordenado: primero lo que más importa",
-    "rule": "Regla: primero mis tres proyectos destacados y después el resto, del más reciente al más antiguo.",
     "featured": "Destacados",
-    "alsoBuilt": "Otros proyectos",
-    "readCase": "Leer el caso de estudio",
-    "keyFact": "Dato clave",
-    "stack": "Tecnologías",
-    "lead": "La relevancia no lo es todo: una segunda pasada aplica una regla que he elegido yo y muestra cada cambio de posición."
+    "alsoBuilt": "Otros proyectos"
   },
   "notFound": {
     "title": "Página no encontrada",
@@ -118,9 +111,6 @@
   },
   "story": {
     "results": "Ordenados por relevancia",
-    "movedUp": "Sube {n}",
-    "movedDown": "Baja {n}",
-    "same": "Misma posición",
     "seeCases": "Leer los casos de estudio"
   },
   "generate": {
@@ -133,6 +123,159 @@
     "demo": "Ver la demo",
     "viewList": "Ver como lista",
     "viewDiagram": "Ver diagrama"
+  },
+  "stack": {
+    "label": "Mi stack",
+    "groups": [
+      {
+        "group": "IA y recuperación",
+        "items": [
+          {
+            "name": "RAG híbrido (HNSW, GIN, RRF)",
+            "icon": "rag"
+          },
+          {
+            "name": "Flujos agénticos",
+            "icon": "agents"
+          },
+          {
+            "name": "Claude en Amazon Bedrock",
+            "icon": "claude"
+          },
+          {
+            "name": "API de OpenAI",
+            "icon": "openai"
+          },
+          {
+            "name": "Google Gemini",
+            "icon": "googlegemini"
+          },
+          {
+            "name": "Prompts estructurados",
+            "icon": "prompting"
+          },
+          {
+            "name": "OpenCV",
+            "icon": "opencv"
+          },
+          {
+            "name": "YOLOv8",
+            "icon": "ultralytics"
+          }
+        ]
+      },
+      {
+        "group": "Backend y datos",
+        "items": [
+          {
+            "name": "Python",
+            "icon": "python"
+          },
+          {
+            "name": "FastAPI",
+            "icon": "fastapi"
+          },
+          {
+            "name": "Flask",
+            "icon": "flask"
+          },
+          {
+            "name": "Node.js",
+            "icon": "nodedotjs"
+          },
+          {
+            "name": "Express",
+            "icon": "express"
+          },
+          {
+            "name": "Go",
+            "icon": "go"
+          },
+          {
+            "name": "Java",
+            "icon": "java"
+          },
+          {
+            "name": "Spring Boot",
+            "icon": "springboot"
+          },
+          {
+            "name": "PostgreSQL + pgvector",
+            "icon": "postgresql"
+          },
+          {
+            "name": "Snowflake",
+            "icon": "snowflake"
+          },
+          {
+            "name": "SQLite",
+            "icon": "sqlite"
+          },
+          {
+            "name": "MySQL",
+            "icon": "mysql"
+          }
+        ]
+      },
+      {
+        "group": "Cloud y despliegue",
+        "items": [
+          {
+            "name": "Docker",
+            "icon": "docker"
+          },
+          {
+            "name": "AWS",
+            "icon": "aws"
+          },
+          {
+            "name": "Microsoft Azure",
+            "icon": "azure"
+          },
+          {
+            "name": "CI/CD",
+            "icon": "cicd"
+          },
+          {
+            "name": "Git",
+            "icon": "git"
+          },
+          {
+            "name": "Linux",
+            "icon": "linux"
+          }
+        ]
+      },
+      {
+        "group": "Frontend y móvil",
+        "items": [
+          {
+            "name": "TypeScript",
+            "icon": "typescript"
+          },
+          {
+            "name": "React",
+            "icon": "react"
+          },
+          {
+            "name": "Next.js",
+            "icon": "nextdotjs"
+          },
+          {
+            "name": "Tailwind CSS",
+            "icon": "tailwindcss"
+          },
+          {
+            "name": "Flutter",
+            "icon": "flutter"
+          },
+          {
+            "name": "Dart",
+            "icon": "dart"
+          }
+        ]
+      }
+    ]
   },
   "cases": {
     "ring-telemetryops": {
@@ -245,58 +388,6 @@
       "Me gradué en York St John University (Reino Unido) con un BSc (Hons) con First Class Honours, la máxima calificación en el Reino Unido, después de un ciclo de Técnico Superior en Desarrollo de Aplicaciones Multiplataforma en España. En mis prácticas en el departamento de Innovación IT del CEU trabajé en un tutor con IA que conectaba datos institucionales en Snowflake con modelos de OpenAI en Azure.",
       "Vivo en Madrid, tengo incorporación inmediata y estoy abierto a cambiar de ciudad o a trabajar en modelo híbrido. Busco puestos de AI Engineer, Forward Deployed Engineer y similares."
     ],
-    "skillsTitle": "Con qué trabajo",
-    "skills": [
-      {
-        "group": "IA y recuperación",
-        "items": [
-          "RAG híbrido (HNSW, GIN, RRF)",
-          "Flujos agénticos",
-          "Amazon Bedrock (Claude)",
-          "Google Gemini",
-          "API de OpenAI",
-          "Prompts estructurados",
-          "OpenCV",
-          "YOLOv8"
-        ]
-      },
-      {
-        "group": "Backend y datos",
-        "items": [
-          "Python",
-          "FastAPI",
-          "Flask",
-          "Node.js / Express",
-          "Go",
-          "Java / Spring Boot",
-          "PostgreSQL + pgvector",
-          "Snowflake",
-          "SQLite",
-          "MySQL"
-        ]
-      },
-      {
-        "group": "Cloud y despliegue",
-        "items": [
-          "Docker",
-          "AWS",
-          "Microsoft Azure",
-          "CI/CD",
-          "Git",
-          "Linux"
-        ]
-      },
-      {
-        "group": "Frontend y móvil",
-        "items": [
-          "TypeScript",
-          "React",
-          "Next.js",
-          "Tailwind CSS",
-          "Flutter / Dart"
-        ]
-      }
-    ],
     "experienceTitle": "Experiencia",
     "experience": [
       {
@@ -345,10 +436,6 @@
       "Recuperando 5 repositorios públicos",
       "Puntuando la relevancia"
     ],
-    "rerank": [
-      "Reordenando por evidencias",
-      "Comprobando demos, tests y documentación"
-    ],
     "generate": [
       "Abriendo los casos de estudio",
       "Dibujando la arquitectura",
@@ -357,6 +444,10 @@
     "output": [
       "Resumiendo el perfil",
       "Preparando el contacto"
+    ],
+    "stack": [
+      "Listando las herramientas que uso",
+      "Agrupándolas por capa"
     ]
   },
   "progress": {
@@ -397,7 +488,7 @@
     "how": "Este agente funciona con respuestas guionizadas y se ejecuta entero en tu navegador. Compara tu pregunta con una pequeña base de conocimiento bilingüe usando el mismo buscador BM25 de esta página, enseña las consultas reales que hace a datos locales y después escribe una respuesta preparada de antemano. Sin LLM, sin peticiones de red y sin guardar nada.",
     "source": "Ver el código",
     "targets": {
-      "rerank": "Ver los proyectos",
+      "retrieval": "Ver los proyectos",
       "ring-telemetryops": "Abrir el caso de Ring",
       "hybrid-rag-api": "Abrir el caso de RAG",
       "wakemap": "Abrir el caso de WakeMap",

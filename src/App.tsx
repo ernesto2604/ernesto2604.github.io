@@ -7,6 +7,7 @@ import AgentHost from './agent/AgentHost';
 import Footer from './components/Footer';
 import Generate from './sections/Generate';
 import Output from './sections/Output';
+import Stack from './sections/Stack';
 import Story from './sections/Story';
 
 function Page() {
@@ -20,6 +21,7 @@ function Page() {
       <main id="main" tabIndex={-1}>
         <Story />
         <Generate />
+        <Stack />
         <Output />
       </main>
       <Footer />

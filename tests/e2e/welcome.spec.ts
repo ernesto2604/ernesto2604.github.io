@@ -33,7 +33,7 @@ test.describe('welcome loader', () => {
 
   test('a reload plays it again and opens on the hero, not the previous hash', async ({ page }) => {
     await page.addInitScript(() => sessionStorage.setItem('welcomed', '1'));
-    await page.goto('/#rerank');
+    await page.goto('/#retrieval');
     await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(0);
     await page.reload();

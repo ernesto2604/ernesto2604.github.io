@@ -12,7 +12,7 @@
   var reload = false;
   try {
     // A reload (F5) starts over: back to the hero with the loader, instead of the last hash and scroll position.
-    // A new navigation to a deep link (#rerank shared elsewhere) still lands on its section.
+    // A new navigation to a deep link (#retrieval shared elsewhere) still lands on its section.
     var nav = performance.getEntriesByType('navigation')[0];
     reload = !!nav && nav.type === 'reload';
     if (reload) {

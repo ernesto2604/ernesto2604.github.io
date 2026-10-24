@@ -295,7 +295,7 @@ html:not(.js) .no-js-hide { display: none !important; }
 /* Unlayered: these mode overrides must beat Tailwind utilities on the same elements. */
 /* Pinned story (spec §12b). html[data-pinned] is set before first paint by boot.js. */
 .story-marker { display: none; }
-html[data-pinned] .story { height: 440vh; }
+html[data-pinned] .story { height: 200vh; }
 html[data-pinned] .story-marker {
   display: block;
   position: absolute;
@@ -326,7 +326,7 @@ html[data-pinned] .story-cap:not(.is-active) {
   pointer-events: none;
   transform: translateY(18px);
 }
-/* Before hydration the server state is "rerank"; on a pinned page the hero must still paint first. */
+/* Before hydration the server state is "retrieval"; on a pinned page the hero must still paint first. */
 html[data-pinned]:not([data-hydrated]) .story-cap-input { opacity: 1; visibility: visible; transform: none; }
 html[data-pinned]:not([data-hydrated]) .story-cap:not(.story-cap-input) { opacity: 0; visibility: hidden; }
 html[data-pinned]:not([data-hydrated]) .story-list-wrap { visibility: hidden; }
@@ -388,7 +388,7 @@ html[data-pinned] .story-cap-retrieval:not(.is-active) .story-chips > * { opacit
 .gen-stage > header { margin-bottom: 4rem; }
 .gen-counter { display: none; }
 .gen-card { box-shadow: 0 24px 60px -40px var(--glass-shadow); }
-html[data-pinned] .gen-scene { height: 340vh; }
+html[data-pinned] .gen-scene { height: 260vh; }
 html[data-pinned] .gen-stage {
   position: sticky;
   top: 0;

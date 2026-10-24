@@ -2,7 +2,7 @@
 
 Personal portfolio of Ernesto Contreras, AI Engineer and Forward Deployed Engineer.
 
-The page is built as the AI pipeline it describes. Scrolling moves a question through five stages: **Input**, **Retrieval**, **Rerank**, **Generate** and **Output**. A scripted agent (Ctrl/Cmd + K) answers questions about the projects. It shows the lookups it really makes in local data and then streams a pre-written answer. It runs entirely in the browser: no LLM, no backend, no tracking.
+The page is built as the AI pipeline it describes. Scrolling moves a question through four stages: **Input**, **Retrieval**, **Generate** and **Output**. A scripted agent (Ctrl/Cmd + K) answers questions about the projects. It shows the lookups it really makes in local data and then streams a pre-written answer. It runs entirely in the browser: no LLM, no backend, no tracking.
 
 - English at `/`, Spanish at `/es/`. Both pages are prerendered to static HTML.
 - Hosted on GitHub Pages and built by GitHub Actions.

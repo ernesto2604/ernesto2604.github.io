@@ -79,7 +79,7 @@
       "actions": [
         {
           "type": "scrollTo",
-          "target": "#rerank"
+          "target": "#retrieval"
         }
       ],
       "weight": 0.6,
@@ -228,7 +228,7 @@
       "actions": [
         {
           "type": "scrollTo",
-          "target": "#rerank"
+          "target": "#retrieval"
         }
       ]
     },

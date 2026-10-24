@@ -127,7 +127,7 @@ export default function Generate() {
           ))}
           <div className="gen-stage" data-stream>
             <header className="relative" data-stream>
-              <span aria-hidden="true" className="ghost-numeral" data-n="04" />
+              <span aria-hidden="true" className="ghost-numeral" data-n="03" />
               <h2 id="generate-title" className="relative max-w-3xl font-display text-3xl leading-[1.05]">
                 {t('generate.title')}
               </h2>

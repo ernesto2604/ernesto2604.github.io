@@ -83,14 +83,13 @@ export default function Output() {
   const t = useT();
   const gen = useGenerate<HTMLDivElement>(THINK_MS);
   const o = useMessages().output;
-  const h4 = 'text-sm text-muted';
   return (
     <section id="output" data-stage="output" aria-labelledby="output-title" className="scroll-mt-24 px-5 py-24 sm:px-8 md:py-36">
       <div ref={gen.ref} data-gen={gen.state} className="relative mx-auto grid max-w-6xl gap-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
         <Thinking block="output" ms={THINK_MS} />
         <div data-stream>
           <header className="relative">
-            <span aria-hidden="true" className="ghost-numeral" data-n="05" />
+            <span aria-hidden="true" className="ghost-numeral" data-n="04" />
             <h2 id="output-title" className="relative font-display text-3xl leading-[1.05]">{o.title}</h2>
           </header>
           <div className="mt-8 grid max-w-[62ch] gap-4 text-lg leading-relaxed">
@@ -98,16 +97,6 @@ export default function Output() {
               <p key={i} className={i ? 'text-muted' : ''}>{p}</p>
             ))}
           </div>
-
-          <h3 className="mt-16 text-xl font-medium tracking-tight">{o.skillsTitle}</h3>
-          <dl id="skills" className="mt-6 -mx-3 rounded-card p-3 grid gap-x-10 gap-y-7 sm:grid-cols-2">
-            {o.skills.map((g) => (
-              <div key={g.group}>
-                <dt className={h4}>{g.group}</dt>
-                <dd className="mt-2 leading-relaxed">{g.items.join(' · ')}</dd>
-              </div>
-            ))}
-          </dl>
 
           <div className="mt-16 grid gap-12 sm:grid-cols-2">
             <div>

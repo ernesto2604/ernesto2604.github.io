@@ -28,7 +28,7 @@ const Burger = () => (
 
 const LINKS = [
   { key: 'home', href: '#input' },
-  { key: 'work', href: '#rerank' },
+  { key: 'work', href: '#retrieval' },
   { key: 'about', href: '#output' },
   { key: 'contact', href: '#contact' },
 ] as const;
