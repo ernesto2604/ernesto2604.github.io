@@ -11,6 +11,8 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <!--head-->
+    <!-- The dev server injects CSS from JS, so the welcome overlay would flash unstyled first; global.css shows it. -->
+    <style>#welcome { display: none; }</style>
     <script src="/boot.js"></script>
   </head>
   <body>

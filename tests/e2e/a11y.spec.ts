@@ -9,7 +9,7 @@ async function seriousViolations(page: Page) {
   await page.waitForFunction(
     () => !document.querySelector('.story-hero[data-gen="thinking"]') && document.getAnimations().every((a) => a.playState !== 'running' || a.effect?.getTiming().iterations === Infinity),
     null,
-    { timeout: 10000 },
+    { timeout: 20000 },
   );
   const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
   return violations

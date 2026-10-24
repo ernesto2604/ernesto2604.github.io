@@ -38,7 +38,7 @@
   "hero": {
     "role": "AI Engineer",
     "greeting": "Hi, I'm Ernesto.",
-    "valueProp": "I build AI systems end to end: retrieval, agents and the backend that makes them reliable. And I write down what they cannot do yet.",
+    "valueProp": "I build AI systems end to end: retrieval, agents and the backend that makes them reliable.",
     "photoAlt": "Ernesto Contreras, head-and-shoulders portrait in a dark suit, white shirt and tie",
     "photoPending": "Photo pending",
     "ctaAgent": "Ask the agent",

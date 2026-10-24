@@ -38,7 +38,7 @@
   "hero": {
     "role": "AI Engineer",
     "greeting": "Hola, soy Ernesto.",
-    "valueProp": "Construyo sistemas de IA de principio a fin: recuperación, agentes y el backend que los hace fiables. Y dejo por escrito lo que todavía no saben hacer.",
+    "valueProp": "Construyo sistemas de IA de principio a fin: recuperación, agentes y el backend que los hace fiables.",
     "photoAlt": "Ernesto Contreras, retrato de hombros para arriba con traje oscuro, camisa blanca y corbata",
     "photoPending": "Foto pendiente",
     "ctaAgent": "Pregunta al agente",

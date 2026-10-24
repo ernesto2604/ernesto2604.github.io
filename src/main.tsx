@@ -13,5 +13,6 @@ const app = (
   </StrictMode>
 );
 
-if (root.hasChildNodes()) hydrateRoot(root, app);
+// Dev serves an empty root (only the <!--app--> placeholder), so it renders instead of hydrating.
+if (root.firstElementChild) hydrateRoot(root, app);
 else createRoot(root).render(app);
