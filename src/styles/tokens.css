@@ -1,23 +1,38 @@
 /* Design tokens. Spec: docs/superpowers/specs/2026-10-23-portfolio-design.md §4-6.
-   Contrast pairs are checked by tests/unit/contrast.test.ts. */
+   Contrast pairs are checked by tests/unit/contrast.test.ts.
+   Light theme only. Every color is a token here, so a dark palette can return later as a
+   second block (e.g. :root[data-theme="dark"]) without touching components. */
 :root {
-  --bg-0: #07090E;
-  --bg-1: #0C1018;
-  --surface: #11161F;
-  --surface-2: #171D29;
-  --line: #252D3B;
-  --line-strong: #5A6578;
-  --text: #ECEFF4;
-  --text-muted: #A3ACBB;
-  --accent: #FFB547;
-  --accent-ink: #1A1204;
-  --accent-soft: rgb(255 181 71 / 0.12);
-  --ok: #7FD1A8;
+  color-scheme: light;
 
-  --glass-bg: rgb(13 17 25 / 0.74);
-  --glass-solid: rgb(17 22 31 / 0.96);
-  --glass-edge: rgb(255 255 255 / 0.08);
+  /* Light palette: cool paper and ink. Signal amber is a fill only (CTA, scores, active dot) with dark ink on it;
+     --accent is a deeper amber for text, icons and the focus ring, since #FFB547 fails AA on light grounds. */
+  --bg-0: #F5F6F8;
+  --bg-1: #ECEEF2;
+  --surface: #FFFFFF;
+  --surface-2: #EBEEF3;
+  --line: #D9DEE6;
+  --line-strong: #7B8494;
+  --text: #0D1015;
+  --text-muted: #4B5361;
+  --accent: #8C4A00;
+  --accent-fill: #FFB547;
+  --accent-ink: #1A1204;
+  --accent-soft: rgb(255 181 71 / 0.22);
+  --ok: #1E7547;
+
+  --glass-bg: rgb(255 255 255 / 0.78);
+  --glass-solid: rgb(255 255 255 / 0.97);
+  --glass-edge: rgb(13 16 21 / 0.08);
+  --glass-shadow: rgb(13 16 21 / 0.10);
   --glass-blur: 24px;
+  --scrim: rgb(13 16 21 / 0.32);
+
+  /* Depth layer (Background.tsx). */
+  --orb-a: rgb(255 181 71 / 0.20);
+  --orb-b: rgb(120 150 200 / 0.16);
+  --orb-c: rgb(160 175 200 / 0.14);
+  --grain-opacity: 0.035;
 
   --dur-1: 120ms;
   --dur-2: 200ms;

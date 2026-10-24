@@ -44,7 +44,7 @@ function CaseStudy({ project, scene }: { project: Project; scene: boolean }) {
 
   const panel = (
     <div className="scene-panel rounded-panel bg-surface p-6 sm:p-10">
-      <h3 id={titleId} className="font-display text-3xl font-light leading-none tracking-tight">
+      <h3 id={titleId} className="font-display text-3xl leading-none">
         {t(`projects.${project.slug}.name`)}
       </h3>
       <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:items-start lg:gap-12">
@@ -127,7 +127,7 @@ export default function Generate() {
       <div className="mx-auto max-w-6xl">
         <header className="relative mb-16 md:mb-24">
           <span aria-hidden="true" className="ghost-numeral" data-n="04" />
-          <h2 id="generate-title" className="relative max-w-3xl font-display text-3xl font-light leading-[1.05] tracking-tight">
+          <h2 id="generate-title" className="relative max-w-3xl font-display text-3xl leading-[1.05]">
             {t('generate.title')}
           </h2>
           <p className="relative mt-5 max-w-[60ch] text-lg text-muted">{t('generate.lead')}</p>

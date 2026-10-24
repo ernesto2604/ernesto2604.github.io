@@ -63,7 +63,7 @@ export default function Diagram({ slug, scrollDriven = false }: { slug: string; 
         {spec.nodes.map((node) => {
           const h = node.h ?? NODE_H;
           const lines = wrap(c.nodes[node.id], node.w).slice(0, 2);
-          const fill = node.tone === 'model' ? 'var(--accent)' : node.tone === 'key' ? 'var(--surface-2)' : 'var(--surface)';
+          const fill = node.tone === 'model' ? 'var(--accent-fill)' : node.tone === 'key' ? 'var(--surface-2)' : 'var(--surface)';
           const ink = node.tone === 'model' ? 'var(--accent-ink)' : 'var(--text)';
           return (
             <g key={node.id} className="d-node" style={{ ['--s' as string]: node.s }}>

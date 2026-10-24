@@ -1,16 +1,11 @@
 @import "tailwindcss";
 @import "./tokens.css";
 
-/* Fonts: latin subsets copied from Fontsource (OFL-1.1, licenses in public/fonts). */
+/* Fonts: latin subsets copied from Fontsource (OFL-1.1, licenses in public/fonts).
+   Inter ships the wght + opsz axes in one file; font-optical-sizing: auto picks the display cut at large sizes. */
 @font-face {
-  font-family: "Newsreader";
-  src: url("/fonts/newsreader-latin-wght-normal.woff2") format("woff2-variations");
-  font-weight: 200 800;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Geist";
-  src: url("/fonts/geist-latin-wght-normal.woff2") format("woff2-variations");
+  font-family: "Inter";
+  src: url("/fonts/inter-latin-opsz-normal.woff2") format("woff2-variations");
   font-weight: 100 900;
   font-display: swap;
 }
@@ -20,7 +15,6 @@
   font-weight: 100 900;
   font-display: swap;
 }
-
 @theme {
   --color-bg-0: var(--bg-0);
   --color-bg-1: var(--bg-1);
@@ -31,13 +25,22 @@
   --color-text: var(--text);
   --color-muted: var(--text-muted);
   --color-accent: var(--accent);
+  --color-accent-fill: var(--accent-fill);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
   --color-ok: var(--ok);
 
-  --font-display: "Newsreader", ui-serif, Georgia, serif;
-  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  /* One family: Inter for headlines and body; Geist Mono only for scores, metadata values and tool calls. */
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "Cascadia Mono", monospace;
+
+  /* Display type: weight and tracking tighten as size grows (Inter reads generic when set loose). */
+  --font-weight-display: 560;
+  --font-weight-heading: 580;
+  --tracking-display: -0.048em;
+  --tracking-heading: -0.032em;
+  --text-hero: clamp(3.5rem, 1rem + 8.4vw, 9rem);
 
   /* Fluid type scale, 390px -> 1440px viewport. */
   --text-2xs: 0.75rem;
@@ -60,7 +63,7 @@
   html {
     background: var(--bg-0);
     color: var(--text);
-    color-scheme: dark;
+    scrollbar-color: var(--line-strong) var(--bg-1);
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 5rem;
   }
@@ -80,11 +83,16 @@
     border-radius: 4px;
   }
   ::selection {
-    background: var(--accent);
+    background: var(--accent-fill);
     color: var(--accent-ink);
   }
   h1, h2, h3 {
     text-wrap: balance;
+  }
+  /* Headings set in the display role: Inter at heading weight with tight tracking (tokens in @theme). */
+  .font-display {
+    font-weight: var(--font-weight-heading);
+    letter-spacing: var(--tracking-heading);
   }
   p {
     text-wrap: pretty;
@@ -97,7 +105,7 @@
     background: var(--glass-bg);
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
     backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    box-shadow: inset 0 1px 0 var(--glass-edge), 0 10px 30px -12px rgb(0 0 0 / 0.6);
+    box-shadow: 0 10px 30px -14px var(--glass-shadow);
     border: 1px solid var(--glass-edge);
   }
   html[data-lite] .glass {
@@ -132,7 +140,7 @@
     z-index: 60;
     padding: 0.75rem 1rem;
     border-radius: 999px;
-    background: var(--accent);
+    background: var(--accent-fill);
     color: var(--accent-ink);
     font-weight: 500;
     transform: translateY(-200%);
@@ -142,7 +150,7 @@
   /* Depth layer (Background.tsx). */
   .backdrop {
     background:
-      radial-gradient(120% 70% at 50% -10%, #111a2b 0%, transparent 60%),
+      radial-gradient(120% 70% at 50% -10%, var(--surface) 0%, transparent 60%),
       linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 55%, var(--bg-0) 100%);
   }
   .orb {
@@ -153,17 +161,17 @@
   }
   .orb-a {
     width: 60vmax; height: 60vmax; top: -22vmax; right: -18vmax;
-    background: radial-gradient(closest-side, rgb(255 181 71 / 0.16), transparent);
+    background: radial-gradient(closest-side, var(--orb-a), transparent);
   }
   .orb-b {
     width: 70vmax; height: 70vmax; top: 30vh; left: -30vmax;
-    background: radial-gradient(closest-side, rgb(66 104 168 / 0.22), transparent);
+    background: radial-gradient(closest-side, var(--orb-b), transparent);
     animation-duration: 64s;
     animation-direction: alternate-reverse;
   }
   .orb-c {
     width: 50vmax; height: 50vmax; bottom: -25vmax; right: 5vw;
-    background: radial-gradient(closest-side, rgb(58 84 112 / 0.16), transparent);
+    background: radial-gradient(closest-side, var(--orb-c), transparent);
     animation-duration: 80s;
   }
   @keyframes drift {
@@ -172,7 +180,8 @@
   }
   html[data-lite] .orb { animation: none; }
   .grain {
-    opacity: 0.05;
+    opacity: var(--grain-opacity);
+    mix-blend-mode: multiply;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
@@ -182,11 +191,11 @@
     left: -0.04em;
     top: -0.42em;
     font-family: var(--font-display);
-    font-weight: 300;
+    font-weight: var(--font-weight-display);
     font-size: clamp(7rem, 4rem + 14vw, 15rem);
     line-height: 1;
     letter-spacing: -0.04em;
-    color: rgb(236 239 244 / 0.035);
+    color: color-mix(in srgb, var(--text) 4%, transparent);
     user-select: none;
     pointer-events: none;
   }
@@ -201,24 +210,29 @@
 
   .signal-dot {
     width: 0.5rem; height: 0.5rem; border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 0 0 rgb(255 181 71 / 0.5);
+    background: var(--accent-fill);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-fill) 60%, transparent);
     animation: signal-ping 2.4s var(--ease-out) infinite;
   }
-  @keyframes signal-ping { 70%, 100% { box-shadow: 0 0 0 8px rgb(255 181 71 / 0); } }
+  @keyframes signal-ping { 70%, 100% { box-shadow: 0 0 0 8px transparent; } }
 
-  html.js [data-typing="pending"] { visibility: hidden; }
-  .caret {
-    display: inline-block;
-    width: 0.08em; height: 0.9em;
-    margin-left: 0.08em;
-    vertical-align: -0.08em;
-    background: var(--accent);
-    animation: blink 1.05s steps(1) infinite;
+  /* Hero (Story.tsx). The role is the headline; Inter's opsz axis picks the display cut at this size. */
+  .hero-title {
+    font-size: var(--text-hero);
+    font-weight: var(--font-weight-display);
+    letter-spacing: var(--tracking-display);
+    line-height: 0.9;
   }
-  [data-typing="done"] .caret { animation-iteration-count: 3; opacity: 0; animation-name: blink-out; }
-  @keyframes blink { 50% { opacity: 0; } }
-  @keyframes blink-out { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+  /* Taller than the cutout (1099x1066) so it fills the width and the shoulders meet both edges. */
+  .hero-photo {
+    aspect-ratio: 1 / 1.1;
+    overflow: hidden;
+    border-radius: var(--radius-panel);
+    background: var(--accent-soft);
+  }
+  @media (min-width: 1024px) {
+    .hero-photo { aspect-ratio: 4 / 5; }
+  }
 
   .score-fill { transition: transform var(--dur-5) var(--ease-out); }
 
@@ -281,8 +295,11 @@ html[data-pinned]:not([data-hydrated]) .story-cap:not(.story-cap-input) { opacit
 html[data-pinned]:not([data-hydrated]) .story-list-wrap { visibility: hidden; }
 html[data-pinned] .story-list-wrap { grid-column: 2; padding-top: 0; }
 html[data-pinned] .story-hero { min-height: 0; padding: 0; }
-html[data-pinned] .story-h1 { font-size: clamp(3.25rem, 0.5rem + 5vw, 6rem); }
-html[data-pinned] .story-query { font-size: clamp(1.5rem, 1rem + 1.1vw, 2rem); }
+/* The hero spans both columns over the result list; the list appears once the query is scored. */
+html[data-pinned] .story-cap-input { grid-column: 1 / -1; }
+html[data-pinned] .story-hero .hero-photo { max-height: calc(100svh - 9rem); justify-self: end; width: 100%; }
+html[data-pinned] .story-list-wrap { transition: opacity var(--dur-4) var(--ease-out), visibility var(--dur-4); }
+html[data-pinned] .story[data-phase="input"] .story-list-wrap { opacity: 0; visibility: hidden; }
 html[data-pinned] .story-summary {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -325,7 +342,7 @@ html[data-pinned] .story-cap-retrieval:not(.is-active) .story-chips > * { opacit
   font-size: 13.5px;
   fill: var(--text-muted);
   paint-order: stroke;
-  stroke: var(--bg-0);
+  stroke: var(--surface);
   stroke-width: 4px;
 }
 /* Generate scene: the top project expands from a result-row strip, then its diagram draws. */
@@ -349,10 +366,7 @@ html[data-pinned] .scene .diagram.scroll-driven {
 
 @media (max-height: 860px) {
   html[data-pinned] .story-matched { display: none; }
-  html[data-pinned] .story-h1 { font-size: clamp(3rem, 1.5rem + 3.2vw, 4.75rem); margin-top: 1.75rem; }
-  html[data-pinned] .story-query { font-size: 1.375rem; }
-  html[data-pinned] .story-hero .fade-up { margin-top: 0.875rem; }
-  html[data-pinned] .story-hero .fade-up:last-child { margin-top: 1.5rem; }
+  html[data-pinned] .story-query { margin-bottom: 1rem; }
 }
 
 /* Footer wordmark: the name returns at full width, cropped by the page edge. */
@@ -362,9 +376,70 @@ html[data-pinned] .scene .diagram.scroll-driven {
   margin-bottom: -0.18em;
 }
 
+/* Welcome loader (public/welcome.js). Hidden unless boot.js set html[data-welcome], so no-JS and
+   reduced-motion visitors never see it. Fixed overlay: no layout shift; the page below renders as usual. */
+#welcome { display: none; }
+html[data-welcome] #welcome,
+#welcome[data-done] {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--bg-0);
+  cursor: pointer;
+}
+#welcome[data-done] {
+  pointer-events: none;
+  animation: welcome-out var(--dur-4) var(--ease-std) forwards;
+}
+/* Failsafe: if the script never ends it, the overlay leaves on its own. */
+html[data-welcome] #welcome { animation: welcome-out var(--dur-4) var(--ease-std) 3s forwards; }
+@keyframes welcome-out { to { opacity: 0; visibility: hidden; } }
+.welcome-word {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-weight-display);
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+}
+#welcome[data-done] .welcome-word { animation: welcome-word-out var(--dur-4) var(--ease-out) forwards; }
+@keyframes welcome-word-out { to { transform: translateY(-24px); } }
+/* The hero's entrance waits under the overlay and plays as it lifts. */
+html[data-welcome] .story-hero :is(.rise, .fade-up) { animation-play-state: paused; }
+
+/* Side menu (Nav.tsx). The button is solid so it stays legible over any section. */
+html { scrollbar-gutter: stable; }
+html[data-scroll-lock] { overflow: hidden; }
+.menu-button {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 20px -10px var(--glass-shadow);
+  transition: background-color var(--dur-2) var(--ease-std);
+}
+.menu-button:hover { background: var(--surface-2); }
+.menu-dialog {
+  margin: 0 0 0 auto;
+  width: min(24rem, 100vw);
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  background: var(--surface);
+  box-shadow: -20px 0 60px -30px var(--glass-shadow);
+}
+.menu-dialog::backdrop { background: var(--scrim); }
+.menu-dialog[open] { animation: menu-in var(--dur-3) var(--ease-out); }
+.menu-dialog[open]::backdrop { animation: fade-in var(--dur-3) var(--ease-out); }
+@keyframes menu-in { from { transform: translateX(100%); } }
+@keyframes fade-in { from { opacity: 0; } }
+/* Without JS the panel cannot open, so its links render as a plain block at the top of the page. */
+html:not(.js) .menu-dialog { display: block; position: static; width: auto; height: auto; margin: 0; }
+
 /* Agent dialog (native <dialog>, glass). */
 .agent-dialog { max-height: none; overflow: visible; }
-.agent-dialog::backdrop { background: rgb(4 6 10 / 0.62); }
+.agent-dialog::backdrop { background: var(--scrim); }
 .agent-dialog[open] { animation: dialog-in var(--dur-3) var(--ease-out); }
 @keyframes dialog-in { from { opacity: 0; transform: translateY(-8px) scale(0.985); } }
 

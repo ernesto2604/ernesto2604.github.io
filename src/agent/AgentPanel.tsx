@@ -117,7 +117,7 @@ export default function AgentPanel({ dialogRef }: { dialogRef: React.RefObject<H
     <div className="flex max-h-[min(80svh,720px)] flex-col">
       <header className="flex items-center justify-between gap-4 px-5 pb-3 pt-4">
         <h2 id="agent-title" className="font-medium">{t('agent.title')}</h2>
-        <button type="button" onClick={() => dialogRef.current?.close()} className="grid size-11 place-items-center rounded-full text-muted hover:bg-white/5 hover:text-text" aria-label={t('agent.close')}>
+        <button type="button" onClick={() => dialogRef.current?.close()} className="grid size-11 place-items-center rounded-full text-muted hover:bg-surface-2 hover:text-text" aria-label={t('agent.close')}>
           <X className="size-5" aria-hidden="true" strokeWidth={1.75} />
         </button>
       </header>
@@ -176,7 +176,7 @@ export default function AgentPanel({ dialogRef }: { dialogRef: React.RefObject<H
                     {turn.actions
                       .filter((a) => a.type !== 'highlight')
                       .map((a) => (
-                        <button key={a.type + a.target} type="button" onClick={() => runAction(a, turn)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-4 text-sm font-medium text-accent-ink">
+                        <button key={a.type + a.target} type="button" onClick={() => runAction(a, turn)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-accent-fill px-4 text-sm font-medium text-accent-ink">
                           {actionLabel(a)}
                           <ArrowRight className="size-4" aria-hidden="true" strokeWidth={2} />
                         </button>
@@ -208,9 +208,9 @@ export default function AgentPanel({ dialogRef }: { dialogRef: React.RefObject<H
           placeholder={t('agent.placeholder')}
           autoComplete="off"
           maxLength={300}
-          className="h-12 min-w-0 flex-1 rounded-full bg-bg-0/70 px-5 text-base placeholder:text-muted focus-visible:outline-2"
+          className="h-12 min-w-0 flex-1 rounded-full bg-surface px-5 text-base placeholder:text-muted focus-visible:outline-2"
         />
-        <button type="submit" disabled={busy || !input.trim()} className="inline-flex h-12 min-w-12 items-center justify-center gap-2 rounded-full bg-accent px-3.5 font-medium text-accent-ink disabled:opacity-60 sm:px-5">
+        <button type="submit" disabled={busy || !input.trim()} className="inline-flex h-12 min-w-12 items-center justify-center gap-2 rounded-full bg-accent-fill px-3.5 font-medium text-accent-ink disabled:opacity-60 sm:px-5">
           <span className="sr-only sm:not-sr-only">{t('agent.send')}</span>
           <CornerDownLeft className="size-4" aria-hidden="true" strokeWidth={2} />
         </button>

@@ -22,7 +22,7 @@ export default function Footer() {
         </div>
       </div>
       {/* Oversized, cropped wordmark that closes the page (decorative). */}
-      <p aria-hidden="true" className="wordmark pointer-events-none mt-10 select-none text-center font-display font-light leading-[0.78] tracking-[-0.04em]">
+      <p aria-hidden="true" className="wordmark pointer-events-none mt-10 select-none text-center font-display leading-[0.78] tracking-[-0.06em]">
         {t('footer.wordmark')}
       </p>
     </footer>

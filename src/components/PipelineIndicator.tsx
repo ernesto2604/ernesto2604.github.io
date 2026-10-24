@@ -27,7 +27,7 @@ export default function PipelineIndicator() {
                 <span
                   aria-hidden="true"
                   className={`size-1.5 shrink-0 rounded-full transition-[background-color,transform] duration-300 ${
-                    isActive ? 'scale-125 bg-accent' : i < activeIndex ? 'bg-muted' : 'bg-line-strong'
+                    isActive ? 'scale-125 bg-accent-fill' : i < activeIndex ? 'bg-muted' : 'bg-line-strong'
                   }`}
                 />
                 <span aria-hidden="true" className={isActive ? 'whitespace-nowrap lg:max-2xl:hidden' : 'hidden whitespace-nowrap 2xl:group-hover:inline 2xl:group-focus-visible:inline'}>

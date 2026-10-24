@@ -25,10 +25,10 @@ function Contact() {
 
   return (
     <div id="contact" className="scroll-mt-28">
-      <h3 className="font-display text-3xl font-light leading-none tracking-tight">{t('contact.title')}</h3>
+      <h3 className="font-display text-3xl leading-none">{t('contact.title')}</h3>
       <p className="mt-4 max-w-[46ch] text-muted">{t('contact.lead')}</p>
       <div className="mt-8 flex flex-wrap gap-3">
-        <a href={`mailto:${profile.email}`} className="inline-flex h-12 items-center gap-2.5 rounded-full bg-accent px-6 font-medium text-accent-ink transition-transform duration-200 hover:-translate-y-0.5">
+        <a href={`mailto:${profile.email}`} className="inline-flex h-12 items-center gap-2.5 rounded-full bg-accent-fill px-6 font-medium text-accent-ink transition-transform duration-200 hover:-translate-y-0.5">
           <Mail className="size-4" aria-hidden="true" strokeWidth={2} />
           {profile.email}
         </a>
@@ -85,7 +85,7 @@ export default function Output() {
         <div>
           <header className="relative">
             <span aria-hidden="true" className="ghost-numeral" data-n="05" />
-            <h2 id="output-title" className="relative font-display text-3xl font-light leading-[1.05] tracking-tight">{o.title}</h2>
+            <h2 id="output-title" className="relative font-display text-3xl leading-[1.05]">{o.title}</h2>
           </header>
           <div className="mt-8 grid max-w-[62ch] gap-4 text-lg leading-relaxed">
             {o.about.map((p, i) => (
