@@ -6,6 +6,6 @@
   "github": "https://github.com/ernesto2604",
   "linkedin": "https://www.linkedin.com/in/ernesto-contreras-237bb71a4",
   "location": { "city": "Madrid", "country": "ES" },
-  "cv": { "en": "", "es": "" },
-  "photo": ""
+  "cv": { "en": "/cv/ernesto-contreras-cv-en.pdf", "es": "/cv/ernesto-contreras-cv-es.pdf" },
+  "photo": "/photo.webp"
 }

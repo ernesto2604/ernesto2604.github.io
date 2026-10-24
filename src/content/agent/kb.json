@@ -460,8 +460,8 @@
         "get_contact"
       ],
       "answer": {
-        "en": "The CV is not published on this site yet. You can request it by email at ercoal04@gmail.com.",
-        "es": "El CV todavía no está publicado en esta web. Puedes pedirlo por email en ercoal04@gmail.com."
+        "en": "You can download the CV as a PDF from the contact section, in English or Spanish depending on the site language.",
+        "es": "Puedes descargar el CV en PDF desde la sección de contacto, en español o en inglés según el idioma de la web."
       },
       "actions": [
         {

@@ -57,7 +57,7 @@ All visible text lives in `src/content/en.json` and `src/content/es.json`. Compo
 - **Contact:** edit `src/content/profile.json`.
   - The phone number is stored as parts and joined in the browser, so it is not in the static HTML.
   - **CV:** put the PDFs in `public/cv/` and set `"cv": { "en": "/cv/ernesto-contreras-cv-en.pdf", "es": "/cv/..." }`. The download link appears only for locales with a path.
-  - **Photo:** the `photo` field is reserved. The site shows no photo until one is added and wired in.
+  - **Photo:** `photo` points to a file in `public/` (now `/photo.webp`, 320×320). Originals live in `assets-src/`, which is git-ignored.
 
 ## Add a project
 
