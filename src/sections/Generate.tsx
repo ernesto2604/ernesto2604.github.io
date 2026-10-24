@@ -6,7 +6,7 @@ import { useMessages, useT } from '../i18n';
 import { featured, type Project } from '../lib/projects';
 import { isPinned } from '../lib/scroll';
 
-type CaseCopy = { decisions: { title: string; body: string }[]; limitations: string[]; next: string[] };
+type CaseCopy = { tagline: string; decisions: string[] };
 
 // Writes scroll progress through `ref` (0..1) to the CSS variable --sp. No React re-renders.
 function useSceneProgress(ref: React.RefObject<HTMLElement | null>) {
@@ -40,7 +40,6 @@ function CaseStudy({ project, scene }: { project: Project; scene: boolean }) {
   const copy = (useMessages().cases as Record<string, CaseCopy>)[project.slug];
   const sceneRef = useRef<HTMLDivElement>(null);
   useSceneProgress(sceneRef);
-  const k = (key: string) => t(`cases.${project.slug}.${key}`);
   const titleId = `${project.slug}-title`;
 
   const panel = (
@@ -50,9 +49,17 @@ function CaseStudy({ project, scene }: { project: Project; scene: boolean }) {
       </h3>
       <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:items-start lg:gap-12">
         <div>
-          <p className="leading-relaxed">{k('problem')}</p>
-          <p className="mt-3 text-sm leading-relaxed text-muted">{k('context')}</p>
-          <ul className="mt-6 flex flex-wrap gap-1.5" aria-label={t('generate.stack')}>
+          <p className="text-lg leading-relaxed">{copy.tagline}</p>
+          <h4 className="mt-8 text-sm text-muted">{t('generate.decisions')}</h4>
+          <ul className="mt-3 space-y-2.5">
+            {copy.decisions.map((d) => (
+              <li key={d} className="flex gap-3 font-medium leading-snug">
+                <span className="mt-[0.55em] size-1.5 shrink-0 rounded-full bg-accent-fill" aria-hidden="true" />
+                {d}
+              </li>
+            ))}
+          </ul>
+          <ul className="mt-8 flex flex-wrap gap-1.5" aria-label={t('generate.stack')}>
             {project.stack.map((s) => (
               <li key={s} className="rounded-chip bg-surface-2 px-2.5 py-1.5 text-[0.8125rem] text-muted">{s}</li>
             ))}
@@ -89,34 +96,6 @@ function CaseStudy({ project, scene }: { project: Project; scene: boolean }) {
       ) : (
         panel
       )}
-
-      <div className="mt-14 grid grid-cols-[minmax(0,1fr)] gap-x-14 gap-y-6 px-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-y-12">
-        <h4 className="text-xl font-medium tracking-tight">{t('generate.approach')}</h4>
-        <p className="max-w-[68ch] leading-relaxed">{k('approach')}</p>
-
-        <h4 className="text-xl font-medium tracking-tight">{t('generate.decisions')}</h4>
-        <dl className="grid gap-x-10 gap-y-7 sm:grid-cols-2">
-          {copy.decisions.map((d) => (
-            <div key={d.title}>
-              <dt className="font-medium">{d.title}</dt>
-              <dd className="mt-1.5 text-muted">{d.body}</dd>
-            </div>
-          ))}
-        </dl>
-
-        <h4 className="text-xl font-medium tracking-tight">{t('generate.limitations')}</h4>
-        <ul className="max-w-[68ch] list-disc space-y-2 pl-5 text-muted marker:text-accent">
-          {copy.limitations.map((x) => <li key={x}>{x}</li>)}
-        </ul>
-
-        <h4 className="text-xl font-medium tracking-tight">{t('generate.next')}</h4>
-        <div>
-          <ul className="max-w-[68ch] list-disc space-y-2 pl-5 text-muted">
-            {copy.next.map((x) => <li key={x}>{x}</li>)}
-          </ul>
-          <p className="mt-3 text-sm text-muted">{t('generate.nextNote')}</p>
-        </div>
-      </div>
     </article>
   );
 }
@@ -137,7 +116,7 @@ export default function Generate() {
           </h2>
           <p className="relative mt-5 max-w-[60ch] text-lg text-muted">{t('generate.lead')}</p>
         </header>
-        <div className="grid gap-32 md:gap-44">
+        <div className="grid gap-16 md:gap-24">
           {featured.map((p, i) => (
             <CaseStudy key={p.slug} project={p} scene={i === 0} />
           ))}
