@@ -1,0 +1,15 @@
+{
+  "_note": "Welcome loader words. Latin-1 only (the Inter subset is latin); tests/unit/welcome.test.ts checks it. Spelling checked against each language's standard greeting (masculine/default form where the language inflects).",
+  "words": [
+    { "lang": "fr", "word": "Bienvenue" },
+    { "lang": "de", "word": "Willkommen" },
+    { "lang": "it", "word": "Benvenuto" },
+    { "lang": "pt", "word": "Bem-vindo" },
+    { "lang": "nl", "word": "Welkom" },
+    { "lang": "sv", "word": "Välkommen" },
+    { "lang": "fi", "word": "Tervetuloa" },
+    { "lang": "ga", "word": "Fáilte" },
+    { "lang": "es", "word": "Bienvenido" },
+    { "lang": "en", "word": "Welcome" }
+  ]
+}
