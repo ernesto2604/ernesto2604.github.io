@@ -33,6 +33,8 @@ describe('design tokens meet WCAG AA', () => {
     ['accent-ink', 'accent-fill', 4.5],
     ['ok', 'bg-0', 4.5],
     ['line-strong', 'surface', 3],
+    ['on-ink', 'ink-panel', 4.5],
+    ['on-ink-muted', 'ink-panel', 4.5],
   ];
   it('is a light palette (page lighter than text)', () => {
     const sum = (hex: string) => [1, 3, 5].reduce((s, i) => s + parseInt(hex.slice(i, i + 2), 16), 0);

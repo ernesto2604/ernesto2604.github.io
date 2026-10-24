@@ -26,11 +26,19 @@ test('first Tab press reaches the skip link', async ({ page, browserName }) => {
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
 });
 
-test('pipeline indicator marks the stage in view', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile', 'indicator hidden in the hero on mobile; covered on desktop');
+
+test('progress pill shows the stage in view and its list jumps to a section', async ({ page }) => {
   await page.goto('/#rerank');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
-  await expect(page.getByRole('navigation', { name: 'Pipeline stages' }).locator('[aria-current="step"]')).toHaveAttribute('href', '#rerank');
+  const pill = page.getByRole('navigation', { name: 'Progress' });
+  const button = pill.getByRole('button');
+  await expect(button).toContainText('Rerank');
+  await button.click();
+  await expect(button).toHaveAttribute('aria-expanded', 'true');
+  await expect(pill.locator('[aria-current="step"]')).toHaveAttribute('href', '#rerank');
+  await pill.getByRole('link', { name: /Output/ }).click();
+  await expect(pill.getByRole('list')).toBeHidden();
+  await expect(button).toContainText('Output', { timeout: 5000 });
 });
 
 test('without JavaScript the hero and projects are readable and JS-only buttons hidden', async ({ browser }) => {

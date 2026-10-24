@@ -7,9 +7,7 @@
   },
   "a11y": {
     "skip": "Skip to content",
-    "primaryNav": "Primary",
-    "pipelineNav": "Pipeline stages",
-    "currentStage": "current stage"
+    "primaryNav": "Primary"
   },
   "lang": {
     "switchTo": "Leer en español",
@@ -17,7 +15,6 @@
     "name": "English"
   },
   "nav": {
-    "home": "Ernesto Contreras, home",
     "work": "Work",
     "about": "About",
     "contact": "Contact",
@@ -26,7 +23,10 @@
   "menu": {
     "title": "Menu",
     "open": "Open menu",
-    "close": "Close menu"
+    "close": "Close menu",
+    "home": "Home",
+    "navigation": "Navigation",
+    "socials": "Socials"
   },
   "stages": {
     "input": "Input",
@@ -91,10 +91,6 @@
     "status": "404 · no document matched this path",
     "body": "The pipeline searched everywhere and retrieved nothing for this address.",
     "home": "Back to the home page"
-  },
-  "indicator": {
-    "label": "Pipeline",
-    "goTo": "Go to stage {n}: {name}"
   },
   "projects": {
     "ring-telemetryops": {
@@ -420,6 +416,43 @@
       "Spanish, native",
       "English, degree completed in the UK"
     ]
+  },
+  "hologram": {
+    "alt": "3D hologram of Ernesto",
+    "label": "ernesto.glb · live render",
+    "loading": "Loading hologram…",
+    "error": "3D preview unavailable on this device"
+  },
+  "thinking": {
+    "label": "Thinking",
+    "hero": [
+      "Reading the query: who is Ernesto?",
+      "Retrieving profile and projects",
+      "Drafting the answer"
+    ],
+    "retrieval": [
+      "Expanding the query into terms",
+      "Retrieving 6 public repositories",
+      "Scoring relevance"
+    ],
+    "rerank": [
+      "Reranking by evidence",
+      "Checking demos, tests and docs"
+    ],
+    "generate": [
+      "Opening the case studies",
+      "Drawing the architecture",
+      "Generating the answer"
+    ],
+    "output": [
+      "Summarizing the profile",
+      "Preparing contact details"
+    ]
+  },
+  "progress": {
+    "nav": "Progress",
+    "generating": "Generating",
+    "current": "Current section"
   },
   "contact": {
     "title": "Let's talk",

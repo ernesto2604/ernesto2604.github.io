@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
-import { Menu, Search, X } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { localePath, otherLocale, useLocale, useT } from '../i18n';
 import { setScrollLock } from '../lib/scroll';
+import { useActiveStage } from '../hooks/useActiveStage';
+import profile from '../content/profile.json';
 
 // Flipped to true when the agent panel ships (Phase 6); until then no control promises it.
 export const AGENT_READY = true;
@@ -16,9 +18,26 @@ export function useShortcutLabel() {
   return label;
 }
 
+// Two lines: they tilt on hover and cross into an X when the menu is open (styles in global.css).
+const Burger = () => (
+  <span className="burger" aria-hidden="true">
+    <span />
+    <span />
+  </span>
+);
+
+const LINKS = [
+  { key: 'home', href: '#input' },
+  { key: 'work', href: '#rerank' },
+  { key: 'about', href: '#output' },
+  { key: 'contact', href: '#contact' },
+] as const;
+type LinkKey = (typeof LINKS)[number]['key'];
+
 function LangToggle() {
   const t = useT();
-  const other = otherLocale(useLocale());
+  const locale = useLocale();
+  const other = otherLocale(locale);
   const onClick = (e: MouseEvent<HTMLAnchorElement>) => {
     try {
       localStorage.setItem('locale', other);
@@ -27,19 +46,17 @@ function LangToggle() {
     }
     e.currentTarget.href = localePath(other, location.hash);
   };
+  // Segmented "EN / ES": the current language is plain text, the other one is the link.
   return (
-    <a
-      href={localePath(other)}
-      hrefLang={other}
-      lang={other}
-      onClick={onClick}
-      className="inline-flex min-h-11 items-center gap-2 rounded-full bg-surface-2 px-4 text-sm font-medium transition-colors duration-200 hover:bg-line"
-    >
-      {t('lang.short')}
-      <span className="text-muted">{t('lang.switchTo')}</span>
-    </a>
-  );
-}
+    <p className="menu-lang">
+      <span aria-hidden="true">{locale.toUpperCase()}</span>
+      <span aria-hidden="true" className="opacity-40">/</span>
+      <a href={localePath(other)} hrefLang={other} lang={other} onClick={onClick}>
+        <span className="sr-only">{t('lang.switchTo')}: </span>
+        {t('lang.short')}
+      </a>
+    </p>
+  );}
 
 // Side menu: a hamburger button opens a modal slide-over (native <dialog>: inert background, Escape closes).
 // Tab wraps inside the panel and a backdrop click closes it.
@@ -48,6 +65,9 @@ export default function Nav() {
   const shortcut = useShortcutLabel();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
+  const [pointed, setPointed] = useState<LinkKey | null>(null);
+  const stage = useActiveStage();
+  const current: LinkKey = stage === 'input' ? 'home' : stage === 'output' ? 'about' : 'work';
 
   // Unlock before closing so an in-page link clicked in the panel can scroll right away.
   const close = () => {
@@ -59,6 +79,8 @@ export default function Nav() {
     if (d.open) return;
     setScrollLock(true);
     d.showModal();
+    // The language toggle comes first in the panel; start on the first section link instead.
+    d.querySelector<HTMLElement>('.menu-link')?.focus();
     setOpen(true);
   };
 
@@ -99,7 +121,6 @@ export default function Nav() {
     }
   };
 
-  const link = 'flex min-h-12 items-center rounded-card px-3 text-2xl font-medium tracking-tight transition-colors duration-200 hover:bg-surface-2';
 
   return (
     <>
@@ -109,9 +130,9 @@ export default function Nav() {
         aria-expanded={open}
         aria-controls="site-menu"
         aria-label={t('menu.open')}
-        className="menu-button no-js-hide fixed right-4 top-4 z-40 grid size-12 place-items-center rounded-full sm:right-6 sm:top-6"
+        className="menu-button no-js-hide fixed right-4 top-4 z-40 grid size-12 place-items-center sm:right-6 sm:top-6"
       >
-        <Menu className="size-5" aria-hidden="true" strokeWidth={1.75} />
+        <Burger />
       </button>
 
       <dialog
@@ -119,27 +140,45 @@ export default function Nav() {
         id="site-menu"
         aria-label={t('menu.title')}
         data-lenis-prevent
-        className="menu-dialog text-text"
+        className="menu-dialog"
         onKeyDown={onKeyDown}
         onClick={(e) => e.target === e.currentTarget && close()}
       >
-        <nav aria-label={t('a11y.primaryNav')} className="flex h-full flex-col gap-8 px-5 pb-8 pt-4">
-          <div className="flex items-center justify-between gap-4">
-            <a href="#input" onClick={close} aria-label={t('nav.home')} className="flex min-h-11 items-center gap-2.5 px-3 text-sm font-medium">
-              <span className="size-1.5 rounded-full bg-accent-fill" aria-hidden="true" />
-              {t('hero.name')}
-            </a>
-            <button type="button" onClick={close} aria-label={t('menu.close')} className="no-js-hide grid size-12 place-items-center rounded-full text-muted hover:bg-surface-2 hover:text-text">
-              <X className="size-5" aria-hidden="true" strokeWidth={1.75} />
-            </button>
+        <nav aria-label={t('a11y.primaryNav')} className="menu-panel">
+          {/* Top row, level with the close button. */}
+          <div className="flex min-h-12 items-center">
+            <LangToggle />
           </div>
-          <ul className="flex flex-col gap-1">
-            <li><a className={link} href="#rerank" onClick={close}>{t('nav.work')}</a></li>
-            <li><a className={link} href="#output" onClick={close}>{t('nav.about')}</a></li>
-            <li><a className={link} href="#contact" onClick={close}>{t('nav.contact')}</a></li>
+          <p className="menu-label menu-label-rule mt-10">{t('menu.navigation')}</p>
+          {/* The dot marks the section in view, and follows the pointer or keyboard focus across the links. */}
+          <ul className="menu-links" onMouseLeave={() => setPointed(null)}>
+            {LINKS.map(({ key, href }) => (
+              <li key={key}>
+                <a
+                  href={href}
+                  onClick={close}
+                  onMouseEnter={() => setPointed(key)}
+                  onFocus={() => setPointed(key)}
+                  onBlur={() => setPointed(null)}
+                  aria-current={key === current ? 'location' : undefined}
+                  className="menu-link"
+                >
+                  <span className="menu-dot" data-on={key === (pointed ?? current) || undefined} aria-hidden="true" />
+                  {t(key === 'home' ? 'menu.home' : `nav.${key}`)}
+                </a>
+              </li>
+            ))}
           </ul>
-          <div className="mt-auto flex flex-col items-start gap-3">
-            {AGENT_READY && (
+
+          <p className="menu-label mt-12">{t('menu.socials')}</p>
+          <ul className="mt-4 flex flex-wrap gap-x-7 gap-y-2">
+            <li><a href={profile.linkedin} className="menu-social">{t('contact.linkedin')}</a></li>
+            <li><a href={profile.github} className="menu-social">{t('contact.github')}</a></li>
+            <li><a href={`mailto:${profile.email}`} className="menu-social">{t('contact.email')}</a></li>
+          </ul>
+
+          {AGENT_READY && (
+            <div className="mt-auto pt-12">
               <button
                 type="button"
                 onClick={() => {
@@ -149,13 +188,16 @@ export default function Nav() {
                 className="no-js-hide flex min-h-12 w-full items-center gap-3 rounded-full bg-accent-fill pl-5 pr-2 font-medium text-accent-ink"
               >
                 <Search className="size-4" aria-hidden="true" strokeWidth={1.75} />
-                {t('nav.agent')}
-                <kbd className="kbd-hint ml-auto whitespace-nowrap rounded-full bg-surface px-2.5 py-1 font-mono text-[0.8125rem] text-muted">{shortcut}</kbd>
+                <span className="whitespace-nowrap">{t('nav.agent')}</span>
+                <kbd className="kbd-hint ml-auto whitespace-nowrap rounded-full bg-accent-ink/10 px-2.5 py-1 font-mono text-[0.8125rem]">{shortcut}</kbd>
               </button>
-            )}
-            <LangToggle />
-          </div>
+            </div>
+          )}
         </nav>
+        {/* Sits exactly over the open button and stays put while the panel slides in, so the lines seem to cross in place. */}
+        <button type="button" onClick={close} aria-label={t('menu.close')} className="menu-button menu-close no-js-hide fixed right-4 top-4 grid size-12 place-items-center sm:right-6 sm:top-6">
+          <Burger />
+        </button>
       </dialog>
     </>
   );

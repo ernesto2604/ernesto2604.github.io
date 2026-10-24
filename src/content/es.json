@@ -7,9 +7,7 @@
   },
   "a11y": {
     "skip": "Saltar al contenido",
-    "primaryNav": "Principal",
-    "pipelineNav": "Etapas del pipeline",
-    "currentStage": "etapa actual"
+    "primaryNav": "Principal"
   },
   "lang": {
     "switchTo": "Read in English",
@@ -17,7 +15,6 @@
     "name": "Español"
   },
   "nav": {
-    "home": "Ernesto Contreras, inicio",
     "work": "Proyectos",
     "about": "Sobre mí",
     "contact": "Contacto",
@@ -26,7 +23,10 @@
   "menu": {
     "title": "Menú",
     "open": "Abrir menú",
-    "close": "Cerrar menú"
+    "close": "Cerrar menú",
+    "home": "Inicio",
+    "navigation": "Navegación",
+    "socials": "Redes"
   },
   "stages": {
     "input": "Entrada",
@@ -91,10 +91,6 @@
     "status": "404 · ningún documento coincide con esta ruta",
     "body": "El pipeline ha buscado por todas partes y no ha recuperado nada para esta dirección.",
     "home": "Volver al inicio"
-  },
-  "indicator": {
-    "label": "Pipeline",
-    "goTo": "Ir a la etapa {n}: {name}"
   },
   "projects": {
     "ring-telemetryops": {
@@ -420,6 +416,43 @@
       "Español, nativo",
       "Inglés, grado cursado en el Reino Unido"
     ]
+  },
+  "hologram": {
+    "alt": "Holograma 3D de Ernesto",
+    "label": "ernesto.glb · render en vivo",
+    "loading": "Cargando holograma…",
+    "error": "Vista 3D no disponible en este dispositivo"
+  },
+  "thinking": {
+    "label": "Pensando",
+    "hero": [
+      "Leyendo la consulta: ¿quién es Ernesto?",
+      "Recuperando perfil y proyectos",
+      "Redactando la respuesta"
+    ],
+    "retrieval": [
+      "Expandiendo la consulta en términos",
+      "Recuperando 6 repositorios públicos",
+      "Puntuando la relevancia"
+    ],
+    "rerank": [
+      "Reordenando por evidencias",
+      "Comprobando demos, tests y documentación"
+    ],
+    "generate": [
+      "Abriendo los casos de estudio",
+      "Dibujando la arquitectura",
+      "Generando la respuesta"
+    ],
+    "output": [
+      "Resumiendo el perfil",
+      "Preparando el contacto"
+    ]
+  },
+  "progress": {
+    "nav": "Progreso",
+    "generating": "Generando",
+    "current": "Sección actual"
   },
   "contact": {
     "title": "Hablemos",

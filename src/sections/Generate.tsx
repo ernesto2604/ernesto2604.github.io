@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { ArrowUpRight, Play } from 'lucide-react';
 import Diagram from '../components/Diagram';
+import Thinking, { useGenerate } from '../components/Thinking';
 import { useMessages, useT } from '../i18n';
 import { featured, type Project } from '../lib/projects';
 import { isPinned } from '../lib/scroll';
@@ -120,12 +121,16 @@ function CaseStudy({ project, scene }: { project: Project; scene: boolean }) {
   );
 }
 
+const THINK_MS = 1200;
+
 export default function Generate() {
   const t = useT();
+  const gen = useGenerate<HTMLDivElement>(THINK_MS);
   return (
     <section id="generate" data-stage="generate" aria-labelledby="generate-title" className="scroll-mt-24 px-5 py-24 sm:px-8 md:py-36">
-      <div className="mx-auto max-w-6xl">
-        <header className="relative mb-16 md:mb-24">
+      <div ref={gen.ref} data-gen={gen.state} className="relative mx-auto max-w-6xl">
+        <Thinking block="generate" ms={THINK_MS} />
+        <header className="relative mb-16 md:mb-24" data-stream>
           <span aria-hidden="true" className="ghost-numeral" data-n="04" />
           <h2 id="generate-title" className="relative max-w-3xl font-display text-3xl leading-[1.05]">
             {t('generate.title')}

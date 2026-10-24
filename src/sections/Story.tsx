@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ArrowDown, ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react';
+import Hologram from '../components/Hologram';
+import Thinking, { useGenerate, type GenState } from '../components/Thinking';
 import ScoreBar from '../components/ScoreBar';
 import { useShortcutLabel, openAgent, AGENT_READY } from '../components/Nav';
 import { fetchedAt } from '../data/repos';
@@ -9,8 +11,6 @@ import { projects, repoIndex, shortDate, type Project } from '../lib/projects';
 import { rankDeltas, rerank } from '../lib/rerank';
 import { PINNED_QUERY, isPinned, resolveAnchor, scrollToElement } from '../lib/scroll';
 import { search, tokenize } from '../lib/search';
-import { PHOTO_SIZE, PHOTO_SIZES, photoSrcSet } from '../lib/photo';
-import profile from '../content/profile.json';
 
 type Phase = 'input' | 'terms' | 'retrieval' | 'rerank';
 
@@ -18,13 +18,19 @@ type Phase = 'input' | 'terms' | 'retrieval' | 'rerank';
 const PHASE_AT: [Phase, number][] = [['input', 0], ['terms', 0.1], ['retrieval', 0.3], ['rerank', 0.62]];
 const ANCHOR_AT = { input: 0, retrieval: 0.4, rerank: 0.76 } as const;
 
+// How long each block "thinks" before its content streams in (components/Thinking.tsx).
+const HERO_THINK_MS = 3000;
+const THINK_MS = 1200;
+
 const phaseFor = (p: number): Phase => PHASE_AT.filter(([, at]) => p >= at).at(-1)![0];
 
 function Ghost({ n }: { n: number }) {
   return <span aria-hidden="true" className="ghost-numeral" data-n={String(n).padStart(2, '0')} />;
 }
 
-function Caption({ stage, active, className = '', children }: { stage: 'input' | 'retrieval' | 'rerank'; active: boolean; className?: string; children: ReactNode }) {
+type Gen = { ref: React.RefObject<HTMLDivElement | null>; state: GenState };
+
+function Caption({ stage, active, gen, ms, className = '', children }: { stage: 'input' | 'retrieval' | 'rerank'; active: boolean; gen: Gen; ms: number; className?: string; children: ReactNode }) {
   // Keyboard users tabbing into a hidden caption are scrolled to its phase instead of focusing something invisible.
   const onFocus = () => {
     if (!isPinned() || active) return;
@@ -32,39 +38,14 @@ function Caption({ stage, active, className = '', children }: { stage: 'input' |
     if (marker) scrollToElement(marker, true);
   };
   return (
-    <div id={stage} data-stage={stage} data-mode="stacked" onFocusCapture={onFocus} className={`story-cap story-cap-${stage} relative ${active ? 'is-active' : ''} ${className}`}>
+    <div ref={gen.ref} id={stage} data-stage={stage} data-mode="stacked" data-gen={gen.state} onFocusCapture={onFocus} className={`story-cap story-cap-${stage} relative ${active ? 'is-active' : ''} ${className}`}>
+      <Thinking block={stage === 'input' ? 'hero' : stage} ms={ms} center={stage === 'input'} />
       {children}
     </div>
   );
 }
 
 
-function Portrait() {
-  const t = useT();
-  // No photo configured: a neutral panel, never a stand-in face. The build warns loudly (scripts/prerender.mjs).
-  if (!profile.photo) {
-    return (
-      <div className="hero-photo grid place-items-center text-sm text-muted lg:order-2" data-photo="pending">
-        {t('hero.photoPending')}
-      </div>
-    );
-  }
-  return (
-    <picture className="hero-photo rise block lg:order-2">
-      <source type="image/avif" srcSet={photoSrcSet('avif')} sizes={PHOTO_SIZES} />
-      <img
-        src={`${profile.photo}-640.webp`}
-        srcSet={photoSrcSet('webp')}
-        sizes={PHOTO_SIZES}
-        width={PHOTO_SIZE.width}
-        height={PHOTO_SIZE.height}
-        alt={t('hero.photoAlt')}
-        fetchPriority="high"
-        className="size-full object-contain object-bottom"
-      />
-    </picture>
-  );
-}
 
 function Delta({ n }: { n: number }) {
   const t = useT();
@@ -88,6 +69,11 @@ export default function Story() {
   const [term, setTerm] = useState<string | null>(null);
   // Server HTML holds the finished state, so no-JS readers and crawlers get scores and the final order.
   const [phase, setPhase] = useState<Phase>('rerank');
+  const [pinned, setPinned] = useState(false);
+  // Pinned captions share one sticky stage, so each one generates when its phase is on; stacked ones when scrolled to.
+  const heroGen = useGenerate<HTMLDivElement>(HERO_THINK_MS, !pinned || phase === 'input');
+  const retrievalGen = useGenerate<HTMLDivElement>(THINK_MS, !pinned || phase === 'terms' || phase === 'retrieval');
+  const rerankGen = useGenerate<HTMLDivElement>(THINK_MS, !pinned || phase === 'rerank');
   const rootRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLOListElement>(null);
   const rerankRef = useRef<HTMLDivElement>(null);
@@ -114,8 +100,10 @@ export default function Story() {
     };
     const onMode = () => {
       document.documentElement.toggleAttribute('data-pinned', mq.matches);
+      setPinned(mq.matches);
       update();
     };
+    setPinned(isPinned());
     mq.addEventListener('change', onMode);
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', onScroll);
@@ -164,14 +152,14 @@ export default function Story() {
       ))}
 
       <div className="story-stage mx-auto max-w-6xl px-5 sm:px-8">
-        {/* 01 · Input: the role, who I am, the two ways in, and the photo. */}
-        <Caption stage="input" active={phase === 'input'} className="story-hero grid min-h-[100svh] content-center gap-x-12 gap-y-8 pb-16 pt-24 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center">
-          <div className="lg:order-1">
-            <h1 className="hero-title rise">{t('hero.role')}</h1>
-            <p className="fade-up mt-6 max-w-[42ch] text-lg leading-relaxed sm:mt-8 sm:text-xl" style={{ animationDelay: '120ms' }}>
+        {/* 01 · Input: the role, who I am, the two ways in, and the hologram. */}
+        <Caption stage="input" active={phase === 'input'} gen={heroGen} ms={HERO_THINK_MS} className="story-hero grid min-h-[100svh] content-center gap-x-12 gap-y-8 pb-16 pt-24 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center">
+          <div className="lg:order-1" data-stream>
+            <h1 className="hero-title">{t('hero.role')}</h1>
+            <p className="mt-6 max-w-[42ch] text-lg leading-relaxed sm:mt-8 sm:text-xl">
               <span className="font-semibold">{t('hero.greeting')}</span> {t('hero.valueProp')}
             </p>
-            <div className="fade-up mt-8 flex flex-wrap items-center gap-3 sm:mt-10" style={{ animationDelay: '220ms' }}>
+            <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-10">
               <a href="#rerank" className="magnetic inline-flex h-12 items-center gap-2 rounded-full bg-accent-fill px-6 font-medium text-accent-ink transition-transform duration-200 hover:-translate-y-0.5">
                 {t('hero.ctaWork')}
                 <ArrowDown className="size-4" aria-hidden="true" strokeWidth={2} />
@@ -184,10 +172,10 @@ export default function Story() {
               )}
             </div>
           </div>
-          <Portrait />
+          <Hologram className="hero-photo lg:order-2" active={(!pinned || phase === 'input') && heroGen.state === 'done'} />
         </Caption>
         {/* 02 · Retrieval */}
-        <Caption stage="retrieval" active={phase === 'terms' || phase === 'retrieval'} className="pt-24 lg:pt-0">
+        <Caption stage="retrieval" active={phase === 'terms' || phase === 'retrieval'} gen={retrievalGen} ms={THINK_MS} className="pt-24 lg:pt-0">
           {/* The query the scores answer: it opens Retrieval instead of the hero. */}
           <p className="text-sm text-muted">{t('retrieval.queryLabel')}</p>
           <p className="story-query mt-1 mb-10 text-xl font-medium tracking-tight">{t('retrieval.query')}</p>
@@ -216,7 +204,8 @@ export default function Story() {
         </Caption>
 
         {/* Result set: one list for every phase; order changes, DOM order is the final ranking. */}
-        <div className="story-list-wrap pt-10">
+        {/* The result set is part of Retrieval's answer: it waits until that block is generated. */}
+        <div className="story-list-wrap pt-10" data-wait={retrievalGen.state !== 'done' || undefined}>
           <p className="mb-4 min-h-5 text-sm text-muted" aria-hidden="true">{listLabel}</p>
           <ol ref={listRef} className="flex flex-col gap-2">
             {final.map((p) => {
@@ -269,8 +258,8 @@ export default function Story() {
         </div>
 
         {/* 03 · Rerank */}
-        <Caption stage="rerank" active={phase === 'rerank'} className="pb-24 pt-16 lg:pb-0 lg:pt-0">
-          <div ref={rerankRef}>
+        <Caption stage="rerank" active={phase === 'rerank'} gen={rerankGen} ms={THINK_MS} className="pb-24 pt-16 lg:pb-0 lg:pt-0">
+          <div ref={rerankRef} data-stream>
             <Ghost n={3} />
             <h2 className="relative font-display text-3xl leading-[1.05]">{t('rerank.title')}</h2>
             <p className="relative mt-4 max-w-[46ch] text-muted">{t('rerank.lead')}</p>

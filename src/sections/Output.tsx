@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowUpRight, Check, Copy, Download, Mail, Phone } from 'lucide-react';
+import Portrait from '../components/Portrait';
+import Thinking, { useGenerate } from '../components/Thinking';
 import profile from '../content/profile.json';
 import { useLocale, useMessages, useT } from '../i18n';
 
@@ -75,14 +77,18 @@ function Contact() {
   );
 }
 
+const THINK_MS = 1200;
+
 export default function Output() {
   const t = useT();
+  const gen = useGenerate<HTMLDivElement>(THINK_MS);
   const o = useMessages().output;
   const h4 = 'text-sm text-muted';
   return (
     <section id="output" data-stage="output" aria-labelledby="output-title" className="scroll-mt-24 px-5 py-24 sm:px-8 md:py-36">
-      <div className="mx-auto grid max-w-6xl gap-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
-        <div>
+      <div ref={gen.ref} data-gen={gen.state} className="relative mx-auto grid max-w-6xl gap-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
+        <Thinking block="output" ms={THINK_MS} />
+        <div data-stream>
           <header className="relative">
             <span aria-hidden="true" className="ghost-numeral" data-n="05" />
             <h2 id="output-title" className="relative font-display text-3xl leading-[1.05]">{o.title}</h2>
@@ -135,8 +141,12 @@ export default function Output() {
           </div>
         </div>
 
-        <aside aria-label={t('contact.title')} className="lg:sticky lg:top-28 lg:self-start">
-          <Contact />
+        {/* The aside stretches to the column height so Contact can stay sticky once the photo scrolls past. */}
+        <aside aria-label={t('contact.title')} className="flex flex-col gap-12">
+          <Portrait className="mx-auto max-w-[26rem] lg:max-w-none" />
+          <div className="lg:sticky lg:top-28">
+            <Contact />
+          </div>
         </aside>
       </div>
     </section>

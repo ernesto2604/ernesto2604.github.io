@@ -16,7 +16,8 @@ export default defineConfig({
       transformIndexHtml: (html, ctx) => html.replace('<!--welcome-->', welcomeMarkup(ctx.originalUrl?.startsWith('/es') ? 'es' : 'en')),
     },
   ],
-  build: { manifest: true },
+  // The three.js hologram chunk (~640 kB, lazy-loaded) is expected to exceed the default 500 kB warning.
+  build: { manifest: true, chunkSizeWarningLimit: 700 },
   define: { __BUILD_YEAR__: JSON.stringify(new Date().getFullYear()) },
   test: {
     include: ['tests/unit/**/*.test.ts'],

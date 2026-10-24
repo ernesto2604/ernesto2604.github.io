@@ -45,12 +45,4 @@ describe('buildHead', () => {
     expect(html).toMatch(/<title>[^<]*Forward Deployed Engineer<\/title>/);
     expect(ld(html).jobTitle).toContain('Forward Deployed Engineer');
   });
-
-  it('preloads the hero photo as responsive AVIF with high priority', () => {
-    const tag = buildHead('en').match(/<link rel="preload" as="image"[^>]*>/)?.[0] ?? '';
-    expect(tag).toContain('type="image/avif"');
-    expect(tag).toContain('fetchpriority="high"');
-    expect(tag).toMatch(/imagesrcset="[^"]*-960\.avif 960w"/);
-    expect(tag).toContain('imagesizes="');
-  });
 });

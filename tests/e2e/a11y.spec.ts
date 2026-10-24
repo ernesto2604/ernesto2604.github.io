@@ -3,7 +3,14 @@ import type { Page } from '@playwright/test';
 import { expect, test } from './fixtures';
 
 async function seriousViolations(page: Page) {
-  await page.waitForTimeout(1500); // let entrance animations finish so contrast is measured at rest
+  // Let the hero's thinking phase and every entrance animation finish, so contrast is measured at rest.
+  // Endless loops (status dot, shimmer, caret) never finish and are skipped.
+  await page.waitForTimeout(300);
+  await page.waitForFunction(
+    () => !document.querySelector('.story-hero[data-gen="thinking"]') && document.getAnimations().every((a) => a.playState !== 'running' || a.effect?.getTiming().iterations === Infinity),
+    null,
+    { timeout: 10000 },
+  );
   const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
   return violations
     .filter((v) => v.impact === 'critical' || v.impact === 'serious')

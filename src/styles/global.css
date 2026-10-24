@@ -100,7 +100,7 @@
 }
 
 @layer components {
-  /* Glass is reserved for nav, pipeline indicator and agent panel (spec §5). */
+  /* Glass is reserved for nav and agent panel (spec §5). */
   .glass {
     background: var(--glass-bg);
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
@@ -223,20 +223,55 @@
     letter-spacing: var(--tracking-display);
     line-height: 0.9;
   }
-  /* Taller than the cutout (1099x1066) so it fills the width and the shoulders meet both edges. */
+  /* Hero visual slot (the hologram panel, Hologram.tsx). */
   .hero-photo {
     aspect-ratio: 1 / 1.1;
     width: 100%;
     max-width: 28rem;
     overflow: hidden;
     border-radius: var(--radius-panel);
-    background: var(--accent-soft);
   }
   @media (min-width: 1024px) {
     .hero-photo { aspect-ratio: 4 / 5; max-width: none; }
   }
 
+  /* Photo in Output (Portrait.tsx). Taller than the cutout (1099x1066) so the shoulders meet both edges. */
+  .portrait {
+    aspect-ratio: 1 / 1.1;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-panel);
+    background: var(--accent-soft);
+  }
+
   .score-fill { transition: transform var(--dur-5) var(--ease-out); }
+
+  /* Hologram (Hologram.tsx): dark ink panel, faint scan grid, projector glow at the base. */
+  .holo-panel {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-panel);
+    background:
+      radial-gradient(60% 22% at 50% 100%, color-mix(in srgb, var(--holo) 22%, transparent), transparent 70%),
+      linear-gradient(color-mix(in srgb, var(--holo) 5%, transparent) 1px, transparent 1px) 0 0 / 100% 24px,
+      linear-gradient(180deg, var(--holo-panel-2), var(--holo-panel));
+    box-shadow: 0 30px 60px -40px var(--glass-shadow);
+  }
+  .holo-canvas { display: block; width: 100%; height: 100%; }
+  /* Soft bloom without a post-processing pass; skipped on small/touch screens. */
+  @media (min-width: 768px) and (pointer: fine) {
+    .holo-canvas { filter: drop-shadow(0 0 10px color-mix(in srgb, var(--holo) 45%, transparent)); }
+  }
+  .holo-label {
+    position: absolute; left: 1.25rem; bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    font-family: var(--font-mono); font-size: var(--text-2xs);
+    color: var(--holo-text);
+  }
+  .holo-dot { width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--holo); box-shadow: 0 0 8px var(--holo); }
+  .holo-panel:not([data-status="ready"]) .holo-dot { opacity: 0.4; }
 
   @media (pointer: coarse) { .kbd-hint { display: none !important; } }
 }
@@ -406,34 +441,98 @@ html[data-welcome] #welcome { animation: welcome-out var(--dur-4) var(--ease-std
 }
 #welcome[data-done] .welcome-word { animation: welcome-word-out var(--dur-4) var(--ease-out) forwards; }
 @keyframes welcome-word-out { to { transform: translateY(-24px); } }
-/* The hero's entrance waits under the overlay and plays as it lifts. */
-html[data-welcome] .story-hero :is(.rise, .fade-up) { animation-play-state: paused; }
 
-/* Side menu (Nav.tsx). The button is solid so it stays legible over any section. */
+/* Side menu (Nav.tsx). The button is just two lines in ink; the panel is dark. */
 /* Scroll lock pads the page by the scrollbar's width (set in lib/scroll.ts), so nothing shifts. */
 html[data-scroll-lock] { overflow: hidden; padding-right: var(--scrollbar-w, 0px); }
-.menu-button {
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--line);
-  box-shadow: 0 6px 20px -10px var(--glass-shadow);
-  transition: background-color var(--dur-2) var(--ease-std);
+.menu-button { color: var(--text); }
+.menu-close { color: var(--on-ink); }
+.burger { position: relative; width: 1.75rem; height: 1.75rem; }
+.burger > span {
+  position: absolute;
+  left: 10%;
+  top: calc(50% - 1px);
+  width: 80%;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transition: transform var(--dur-3) var(--ease-out);
 }
-.menu-button:hover { background: var(--surface-2); }
+.burger > span:first-child { transform: translateY(-5px); }
+.burger > span:last-child { transform: translateY(5px); }
+@media (hover: hover) and (pointer: fine) {
+  .menu-button:not(.menu-close, [aria-expanded="true"]):hover .burger > span:first-child { transform: translateY(-5px) rotate(12deg); }
+  .menu-button:not(.menu-close, [aria-expanded="true"]):hover .burger > span:last-child { transform: translateY(5px) rotate(-12deg); }
+}
+/* Open: the lines cross into an X, on the open button and on the close button that takes its place. */
+.menu-button[aria-expanded="true"] .burger > span:first-child,
+.menu-close .burger > span:first-child { transform: rotate(45deg); }
+.menu-button[aria-expanded="true"] .burger > span:last-child,
+.menu-close .burger > span:last-child { transform: rotate(-45deg); }
+.menu-dialog[open] .menu-close .burger > span:first-child { animation: burger-top var(--dur-3) var(--ease-out); }
+.menu-dialog[open] .menu-close .burger > span:last-child { animation: burger-bottom var(--dur-3) var(--ease-out); }
+@keyframes burger-top { from { transform: translateY(-5px) rotate(12deg); } }
+@keyframes burger-bottom { from { transform: translateY(5px) rotate(-12deg); } }
 .menu-dialog {
   margin: 0 0 0 auto;
   /* A strip of backdrop stays visible on phones, so a tap outside always closes it. */
-  width: min(26rem, calc(100vw - 3rem));
+  width: min(30rem, calc(100vw - 3rem));
   height: 100dvh;
   max-width: none;
   max-height: none;
   padding: 0;
   border: 0;
-  background: var(--surface);
+  overflow: visible;
+  background: transparent;
+}
+/* The panel slides; the close button (outside it) stays fixed over the open button. */
+.menu-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  padding: 1.5rem clamp(1.5rem, 6vw, 3.5rem) 2rem;
+  background: var(--ink-panel);
+  color: var(--on-ink);
   box-shadow: -20px 0 60px -30px var(--glass-shadow);
 }
+.menu-label {
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--on-ink-muted);
+}
+.menu-label-rule { padding-bottom: 1.25rem; border-bottom: 1px solid var(--on-ink-line); }
+.menu-links { margin-top: 1.75rem; display: flex; flex-direction: column; }
+.menu-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  font-size: clamp(2.5rem, 1.9rem + 2.4vw, 3.75rem);
+  font-weight: var(--font-weight-display);
+  letter-spacing: var(--tracking-heading);
+  line-height: 1.15;
+}
+.menu-dot {
+  position: absolute;
+  left: -1.4rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--on-ink);
+  transform: scale(0);
+  transition: transform var(--dur-3) var(--ease-out);
+}
+.menu-dot[data-on] { transform: scale(1); }
+.menu-social { display: inline-flex; min-height: 2.75rem; align-items: center; font-weight: 500; transition: color var(--dur-2) var(--ease-std); }
+.menu-social:hover { color: var(--accent-fill); }
+.menu-lang { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 3rem; padding: 0 1rem; border-radius: 999px; border: 1px solid var(--on-ink-line); font-size: var(--text-xs); font-weight: 500; }
+.menu-lang a { display: inline-flex; align-items: center; min-height: 2.75rem; color: var(--on-ink-muted); transition: color var(--dur-2) var(--ease-std); }
+.menu-lang a:hover { color: var(--on-ink); }
 .menu-dialog::backdrop { background: var(--scrim); }
-.menu-dialog[open] { animation: menu-in var(--dur-3) var(--ease-out); }
+.menu-dialog[open] > .menu-panel { animation: menu-in var(--dur-3) var(--ease-out); }
 .menu-dialog[open]::backdrop { animation: fade-in var(--dur-3) var(--ease-out); }
 @keyframes menu-in { from { transform: translateX(100%); } }
 @keyframes fade-in { from { opacity: 0; } }
@@ -452,3 +551,141 @@ html:not(.js) .menu-dialog { display: block; position: static; width: auto; heig
   0%, 30% { background-color: var(--accent-soft); box-shadow: 0 0 0 2px var(--accent); }
   100% { background-color: transparent; box-shadow: 0 0 0 2px transparent; }
 }
+
+/* Generation (components/Thinking.tsx): each block "thinks", then streams in like a chat answer.
+   Only with JS and motion allowed; without them the content is simply there. */
+.thinking { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  html.js .thinking {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    pointer-events: none;
+    transition: opacity var(--dur-3) var(--ease-std), visibility var(--dur-3);
+  }
+  /* The hero's thinking sits in the middle of the screen, on its own, right after the welcome loader. */
+  html.js .thinking[data-center] { position: fixed; inset: 0; display: grid; place-items: center; padding: 1.25rem; }
+  html.js [data-gen="done"] > .thinking { opacity: 0; visibility: hidden; }
+
+  html.js [data-gen]:not([data-gen="done"]) > :not(.thinking):not([data-stream]),
+  html.js [data-gen]:not([data-gen="done"]) [data-stream] > :not([data-stream]),
+  html.js .story-list-wrap[data-wait] { opacity: 0; pointer-events: none; }
+  [data-gen="done"] > :not(.thinking):not([data-stream]),
+  [data-gen="done"] [data-stream] > :not([data-stream]) {
+    animation: stream-in var(--dur-4) var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 110ms);
+  }
+  .story-list-wrap { transition: opacity var(--dur-4) var(--ease-out); }
+}
+@keyframes stream-in { from { opacity: 0; transform: translateY(10px); } }
+
+.thinking-card {
+  min-width: min(22rem, calc(100vw - 2.5rem));
+  padding: 1rem 1.25rem 1.1rem;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 40px -28px var(--glass-shadow);
+}
+.thinking[data-center] .thinking-card { padding: 1.25rem 1.5rem 1.4rem; }
+.thinking-head { display: flex; align-items: center; gap: 0.6rem; font-weight: 500; }
+.thinking-dot {
+  width: 0.55rem; height: 0.55rem; border-radius: 50%;
+  background: var(--accent-fill);
+  animation: thinking-pulse 1.2s var(--ease-std) infinite;
+}
+@keyframes thinking-pulse { 50% { transform: scale(0.6); opacity: 0.5; } }
+/* A highlight sweeps through the label, like a model that is still working. */
+.thinking-label {
+  background: linear-gradient(90deg, var(--text-muted) 0%, var(--text-muted) 35%, var(--text) 50%, var(--text-muted) 65%, var(--text-muted) 100%) 0 0 / 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: thinking-shimmer 1.8s linear infinite;
+}
+@keyframes thinking-shimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+.thinking-steps {
+  margin-top: 0.6rem;
+  padding-left: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--text-muted);
+}
+.thinking-steps li { display: flex; gap: 0.5rem; line-height: 1.9; opacity: 0; }
+.thinking-steps li::before { content: "├"; color: var(--line-strong); }
+.thinking-steps li:last-child::before { content: "└"; }
+/* Steps arrive one by one across the thinking time; the newest one carries the cursor. */
+[data-gen="thinking"] > .thinking .thinking-steps li {
+  animation: thinking-step var(--dur-3) var(--ease-out) both;
+  animation-delay: calc(var(--ms) * 0.85 * var(--k) / var(--n));
+}
+.thinking-steps li:last-child::after {
+  content: "";
+  width: 0.45em;
+  height: 1.05em;
+  align-self: center;
+  background: var(--accent-fill);
+  animation: thinking-caret 0.9s steps(1) infinite;
+}
+@keyframes thinking-step { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes thinking-caret { 50% { opacity: 0; } }
+
+/* Progress pill (ProgressPill.tsx): top center, above the content, below the welcome loader and dialogs. */
+.progress-pill {
+  position: fixed;
+  top: max(1rem, env(safe-area-inset-top));
+  left: 50%;
+  z-index: 30;
+  transform: translateX(-50%);
+  /* Clear of the menu button on the right at any width. */
+  max-width: calc(100vw - 10rem);
+}
+.progress-button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  max-width: 100%;
+  padding: 0 0.9rem 0 1rem;
+  border-radius: 999px;
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+.progress-status { color: var(--text-muted); }
+@media (max-width: 639px) { .progress-button { gap: 0.4rem; padding: 0 0.6rem 0 0.8rem; } }
+.thinking-dot[data-still] { animation: none; }
+.progress-track { width: 3.5rem; height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.progress-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent-fill);
+  transform-origin: left;
+  transform: scaleX(var(--p, 0));
+}
+.progress-list {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 50%;
+  translate: -50% 0; /* separate from transform, which the open animation uses */
+  min-width: 15rem;
+  padding: 0.375rem;
+  font-size: var(--text-xs);
+  border-radius: var(--radius-card);
+  background: var(--glass-solid);
+}
+.progress-list[hidden] { display: none; }
+.progress-list:not([hidden]) { animation: dialog-in var(--dur-3) var(--ease-out); }
+.progress-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border-radius: var(--radius-chip);
+  color: var(--text-muted);
+  transition: background-color var(--dur-2) var(--ease-std), color var(--dur-2) var(--ease-std);
+}
+.progress-item:hover { background: var(--surface-2); color: var(--text); }
+.progress-item[aria-current] { background: var(--surface-2); color: var(--text); font-weight: 500; }

@@ -34,6 +34,19 @@
   --orb-c: rgb(160 175 200 / 0.14);
   --grain-opacity: 0.035;
 
+  /* Hologram panel (Hologram.tsx). Dark on purpose: the hologram is additive light and vanishes on paper.
+     The model color itself lives in HOLO.color (src/lib/hologram.ts); keep --holo in sync. */
+  --holo: #19f5d0;
+  --holo-panel: #0B1116;
+  --holo-panel-2: #121C24;
+  --holo-text: #9FB8C2;
+
+  /* Side menu (Nav.tsx): a dark ink panel over the light page. */
+  --ink-panel: #17191E;
+  --on-ink: #F5F6F8;
+  --on-ink-muted: #9AA1AD;
+  --on-ink-line: rgb(255 255 255 / 0.16);
+
   --dur-1: 120ms;
   --dur-2: 200ms;
   --dur-3: 320ms;
