@@ -30,6 +30,12 @@ test.describe('welcome loader', () => {
     await expect(page.locator('#welcome')).toBeHidden();
   });
 
+  test('?welcome replays it even after it was seen this session', async ({ page }) => {
+    await page.addInitScript(() => sessionStorage.setItem('welcomed', '1'));
+    await page.goto('/?welcome');
+    await expect(page.locator('#welcome')).toBeVisible();
+  });
+
   test('a click skips it', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('#welcome')).toBeVisible();

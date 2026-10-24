@@ -5,16 +5,11 @@ const dist = new URL('../dist/', import.meta.url);
 const ssr = new URL('../dist-ssr/', import.meta.url);
 const SITE = 'https://ernesto2604.github.io/';
 
-const { render, buildHead, messagesFor, welcomeSequence, WELCOME_STEP_MS } = await import(new URL('entry-server.js', ssr).href);
+const { render, buildHead, messagesFor, welcomeMarkup } = await import(new URL('entry-server.js', ssr).href);
 const template = await readFile(new URL('index.html', dist), 'utf8');
 const inline = async (file) => (await readFile(new URL(file, dist), 'utf8')).replace(/^(\/\/.*\n)+/, '').trim();
 const boot = await inline('boot.js');
 const welcomeJs = await inline('welcome.js');
-// Welcome overlay (hidden unless boot.js sets html[data-welcome]); decorative, so screen readers skip it.
-const welcome = (locale) => {
-  const words = welcomeSequence(locale);
-  return `<div id="welcome" aria-hidden="true" data-words='${JSON.stringify(words)}' data-step="${WELCOME_STEP_MS}"><span class="welcome-word">${words[0]}</span></div>`;
-};
 
 // The hero shows a neutral "photo pending" panel when no photo is set; that must never ship unnoticed.
 const profile = JSON.parse(await readFile(new URL('../src/content/profile.json', import.meta.url), 'utf8'));
@@ -41,7 +36,7 @@ for (const locale of ['en', 'es']) {
   const dir = locale === 'en' ? dist : new URL('es/', dist);
   await mkdir(dir, { recursive: true });
   await writeFile(new URL('index.html', dir), page(locale, `${buildHead(locale)}
-    ${localePreload(locale)}`, render(locale), welcome(locale)));
+    ${localePreload(locale)}`, render(locale), welcomeMarkup(locale)));
 }
 
 // 404: static, bilingual, no app bundle.

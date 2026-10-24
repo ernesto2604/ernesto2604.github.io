@@ -10,8 +10,9 @@
     if (matchMedia('(min-width: 1024px) and (min-height: 740px) and (prefers-reduced-motion: no-preference)').matches) d.setAttribute('data-pinned', '');
   } catch (e) {}
   try {
-    // Welcome loader (public/welcome.js): once per session, never with reduced motion or blocked storage.
-    if (!sessionStorage.getItem('welcomed') && !matchMedia('(prefers-reduced-motion: reduce)').matches) d.setAttribute('data-welcome', '');
+    // Welcome loader (public/welcome.js): once per session (?welcome replays it), never with reduced motion or blocked storage.
+    var seen = sessionStorage.getItem('welcomed') && !/[?&]welcome\b/.test(location.search);
+    if (!seen && !matchMedia('(prefers-reduced-motion: reduce)').matches) d.setAttribute('data-welcome', '');
   } catch (e) {}
   try {
     // Honor a stored language choice once; never redirect on /es/ so this cannot loop.

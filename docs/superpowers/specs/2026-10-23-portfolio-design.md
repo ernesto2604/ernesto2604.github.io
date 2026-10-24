@@ -373,7 +373,8 @@ the build prints a loud warning.
 `public/welcome.js` (inlined) plays `src/content/greetings.json` one word per 190 ms (10 words,
 1.9 s), ending on the page language (Welcome / Bienvenido), then fades into the hero, whose
 entrance waits under it. Shown only when `boot.js` sets `html[data-welcome]`: JS on, motion
-allowed, storage available and not yet seen this session (`sessionStorage.welcomed`). Click or
+allowed, storage available and not yet seen this session (`sessionStorage.welcomed`; `?welcome`
+in the URL replays it). The dev server injects the same overlay (`vite.config.ts`). Click or
 any key skips it. Fixed overlay outside the React root (no layout shift, no effect on
 hydration), `aria-hidden`, never traps focus, CSS failsafe hides it after 3 s. All greetings are
 Latin-1 so Inter's latin subset covers them (unit-tested); Turkish and other scripts were left out
