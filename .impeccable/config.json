@@ -14,6 +14,12 @@
         "value": "geist mono",
         "createdAt": "2026-10-23T22:06:55.251Z",
         "reason": "Font pairing in the design brief the user approved on 2026-10-23 (spec §4)"
+      },
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-10-24T14:27:18.294Z",
+        "reason": "User's redesign brief requires Inter for headlines and body (feat/light-redesign, 2026-10-24)"
       }
     ]
   }
