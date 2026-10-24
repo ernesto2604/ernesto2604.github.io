@@ -67,13 +67,14 @@ test('keyboard reaches the re-score chips in the pinned story and focus reveals 
   await expect(page.locator('.story-cap-retrieval')).toHaveClass(/is-active/, { timeout: 3000 });
 });
 
-test('deep link to the pinned case study opens it expanded, not as a collapsed strip', async ({ page }, info) => {
+test('deep link to a case study puts its card on top with the diagram drawn', async ({ page }, info) => {
   test.skip(info.project.name === 'mobile', 'pinned mode is desktop only');
-  await page.goto('/es/#ring-telemetryops');
+  await page.goto('/es/#hybrid-rag-api');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
-  await page.waitForTimeout(800);
-  const progress = await page.evaluate(() => Number(getComputedStyle(document.querySelector('.scene')!).getPropertyValue('--sp')));
-  expect(progress).toBeGreaterThan(0.4);
+  await expect(page.locator('#hybrid-rag-api')).toHaveAttribute('data-pos', 'current');
+  await expect(page.locator('#ring-telemetryops')).toHaveAttribute('data-pos', 'past');
+  const drawn = await page.evaluate(() => Number(getComputedStyle(document.querySelector('#hybrid-rag-api .diagram')!).getPropertyValue('--p')));
+  expect(drawn).toBeGreaterThan(0.95);
 });
 
 test('deep link into the story sets the matching phase', async ({ page }, info) => {

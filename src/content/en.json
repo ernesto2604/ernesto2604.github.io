@@ -129,9 +129,10 @@
     "decisions": "Key decisions",
     "stack": "Stack",
     "diagram": "Architecture",
-    "diagramText": "Architecture as a list",
     "repo": "Source on GitHub",
-    "demo": "Watch the demo"
+    "demo": "Watch the demo",
+    "viewList": "View as list",
+    "viewDiagram": "View diagram"
   },
   "cases": {
     "ring-telemetryops": {

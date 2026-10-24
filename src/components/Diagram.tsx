@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
+import { List, Workflow } from 'lucide-react';
 import { useMessages, useT } from '../i18n';
 import { DIAGRAMS, NODE_H, wrap } from './diagrams';
 
-// Accessible architecture diagram: role="img" with title/desc, plus the same flow as an ordered list.
+// Accessible architecture diagram: role="img" with title/desc, and a toggle that swaps it for the same flow as a list.
 // Drawing progress is the CSS variable --p (0..1): set by scroll in the pinned scene, or animated once on view.
 export default function Diagram({ slug, scrollDriven = false }: { slug: string; scrollDriven?: boolean }) {
   const t = useT();
@@ -12,11 +13,13 @@ export default function Diagram({ slug, scrollDriven = false }: { slug: string; 
   const ref = useRef<SVGSVGElement>(null);
   // Server HTML shows the finished drawing; on the client it resets and draws when seen.
   const [drawn, setDrawn] = useState(true);
+  const [asList, setAsList] = useState(false);
 
   useEffect(() => {
     if (scrollDriven) return;
     const el = ref.current!;
-    if (el.getBoundingClientRect().top < innerHeight) return;
+    // Already on screen: show it drawn (a re-run, e.g. React's dev double effect, must undo an earlier reset).
+    if (el.getBoundingClientRect().top < innerHeight) return setDrawn(true);
     setDrawn(false);
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) {
@@ -31,6 +34,20 @@ export default function Diagram({ slug, scrollDriven = false }: { slug: string; 
   const id = `dg-${slug}`;
   return (
     <figure className="m-0">
+      <div className="mb-3 flex items-center justify-between gap-4">
+        <span className="text-sm text-muted">{t('generate.diagram')}</span>
+        <button type="button" aria-pressed={asList} onClick={() => setAsList((v) => !v)} className="no-js-hide inline-flex min-h-9 items-center gap-2 rounded-full border border-line px-3.5 text-sm font-medium transition-colors duration-200 hover:border-line-strong hover:bg-surface-2">
+          {asList ? <Workflow className="size-4" aria-hidden="true" strokeWidth={1.75} /> : <List className="size-4" aria-hidden="true" strokeWidth={1.75} />}
+          {asList ? t('generate.viewDiagram') : t('generate.viewList')}
+        </button>
+      </div>
+      {asList ? (
+        <ol className="list-decimal space-y-1.5 pl-5 text-sm leading-relaxed text-muted marker:text-accent">
+          {c.steps.map((s) => (
+            <li key={s}>{s}</li>
+          ))}
+        </ol>
+      ) : (
       <div className="-mx-1 overflow-x-auto px-1 pb-1" tabIndex={0} role="region" aria-label={t(`cases.${slug}.diagramTitle`)}>
       <svg
         ref={ref}
@@ -38,7 +55,7 @@ export default function Diagram({ slug, scrollDriven = false }: { slug: string; 
         role="img"
         aria-labelledby={`${id}-t ${id}-d`}
         data-drawn={drawn}
-        className={`diagram h-auto w-full min-w-[620px] ${scrollDriven ? 'scroll-driven' : ''}`}
+        className={`diagram h-auto w-full min-w-[560px] ${scrollDriven ? 'scroll-driven' : ''}`}
         style={{ ['--n' as string]: n }}
       >
         <title id={`${id}-t`}>{t(`cases.${slug}.diagramTitle`)}</title>
@@ -80,14 +97,7 @@ export default function Diagram({ slug, scrollDriven = false }: { slug: string; 
         })}
       </svg>
       </div>
-      <details className="mt-4 text-sm text-muted">
-        <summary className="inline-flex min-h-11 cursor-pointer items-center hover:text-text">{t('generate.diagramText')}</summary>
-        <ol className="mt-2 list-decimal space-y-1.5 pl-5">
-          {c.steps.map((s) => (
-            <li key={s}>{s}</li>
-          ))}
-        </ol>
-      </details>
+      )}
     </figure>
   );
 }

@@ -382,22 +382,43 @@ html[data-pinned] .story-cap-retrieval:not(.is-active) .story-chips > * { opacit
   stroke: var(--surface);
   stroke-width: 4px;
 }
-/* Generate scene: the top project expands from a result-row strip, then its diagram draws. */
-html[data-pinned] .scene { height: 300vh; }
-html[data-pinned] .scene-stage {
+/* Generate scene (Generate.tsx). Pinned: the header stays left while the case cards deal in on the right like a
+   stacked deck, one per third of the scroll. The switch is a transition; each diagram draws with the scroll. */
+.gen-deck { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4rem; }
+.gen-stage > header { margin-bottom: 4rem; }
+.gen-counter { display: none; }
+.gen-card { box-shadow: 0 24px 60px -40px var(--glass-shadow); }
+html[data-pinned] .gen-scene { height: 340vh; }
+html[data-pinned] .gen-stage {
   position: sticky;
   top: 0;
   height: 100svh;
   display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  column-gap: clamp(2.5rem, 5vw, 4.5rem);
   align-items: center;
   padding-top: 4.5rem;
 }
-html[data-pinned] .scene .scene-panel {
-  --e: clamp(0, calc(var(--sp, 1) * 5), 1);
-  clip-path: inset(calc((1 - var(--e)) * 32%) calc((1 - var(--e)) * 4%) round 20px);
+html[data-pinned] .gen-stage > header { margin-bottom: 0; }
+html[data-pinned] .gen-counter { display: block; }
+html[data-pinned] .gen-deck { gap: 0; }
+html[data-pinned] .gen-card {
+  grid-area: 1 / 1;
+  z-index: calc(var(--k) + 1);
+  transform-origin: 50% 0;
+  transition: transform var(--dur-4) var(--ease-out), opacity var(--dur-3) var(--ease-std), filter var(--dur-4) var(--ease-std);
 }
-html[data-pinned] .scene .diagram.scroll-driven {
-  --p: clamp(0, calc((var(--sp, 1) - 0.22) / 0.6), 1);
+/* Cards already seen sink back, a little smaller and darker per step; the next one waits below the screen. */
+html[data-pinned] .gen-card[data-pos="past"] {
+  transform: translateY(calc(var(--d) * -14px)) scale(calc(1 - var(--d) * 0.05));
+  filter: brightness(0.95);
+  pointer-events: none;
+}
+html[data-pinned] .gen-card[data-pos="next"] { transform: translateY(100vh); opacity: 0; pointer-events: none; }
+/* The card must fit one screen, so the diagram gives up height first (it scales, centred). */
+html[data-pinned] .gen-card .diagram { max-height: min(330px, 36svh); }
+html[data-pinned] .gen-scene .diagram.scroll-driven {
+  --p: clamp(0, calc((var(--sp, 1) * 3 - var(--k)) / 0.7), 1);
   transition: none;
 }
 
@@ -567,6 +588,8 @@ html:not(.js) .menu-dialog { display: block; position: static; width: auto; heig
   }
   /* The hero's thinking sits in the middle of the screen, on its own, right after the welcome loader. */
   html.js .thinking[data-center] { position: fixed; inset: 0; display: grid; place-items: center; padding: 1.25rem; }
+  /* Fixed to the screen, so it only shows while the hero is actually thinking (not after a deep link elsewhere). */
+  html.js [data-gen="idle"] > .thinking[data-center] { display: none; }
   html.js [data-gen="done"] > .thinking { opacity: 0; visibility: hidden; }
 
   html.js [data-gen]:not([data-gen="done"]) > :not(.thinking):not([data-stream]),

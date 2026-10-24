@@ -129,9 +129,10 @@
     "decisions": "Decisiones clave",
     "stack": "Tecnologías",
     "diagram": "Arquitectura",
-    "diagramText": "La arquitectura en forma de lista",
     "repo": "Código en GitHub",
-    "demo": "Ver la demo"
+    "demo": "Ver la demo",
+    "viewList": "Ver como lista",
+    "viewDiagram": "Ver diagrama"
   },
   "cases": {
     "ring-telemetryops": {
