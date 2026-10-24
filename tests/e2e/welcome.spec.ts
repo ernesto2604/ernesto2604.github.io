@@ -22,12 +22,26 @@ test.describe('welcome loader', () => {
     await expect(page.locator('#welcome')).toContainText('Bienvenido', { timeout: 3000 });
   });
 
+  // A new navigation in the same session skips it; a reload (F5) plays it again (next test).
   test('is shown once per session', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('#welcome')).toBeHidden({ timeout: 4000 });
-    await page.reload();
+    await page.goto('/');
     await expect(page.locator('html')).not.toHaveAttribute('data-welcome', '');
     await expect(page.locator('#welcome')).toBeHidden();
+  });
+
+  test('a reload plays it again and opens on the hero, not the previous hash', async ({ page }) => {
+    await page.addInitScript(() => sessionStorage.setItem('welcomed', '1'));
+    await page.goto('/#rerank');
+    await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+    await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(0);
+    await page.reload();
+    await expect(page.locator('#welcome')).toBeVisible();
+    expect(new URL(page.url()).hash).toBe('');
+    await expect(page.locator('#welcome')).toBeHidden({ timeout: 4000 });
+    expect(await page.evaluate(() => scrollY)).toBe(0);
+    await expect(page.getByRole('heading', { level: 1, name: 'AI Engineer' })).toBeInViewport();
   });
 
   test('?welcome replays it even after it was seen this session', async ({ page }) => {
@@ -42,7 +56,8 @@ test.describe('welcome loader', () => {
     await page.mouse.click(200, 200);
     // Short timeout: the sequence would end by itself within ~2 s, so only an immediate skip passes.
     await expect(page.locator('html')).not.toHaveAttribute('data-welcome', '', { timeout: 300 });
-    await expect(page.locator('#welcome')).toBeHidden({ timeout: 1000 });
+    // Then the 560 ms fade-out finishes; generous wait so a busy machine does not flake.
+    await expect(page.locator('#welcome')).toBeHidden({ timeout: 2000 });
   });
 
   test('any key skips it and does not trap focus', async ({ page }) => {
