@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
-import { ArrowUpRight, Check, Copy, Mail, Send } from 'lucide-react';
-import Portrait from '../components/Portrait';
+import { ArrowUpRight, Send } from 'lucide-react';
+import ProfileCard from '../components/ui/ProfileCard';
+import StarBorder from '../components/ui/StarBorder';
 import Thinking, { useGenerate } from '../components/Thinking';
 import profile from '../content/profile.json';
 import { useMessages, useT } from '../i18n';
@@ -47,13 +48,14 @@ function MessageForm() {
       <input type="text" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       <label htmlFor="msg" className="text-sm text-muted">{t('contact.formTitle')}</label>
       <textarea id="msg" name="message" required maxLength={MAX} rows={4} placeholder={t('contact.messagePlaceholder')} className={`${field} resize-y py-3 leading-relaxed`} />
-      <label htmlFor="msg-email" className="sr-only">{t('contact.replyTo')}</label>
-      <input id="msg-email" name="email" type="email" autoComplete="email" placeholder={t('contact.replyTo')} className={`${field} h-12`} />
+      <label htmlFor="msg-contact" className="sr-only">{t('contact.replyTo')}</label>
+      <input id="msg-contact" name="contact" type="text" maxLength={200} placeholder={t('contact.replyTo')} className={`${field} h-12`} />
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <button type="submit" disabled={state === 'sending'} className="inline-flex h-12 items-center gap-2 rounded-full bg-text px-6 font-medium text-bg-0 transition-transform duration-200 hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-60">
+        {/* A star of the accent colour laps the dark pill. */}
+        <StarBorder as="button" type="submit" disabled={state === 'sending'} theme="dark" color="#FFB547" radius={24} sparkle className="h-12 px-6 py-0">
           <Send className="size-4" aria-hidden="true" strokeWidth={1.75} />
           {state === 'sending' ? t('contact.sending') : t('contact.send')}
-        </button>
+        </StarBorder>
         <p role="status" className={`text-sm ${state === 'error' ? 'text-accent' : 'text-ok'}`}>
           {state === 'sent' ? t('contact.sent') : state === 'error' ? t('contact.sendError', { email: profile.email }) : ''}
         </p>
@@ -64,34 +66,12 @@ function MessageForm() {
 
 function Contact() {
   const t = useT();
-  const [copied, setCopied] = useState(false);
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(profile.email);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2400);
-    } catch {
-      /* clipboard blocked: the mailto link still works */
-    }
-  };
   const row = 'flex min-h-14 items-center justify-between gap-4 rounded-card bg-surface px-5 transition-colors duration-200 hover:bg-surface-2';
 
   return (
     <div id="contact" className="scroll-mt-28">
       <h3 className="font-display text-3xl leading-none">{t('contact.title')}</h3>
       <p className="mt-4 max-w-[46ch] text-muted">{t('contact.lead')}</p>
-      <div className="mt-8 flex flex-wrap gap-3">
-        <a href={`mailto:${profile.email}`} className="inline-flex h-12 items-center gap-2.5 rounded-full bg-accent-fill px-6 font-medium text-accent-ink transition-transform duration-200 hover:-translate-y-0.5">
-          <Mail className="size-4" aria-hidden="true" strokeWidth={2} />
-          {profile.email}
-        </a>
-        <button type="button" onClick={copy} className="no-js-hide inline-flex h-12 items-center gap-2 rounded-full bg-surface-2 px-5 font-medium transition-colors duration-200 hover:bg-line">
-          {copied ? <Check className="size-4 text-ok" aria-hidden="true" /> : <Copy className="size-4" aria-hidden="true" strokeWidth={1.75} />}
-          {copied ? t('contact.copied') : t('contact.copy')}
-        </button>
-        <span className="sr-only" aria-live="polite">{copied ? t('contact.copied') : ''}</span>
-      </div>
       <MessageForm />
       <ul className="mt-8 grid gap-2">
         <li>
@@ -164,9 +144,22 @@ export default function Output() {
           </div>
         </div>
 
-        {/* The aside stretches to the column height so Contact can stay sticky once the photo scrolls past. */}
+        {/* The aside stretches to the column height so Contact can stay sticky once the card scrolls past. */}
         <aside aria-label={t('contact.title')} className="flex flex-col gap-12">
-          <Portrait className="mx-auto max-w-[26rem] lg:max-w-none" />
+          <ProfileCard
+            className="mx-auto"
+            theme="light"
+            backdropColor="#F6E2C0"
+            avatarUrl={`${profile.photo}-640.webp`}
+            miniAvatarUrl="/icon-192.png"
+            name={profile.name}
+            title={t('hero.role')}
+            handle="ernesto2604"
+            status={t('contact.status')}
+            statusColor="#1E7547"
+            contactText={t('contact.cardButton')}
+            contactHref={`mailto:${profile.email}`}
+          />
           <div className="lg:sticky lg:top-28">
             <Contact />
           </div>

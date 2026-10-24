@@ -235,14 +235,6 @@
     .hero-photo { aspect-ratio: 4 / 5; max-width: none; }
   }
 
-  /* Photo in Output (Portrait.tsx). Taller than the cutout (1099x1066) so the shoulders meet both edges. */
-  .portrait {
-    aspect-ratio: 1 / 1.1;
-    width: 100%;
-    overflow: hidden;
-    border-radius: var(--radius-panel);
-    background: var(--accent-soft);
-  }
 
   .score-fill { transition: transform var(--dur-5) var(--ease-out); }
 
