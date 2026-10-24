@@ -38,4 +38,19 @@ describe('buildHead', () => {
     expect(person.address.addressLocality).toBe('Madrid');
     expect(person.sameAs).toContain('https://github.com/ernesto2604');
   });
+
+  // The visible hero only says "AI Engineer"; FDE must stay in machine-readable metadata.
+  it.each(['en', 'es'] as const)('keeps Forward Deployed Engineer in title and JSON-LD for %s', (locale) => {
+    const html = buildHead(locale);
+    expect(html).toMatch(/<title>[^<]*Forward Deployed Engineer<\/title>/);
+    expect(ld(html).jobTitle).toContain('Forward Deployed Engineer');
+  });
+
+  it('preloads the hero photo as responsive AVIF with high priority', () => {
+    const tag = buildHead('en').match(/<link rel="preload" as="image"[^>]*>/)?.[0] ?? '';
+    expect(tag).toContain('type="image/avif"');
+    expect(tag).toContain('fetchpriority="high"');
+    expect(tag).toMatch(/imagesrcset="[^"]*-960\.avif 960w"/);
+    expect(tag).toContain('imagesizes="');
+  });
 });

@@ -2,7 +2,8 @@
   "meta": {
     "title": "Ernesto Contreras · AI Engineer y Forward Deployed Engineer",
     "description": "Ernesto Contreras construye sistemas de IA de principio a fin: RAG híbrido, agentes sobre Amazon Bedrock y los backends que los sostienen. En Madrid, con incorporación inmediata.",
-    "ogAlt": "Ernesto Contreras, AI Engineer y Forward Deployed Engineer"
+    "ogAlt": "Ernesto Contreras, AI Engineer y Forward Deployed Engineer",
+    "jobTitle": "AI Engineer · Forward Deployed Engineer"
   },
   "a11y": {
     "skip": "Saltar al contenido",
@@ -22,6 +23,11 @@
     "contact": "Contacto",
     "agent": "Pregunta al agente"
   },
+  "menu": {
+    "title": "Menú",
+    "open": "Abrir menú",
+    "close": "Cerrar menú"
+  },
   "stages": {
     "input": "Entrada",
     "retrieval": "Recuperación",
@@ -30,18 +36,19 @@
     "output": "Salida"
   },
   "hero": {
-    "queryLabel": "Consulta entrante",
-    "query": "¿Quién es Ernesto y qué ha construido?",
-    "name": "Ernesto Contreras",
-    "role": "AI Engineer · Forward Deployed Engineer",
+    "role": "AI Engineer",
+    "greeting": "Hola, soy Ernesto.",
     "valueProp": "Construyo sistemas de IA de principio a fin: recuperación, agentes y el backend que los hace fiables. Y dejo por escrito lo que todavía no saben hacer.",
-    "location": "Madrid, España",
-    "availability": "Incorporación inmediata · abierto a cambiar de ciudad y a modelo híbrido",
+    "photoAlt": "Ernesto Contreras, retrato de hombros para arriba con traje oscuro, camisa blanca y corbata",
+    "photoPending": "Foto pendiente",
     "ctaAgent": "Pregunta al agente",
     "ctaWork": "Ver proyectos",
-    "kbdHint": "Ctrl K"
+    "kbdHint": "Ctrl K",
+    "name": "Ernesto Contreras"
   },
   "retrieval": {
+    "queryLabel": "Consulta entrante",
+    "query": "¿Quién es Ernesto y qué ha construido?",
     "title": "Seis repositorios recuperados",
     "expansionLabel": "Consulta ampliada a",
     "expansionNote": "Ampliación escrita a mano para esta página.",

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { ArrowDown, ArrowDownRight, ArrowUpRight, MapPin, Minus } from 'lucide-react';
-import TypedText from '../components/TypedText';
+import { ArrowDown, ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react';
 import ScoreBar from '../components/ScoreBar';
 import { useShortcutLabel, openAgent, AGENT_READY } from '../components/Nav';
 import { fetchedAt } from '../data/repos';
@@ -10,6 +9,8 @@ import { projects, repoIndex, shortDate, type Project } from '../lib/projects';
 import { rankDeltas, rerank } from '../lib/rerank';
 import { PINNED_QUERY, isPinned, resolveAnchor, scrollToElement } from '../lib/scroll';
 import { search, tokenize } from '../lib/search';
+import { PHOTO_SIZE, PHOTO_SIZES, photoSrcSet } from '../lib/photo';
+import profile from '../content/profile.json';
 
 type Phase = 'input' | 'terms' | 'retrieval' | 'rerank';
 
@@ -34,6 +35,34 @@ function Caption({ stage, active, className = '', children }: { stage: 'input' |
     <div id={stage} data-stage={stage} data-mode="stacked" onFocusCapture={onFocus} className={`story-cap story-cap-${stage} relative ${active ? 'is-active' : ''} ${className}`}>
       {children}
     </div>
+  );
+}
+
+
+function Portrait() {
+  const t = useT();
+  // No photo configured: a neutral panel, never a stand-in face. The build warns loudly (scripts/prerender.mjs).
+  if (!profile.photo) {
+    return (
+      <div className="hero-photo grid place-items-center text-sm text-muted lg:order-2" data-photo="pending">
+        {t('hero.photoPending')}
+      </div>
+    );
+  }
+  return (
+    <picture className="hero-photo rise block lg:order-2">
+      <source type="image/avif" srcSet={photoSrcSet('avif')} sizes={PHOTO_SIZES} />
+      <img
+        src={`${profile.photo}-640.webp`}
+        srcSet={photoSrcSet('webp')}
+        sizes={PHOTO_SIZES}
+        width={PHOTO_SIZE.width}
+        height={PHOTO_SIZE.height}
+        alt={t('hero.photoAlt')}
+        fetchPriority="high"
+        className="size-full object-contain object-bottom"
+      />
+    </picture>
   );
 }
 
@@ -122,7 +151,7 @@ export default function Story() {
 
   const chip = (active: boolean) =>
     `min-h-11 rounded-full px-4 text-sm transition-colors duration-200 ${
-      active ? 'bg-accent text-accent-ink' : 'bg-surface-2 text-muted hover:text-text'
+      active ? 'bg-accent-fill text-accent-ink' : 'bg-surface-2 text-muted hover:text-text'
     }`;
 
   const listLabel = phase === 'rerank' ? '' : scored ? t('story.results') : t('story.corpus');
@@ -135,50 +164,35 @@ export default function Story() {
       ))}
 
       <div className="story-stage mx-auto max-w-6xl px-5 sm:px-8">
-        {/* 01 · Input */}
-        <Caption stage="input" active={phase === 'input'} className="story-hero flex min-h-[100svh] flex-col justify-center pb-16 pt-32">
-          <p className="flex items-center gap-2.5 text-sm text-muted">
-            <span aria-hidden="true" className="signal-dot" />
-            {t('hero.queryLabel')}
-          </p>
-          <p className="story-query mt-4 max-w-3xl font-display text-2xl font-light leading-snug text-muted sm:text-3xl">
-            <TypedText text={t('hero.query')} />
-          </p>
-          <h1 className="rise mt-10 font-display text-5xl font-light leading-[0.92] tracking-[-0.02em] story-h1">{t('hero.name')}</h1>
-          <p className="fade-up mt-5 text-lg font-medium tracking-tight sm:text-xl" style={{ animationDelay: '120ms' }}>
-            {t('hero.role')}
-          </p>
-          <p className="fade-up mt-4 max-w-[52ch] text-lg leading-relaxed text-muted" style={{ animationDelay: '220ms' }}>
-            {t('hero.valueProp')}
-          </p>
-          <ul className="fade-up mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted" style={{ animationDelay: '300ms' }}>
-            <li className="flex items-center gap-2">
-              <MapPin className="size-4" aria-hidden="true" strokeWidth={1.75} />
-              {t('hero.location')}
-            </li>
-            <li className="flex items-center gap-2">
-              <span aria-hidden="true" className="size-2 rounded-full bg-ok" />
-              {t('hero.availability')}
-            </li>
-          </ul>
-          <div className="fade-up mt-9 flex flex-wrap items-center gap-3" style={{ animationDelay: '380ms' }}>
-            <a href="#rerank" className="magnetic inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 font-medium text-accent-ink transition-transform duration-200 hover:-translate-y-0.5">
-              {t('hero.ctaWork')}
-              <ArrowDown className="size-4" aria-hidden="true" strokeWidth={2} />
-            </a>
-            {AGENT_READY && (
-              <button type="button" onClick={openAgent} className="no-js-hide inline-flex h-12 items-center gap-3 rounded-full bg-surface-2 pl-5 pr-2 font-medium transition-colors duration-200 hover:bg-line">
-                {t('hero.ctaAgent')}
-                <kbd className="kbd-hint whitespace-nowrap rounded-full bg-bg-0 px-2.5 py-1 font-mono text-[0.8125rem] text-muted">{shortcut}</kbd>
-              </button>
-            )}
+        {/* 01 · Input: the role, who I am, the two ways in, and the photo. */}
+        <Caption stage="input" active={phase === 'input'} className="story-hero grid min-h-[100svh] content-center gap-x-12 gap-y-8 pb-16 pt-24 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center">
+          <div className="lg:order-1">
+            <h1 className="hero-title rise">{t('hero.role')}</h1>
+            <p className="fade-up mt-6 max-w-[36ch] text-lg leading-relaxed sm:mt-8 sm:text-xl" style={{ animationDelay: '120ms' }}>
+              <span className="font-semibold">{t('hero.greeting')}</span> {t('hero.valueProp')}
+            </p>
+            <div className="fade-up mt-8 flex flex-wrap items-center gap-3 sm:mt-10" style={{ animationDelay: '220ms' }}>
+              <a href="#rerank" className="magnetic inline-flex h-12 items-center gap-2 rounded-full bg-accent-fill px-6 font-medium text-accent-ink transition-transform duration-200 hover:-translate-y-0.5">
+                {t('hero.ctaWork')}
+                <ArrowDown className="size-4" aria-hidden="true" strokeWidth={2} />
+              </a>
+              {AGENT_READY && (
+                <button type="button" onClick={openAgent} className="no-js-hide inline-flex h-12 items-center gap-3 rounded-full bg-surface-2 pl-5 pr-2 font-medium transition-colors duration-200 hover:bg-line">
+                  {t('hero.ctaAgent')}
+                  <kbd className="kbd-hint whitespace-nowrap rounded-full bg-surface px-2.5 py-1 font-mono text-[0.8125rem] text-muted">{shortcut}</kbd>
+                </button>
+              )}
+            </div>
           </div>
+          <Portrait />
         </Caption>
-
         {/* 02 · Retrieval */}
         <Caption stage="retrieval" active={phase === 'terms' || phase === 'retrieval'} className="pt-24 lg:pt-0">
           <Ghost n={2} />
-          <h2 className="relative font-display text-3xl font-light leading-[1.05] tracking-tight">{t('retrieval.title')}</h2>
+          {/* The query the scores answer: it opens Retrieval instead of the hero. */}
+          <p className="relative text-sm text-muted">{t('retrieval.queryLabel')}</p>
+          <p className="story-query relative mt-1 mb-6 text-xl font-medium tracking-tight">{t('retrieval.query')}</p>
+          <h2 className="relative font-display text-3xl leading-[1.05]">{t('retrieval.title')}</h2>
           <p className="relative mt-4 max-w-[46ch] text-muted">{t('retrieval.lead')}</p>
           <p className="relative mt-7 text-sm text-muted">{t('retrieval.expansionLabel')}</p>
           <div role="group" aria-label={t('retrieval.filterLabel')} className="story-chips relative mt-3 flex flex-wrap gap-2">
@@ -256,7 +270,7 @@ export default function Story() {
         <Caption stage="rerank" active={phase === 'rerank'} className="pb-24 pt-16 lg:pb-0 lg:pt-0">
           <div ref={rerankRef}>
             <Ghost n={3} />
-            <h2 className="relative font-display text-3xl font-light leading-[1.05] tracking-tight">{t('rerank.title')}</h2>
+            <h2 className="relative font-display text-3xl leading-[1.05]">{t('rerank.title')}</h2>
             <p className="relative mt-4 max-w-[46ch] text-muted">{t('rerank.lead')}</p>
             <p className="relative mt-5 max-w-[46ch] text-sm leading-relaxed text-muted">{t('rerank.rule')}</p>
             <a href="#generate" className="relative mt-8 inline-flex items-center gap-2 font-medium text-accent underline-offset-4 hover:underline">

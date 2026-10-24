@@ -2,6 +2,7 @@ import profile from '../content/profile.json';
 import type { Locale } from '../i18n';
 import { messagesFor } from '../i18n/messages';
 import { translate } from '../i18n/translate';
+import { PHOTO_SIZES, photoSrcSet } from '../lib/photo';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const urlFor = (locale: Locale) => profile.siteUrl + (locale === 'es' ? 'es/' : '');
@@ -19,7 +20,7 @@ export function buildHead(locale: Locale): string {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: profile.name,
-    jobTitle: t('hero.role'),
+    jobTitle: t('meta.jobTitle'),
     url,
     email: `mailto:${profile.email}`,
     address: { '@type': 'PostalAddress', addressLocality: profile.location.city, addressCountry: profile.location.country },
@@ -48,6 +49,10 @@ export function buildHead(locale: Locale): string {
     `<meta name="twitter:title" content="${title}">`,
     `<meta name="twitter:description" content="${description}">`,
     `<meta name="twitter:image" content="${image}">`,
+    // The hero photo is the LCP element on desktop: fetch it with the HTML instead of after hydration.
+    ...(profile.photo
+      ? [`<link rel="preload" as="image" type="image/avif" imagesrcset="${photoSrcSet('avif')}" imagesizes="${PHOTO_SIZES}" fetchpriority="high">`]
+      : []),
     `<script type="application/ld+json">${JSON.stringify(person).replace(/</g, '\\u003c')}</script>`,
   ].join('\n    ');
 }
