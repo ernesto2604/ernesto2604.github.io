@@ -50,7 +50,7 @@
   --text-lg: clamp(1.125rem, 1.06rem + 0.3vw, 1.375rem);
   --text-xl: clamp(1.375rem, 1.24rem + 0.55vw, 1.75rem);
   --text-2xl: clamp(1.75rem, 1.45rem + 1.2vw, 2.5rem);
-  --text-3xl: clamp(2.25rem, 1.6rem + 2.7vw, 4rem);
+  --text-3xl: clamp(2.125rem, 1.6rem + 2.2vw, 3.5rem);
   --text-4xl: clamp(3rem, 1.9rem + 4.6vw, 6.5rem);
   --text-5xl: clamp(3.5rem, 1.9rem + 6.6vw, 9.5rem);
 
@@ -226,12 +226,14 @@
   /* Taller than the cutout (1099x1066) so it fills the width and the shoulders meet both edges. */
   .hero-photo {
     aspect-ratio: 1 / 1.1;
+    width: 100%;
+    max-width: 28rem;
     overflow: hidden;
     border-radius: var(--radius-panel);
     background: var(--accent-soft);
   }
   @media (min-width: 1024px) {
-    .hero-photo { aspect-ratio: 4 / 5; }
+    .hero-photo { aspect-ratio: 4 / 5; max-width: none; }
   }
 
   .score-fill { transition: transform var(--dur-5) var(--ease-out); }
@@ -408,8 +410,8 @@ html[data-welcome] #welcome { animation: welcome-out var(--dur-4) var(--ease-std
 html[data-welcome] .story-hero :is(.rise, .fade-up) { animation-play-state: paused; }
 
 /* Side menu (Nav.tsx). The button is solid so it stays legible over any section. */
-html { scrollbar-gutter: stable; }
-html[data-scroll-lock] { overflow: hidden; }
+/* Scroll lock pads the page by the scrollbar's width (set in lib/scroll.ts), so nothing shifts. */
+html[data-scroll-lock] { overflow: hidden; padding-right: var(--scrollbar-w, 0px); }
 .menu-button {
   background: var(--surface);
   color: var(--text);
@@ -420,7 +422,8 @@ html[data-scroll-lock] { overflow: hidden; }
 .menu-button:hover { background: var(--surface-2); }
 .menu-dialog {
   margin: 0 0 0 auto;
-  width: min(24rem, 100vw);
+  /* A strip of backdrop stays visible on phones, so a tap outside always closes it. */
+  width: min(26rem, calc(100vw - 3rem));
   height: 100dvh;
   max-width: none;
   max-height: none;

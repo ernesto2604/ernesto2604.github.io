@@ -168,7 +168,7 @@ export default function Story() {
         <Caption stage="input" active={phase === 'input'} className="story-hero grid min-h-[100svh] content-center gap-x-12 gap-y-8 pb-16 pt-24 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center">
           <div className="lg:order-1">
             <h1 className="hero-title rise">{t('hero.role')}</h1>
-            <p className="fade-up mt-6 max-w-[36ch] text-lg leading-relaxed sm:mt-8 sm:text-xl" style={{ animationDelay: '120ms' }}>
+            <p className="fade-up mt-6 max-w-[42ch] text-lg leading-relaxed sm:mt-8 sm:text-xl" style={{ animationDelay: '120ms' }}>
               <span className="font-semibold">{t('hero.greeting')}</span> {t('hero.valueProp')}
             </p>
             <div className="fade-up mt-8 flex flex-wrap items-center gap-3 sm:mt-10" style={{ animationDelay: '220ms' }}>
@@ -177,9 +177,9 @@ export default function Story() {
                 <ArrowDown className="size-4" aria-hidden="true" strokeWidth={2} />
               </a>
               {AGENT_READY && (
-                <button type="button" onClick={openAgent} className="no-js-hide inline-flex h-12 items-center gap-3 rounded-full bg-surface-2 pl-5 pr-2 font-medium transition-colors duration-200 hover:bg-line">
+                <button type="button" onClick={openAgent} className="no-js-hide inline-flex h-12 items-center gap-3 rounded-full bg-surface pl-5 pr-2 font-medium transition-colors duration-200 hover:bg-surface-2">
                   {t('hero.ctaAgent')}
-                  <kbd className="kbd-hint whitespace-nowrap rounded-full bg-surface px-2.5 py-1 font-mono text-[0.8125rem] text-muted">{shortcut}</kbd>
+                  <kbd className="kbd-hint whitespace-nowrap rounded-full bg-surface-2 px-2.5 py-1 font-mono text-[0.8125rem] text-muted">{shortcut}</kbd>
                 </button>
               )}
             </div>
@@ -188,11 +188,13 @@ export default function Story() {
         </Caption>
         {/* 02 · Retrieval */}
         <Caption stage="retrieval" active={phase === 'terms' || phase === 'retrieval'} className="pt-24 lg:pt-0">
-          <Ghost n={2} />
           {/* The query the scores answer: it opens Retrieval instead of the hero. */}
-          <p className="relative text-sm text-muted">{t('retrieval.queryLabel')}</p>
-          <p className="story-query relative mt-1 mb-6 text-xl font-medium tracking-tight">{t('retrieval.query')}</p>
-          <h2 className="relative font-display text-3xl leading-[1.05]">{t('retrieval.title')}</h2>
+          <p className="text-sm text-muted">{t('retrieval.queryLabel')}</p>
+          <p className="story-query mt-1 mb-10 text-xl font-medium tracking-tight">{t('retrieval.query')}</p>
+          <div className="relative">
+            <Ghost n={2} />
+            <h2 className="relative font-display text-3xl leading-[1.05]">{t('retrieval.title')}</h2>
+          </div>
           <p className="relative mt-4 max-w-[46ch] text-muted">{t('retrieval.lead')}</p>
           <p className="relative mt-7 text-sm text-muted">{t('retrieval.expansionLabel')}</p>
           <div role="group" aria-label={t('retrieval.filterLabel')} className="story-chips relative mt-3 flex flex-wrap gap-2">
@@ -227,7 +229,7 @@ export default function Story() {
               return (
                 <li key={p.slug} data-flip={p.slug} style={{ order: pos }} className="story-row">
                   {groupLabel && <p className="mb-1.5 mt-2 text-sm text-muted first:mt-0">{featured ? t('rerank.featured') : t('rerank.alsoBuilt')}</p>}
-                  <div className={`grid gap-x-6 gap-y-3 sm:grid-cols-[minmax(0,1fr)_9.5rem] sm:items-start rounded-card px-5 py-3 transition-colors duration-300 ${phase === 'rerank' && featured ? 'bg-surface-2' : 'bg-surface'}`}>
+                  <div className={`grid gap-x-6 gap-y-3 sm:grid-cols-[minmax(0,1fr)_9.5rem] sm:items-start rounded-card px-5 py-3 transition-colors duration-300 ${phase === 'rerank' && !featured ? 'bg-surface-2' : 'bg-surface'}`}>
                     <div className="min-w-0">
                       <a href={href} className="inline-flex items-center gap-1.5 text-lg font-medium tracking-tight hover:text-accent">
                         {name(p)}

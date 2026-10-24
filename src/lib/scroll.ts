@@ -37,9 +37,11 @@ export function scrollToElement(el: HTMLElement, immediate = false) {
   else window.scrollTo({ top: y, behavior: immediate || reduce ? 'auto' : 'smooth' });
 }
 
-// Freezes page scrolling while a modal panel is open. CSS keeps the scrollbar gutter, so nothing shifts.
+// Freezes page scrolling while a modal panel is open. The page is padded by the scrollbar it hides, so nothing shifts.
 export function setScrollLock(on: boolean) {
-  document.documentElement.toggleAttribute('data-scroll-lock', on);
+  const html = document.documentElement;
+  if (on) html.style.setProperty('--scrollbar-w', `${innerWidth - html.clientWidth}px`);
+  html.toggleAttribute('data-scroll-lock', on);
   if (on) lenis?.stop();
   else lenis?.start();
 }

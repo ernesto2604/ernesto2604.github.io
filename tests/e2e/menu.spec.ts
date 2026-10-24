@@ -48,8 +48,7 @@ test.describe('side menu', () => {
     // A modal <dialog> makes the rest of the page inert: page controls cannot take focus.
     const cta = page.locator('.story-hero a[href="#rerank"]');
     expect(await cta.evaluate((el: HTMLElement) => (el.focus(), document.activeElement === el))).toBe(false);
-    const width = page.viewportSize()!.width;
-    await page.mouse.click(Math.min(20, width / 10), 200);
+    await page.mouse.click(12, 200);
     await expect(page.locator('#site-menu')).toBeHidden();
     await expect(page.locator('html')).not.toHaveAttribute('data-scroll-lock', '');
     expect(await cta.evaluate((el: HTMLElement) => (el.focus(), document.activeElement === el))).toBe(true);
