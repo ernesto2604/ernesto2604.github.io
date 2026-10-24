@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 async function seriousViolations(page: Page) {
   await page.waitForTimeout(1500); // let entrance animations finish so contrast is measured at rest
@@ -25,6 +26,27 @@ for (const path of ['/', '/es/']) {
     await context.close();
   });
 }
+
+for (const [path, open] of [['/', 'Open menu'], ['/es/', 'Abrir menú']]) {
+  test(`${path} with the side menu open has no critical or serious axe violations`, async ({ page }) => {
+    await page.goto(path);
+    await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+    await page.getByRole('button', { name: open }).click();
+    await expect(page.locator('#site-menu')).toBeVisible();
+    expect(await seriousViolations(page)).toEqual([]);
+  });
+}
+
+test('/es/ with the agent panel open has no critical or serious axe violations', async ({ page }) => {
+  await page.goto('/es/');
+  await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+  await page.keyboard.press('Control+k');
+  await expect(page.getByRole('textbox')).toBeFocused();
+  await page.keyboard.type('ring');
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('dialog').getByText(/Ring TelemetryOps/).first()).toBeVisible({ timeout: 15000 });
+  expect(await seriousViolations(page)).toEqual([]);
+});
 
 test('the open agent panel has no critical or serious axe violations', async ({ page }) => {
   await page.goto('/');

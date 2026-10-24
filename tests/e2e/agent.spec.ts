@@ -1,12 +1,14 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 
 test.describe('agent', () => {
-  test('keyboard only: open with the button, ask, read tool calls and answer, close with Escape', async ({ page }, info) => {
-    test.skip(info.project.name === 'mobile', 'nav button text is hidden on small screens; covered on desktop');
+  test('keyboard only: open from the menu, ask, read tool calls and answer, close with Escape', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
-    const button = page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: /Ask the agent/ });
+    // The agent entry lives in the side menu; the menu closes first, so focus returns to the menu button.
+    const button = page.getByRole('button', { name: 'Open menu' });
     await button.focus();
+    await page.keyboard.press('Enter');
+    await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: /Ask the agent/ }).focus();
     await page.keyboard.press('Enter');
     const dialog = page.getByRole('dialog', { name: 'Ask about Ernesto' });
     await expect(dialog).toBeVisible();

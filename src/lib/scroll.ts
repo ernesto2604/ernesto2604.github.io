@@ -5,7 +5,7 @@ export const PINNED_QUERY = '(min-width: 1024px) and (min-height: 740px) and (pr
 
 export const isPinned = () => document.documentElement.hasAttribute('data-pinned');
 
-type Scroller = { scrollTo(target: number, opts?: { immediate?: boolean }): void };
+type Scroller = { scrollTo(target: number, opts?: { immediate?: boolean }): void; stop(): void; start(): void };
 let lenis: Scroller | null = null;
 export const registerScroller = (s: Scroller | null) => {
   lenis = s;
@@ -35,4 +35,11 @@ export function scrollToElement(el: HTMLElement, immediate = false) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (lenis && !immediate) lenis.scrollTo(y);
   else window.scrollTo({ top: y, behavior: immediate || reduce ? 'auto' : 'smooth' });
+}
+
+// Freezes page scrolling while a modal panel is open. CSS keeps the scrollbar gutter, so nothing shifts.
+export function setScrollLock(on: boolean) {
+  document.documentElement.toggleAttribute('data-scroll-lock', on);
+  if (on) lenis?.stop();
+  else lenis?.start();
 }
