@@ -17,8 +17,8 @@ Rulings and deferred minors are listed in the final delivery report (the executi
 - Hero: no location/availability line (not confirmed by Ernesto). Meta description and About still say
   "Madrid, available now"; review those.
 - Checks: build, typecheck, 122 unit and 78 e2e (6 skipped by design) passing; axe 0 critical/serious in
-  EN/ES, stacked, menu open and agent open. Lighthouse mobile (3 runs each) EN 94-95/100/100/100,
-  ES 95/100/100/100 (dark baseline: EN 93-96, ES 90-94). Fonts 110.6 KB -> 96.0 KB.
+  EN/ES, stacked, menu open and agent open. Lighthouse mobile (3 runs each, final build) EN 95-96/100/100/100,
+  ES 94-95/100/100/100 (dark baseline: EN 93-96, ES 90-94). Fonts 110.6 KB -> 96.0 KB.
 - Photo pipeline: `python scripts/photo.py` (Pillow with AVIF). Original in `assets-src/foto.png`.
 
 ## Built
