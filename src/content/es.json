@@ -462,7 +462,7 @@
     "cardButton": "Contactar"
   },
   "footer": {
-    "status": "status 200 · 5 etapas · el agente hace 0 peticiones de red",
+    "status": "status 200 · 4 etapas · el agente hace 0 peticiones de red",
     "built": "Hecha con Vite, React y TypeScript. Estática, alojada en GitHub Pages. Sin cookies ni rastreadores.",
     "source": "Código de esta web",
     "top": "Volver arriba",

@@ -42,6 +42,7 @@ export function scrollToElement(el: HTMLElement, immediate = false) {
 
 // While a link or the agent scrolls the page, crossing a seam must not trigger a section swap.
 let guided = 0;
+export const isGuided = () => performance.now() < guided;
 
 export function scrollToY(y: number, immediate = false) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -50,7 +51,8 @@ export function scrollToY(y: number, immediate = false) {
     else window.scrollTo({ top: y, behavior: 'auto' });
     return;
   }
-  guided = performance.now() + 2000;
+  // Lenis reports the end; the cap only covers native smooth scrolling (no callback) or an interrupted scroll.
+  guided = performance.now() + 6000;
   if (lenis) lenis.scrollTo(y, { onComplete: () => (guided = 0) });
   else window.scrollTo({ top: y, behavior: 'smooth' });
 }

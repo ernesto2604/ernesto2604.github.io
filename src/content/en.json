@@ -462,7 +462,7 @@
     "cardButton": "Contact"
   },
   "footer": {
-    "status": "status 200 · 5 stages · the agent sends 0 network requests",
+    "status": "status 200 · 4 stages · the agent sends 0 network requests",
     "built": "Built with Vite, React and TypeScript. Static, hosted on GitHub Pages. No cookies, no trackers.",
     "source": "Source of this site",
     "top": "Back to the top",

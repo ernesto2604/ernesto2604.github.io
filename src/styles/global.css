@@ -601,12 +601,14 @@ html:not(.js) .menu-dialog { display: block; position: static; width: auto; heig
     left: 0;
     z-index: 5;
     pointer-events: none;
-    transition: opacity var(--dur-3) var(--ease-std), visibility var(--dur-3);
+    transition: opacity var(--dur-2) var(--ease-std), visibility var(--dur-2);
   }
   /* The hero's thinking sits in the middle of the screen, on its own, right after the welcome loader. */
   html.js .thinking[data-center] { position: fixed; inset: 0; display: grid; place-items: center; padding: 1.25rem; }
-  /* Fixed to the screen, so it only shows while the hero is actually thinking (not after a deep link elsewhere). */
-  html.js [data-gen="idle"] > .thinking[data-center] { display: none; }
+  /* A card only shows while its block is actually thinking: never as a placeholder for a block not yet reached. */
+  html.js [data-gen="idle"] > .thinking { display: none; }
+  /* A pinned caption that is not the current phase never shows its card (the hero's is fixed to the screen). */
+  html[data-pinned] .story-cap:not(.is-active) > .thinking { display: none; }
   html.js [data-gen="done"] > .thinking { opacity: 0; visibility: hidden; }
 
   html.js [data-gen]:not([data-gen="done"]) > :not(.thinking):not([data-stream]),
@@ -615,11 +617,16 @@ html:not(.js) .menu-dialog { display: block; position: static; width: auto; heig
   [data-gen="done"] > :not(.thinking):not([data-stream]),
   [data-gen="done"] [data-stream] > :not([data-stream]) {
     animation: stream-in var(--dur-4) var(--ease-out) both;
-    animation-delay: calc(var(--i, 0) * 110ms);
+    /* Starts once the card has faded (--dur-2), so the answer never appears under the thinking message. */
+    animation-delay: calc(var(--dur-2) + 60ms + var(--i, 0) * 110ms);
   }
   .story-list-wrap { transition: opacity var(--dur-4) var(--ease-out); }
 }
 @keyframes stream-in { from { opacity: 0; transform: translateY(10px); } }
+/* Finished instantly (left mid-thought, or landed on by a link): no card fading out over the content. */
+[data-gen-instant] > .thinking { display: none !important; }
+[data-gen-instant][data-gen="done"] > :not(.thinking):not([data-stream]),
+[data-gen-instant][data-gen="done"] [data-stream] > :not([data-stream]) { animation: none !important; }
 
 .thinking-card {
   min-width: min(22rem, calc(100vw - 2.5rem));

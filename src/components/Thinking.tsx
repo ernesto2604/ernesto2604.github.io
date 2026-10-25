@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useMessages, useT } from '../i18n';
+import { isGuided } from '../lib/scroll';
 
 export type GenState = 'idle' | 'thinking' | 'done';
 type Block = 'hero' | 'retrieval' | 'generate' | 'output';
@@ -12,6 +13,9 @@ const STREAM = ':scope > :not(.thinking):not([data-stream]), :scope [data-stream
 // so no-JS readers, crawlers and screen readers get it; reduced motion skips straight to done.
 // For whole-screen sections that settle at the top: start once their top is in the upper 30% of the screen.
 export const SETTLED = '0px 0px -70% 0px';
+// A block must stay on screen this long before it thinks, so a link jump or a fast scroll that only passes
+// through it never leaves its (often fixed, centred) thinking card over another section.
+const SETTLE_MS = 180;
 
 // `margin` is the IntersectionObserver rootMargin: whole-screen sections wait until they reach the top.
 export function useGenerate<T extends HTMLElement>(ms: number, when = true, margin = '0px 0px -20% 0px') {
@@ -27,36 +31,63 @@ export function useGenerate<T extends HTMLElement>(ms: number, when = true, marg
     let inView = false;
     let started = false;
     let timer = 0;
+    let settle = 0;
 
-    const finish = () => {
+    // instant: the block was left mid-thought or landed on by focus; it shows at once, with no card fading over it.
+    const finish = (instant = false) => {
       clearTimeout(timer);
+      clearTimeout(settle);
+      if (instant) el.setAttribute('data-gen-instant', '');
       el.querySelectorAll<HTMLElement>(STREAM).forEach((n, i) => n.style.setProperty('--i', String(i)));
       setState('done');
       stop();
     };
+    // The welcome loader covers the page; thinking starts once it has lifted.
+    const ready = () => !started && inView && whenRef.current && !html.hasAttribute('data-welcome');
     const tryStart = () => {
-      // The welcome loader covers the page; thinking starts once it has lifted.
-      if (started || !inView || !whenRef.current || html.hasAttribute('data-welcome')) return;
-      started = true;
-      setState('thinking');
-      timer = window.setTimeout(finish, ms);
+      if (!ready()) return;
+      clearTimeout(settle);
+      settle = window.setTimeout(() => {
+        // Re-check where it really is: an observer update can lag behind a fast jump.
+        const r = el.getBoundingClientRect();
+        if (r.bottom <= 0 || r.top >= innerHeight) inView = false;
+        if (!ready()) return;
+        // Already well past its start (a fast scroll to the footer, say): show it, don't think over what follows.
+        if (r.top < -innerHeight * 0.5) return finish(true);
+        if (isGuided()) return tryStart(); // a link is still scrolling the page past it
+        started = true;
+        frame = requestAnimationFrame(watch);
+        setState('thinking');
+        timer = window.setTimeout(() => finish(), ms);
+      }, SETTLE_MS);
     };
     tryRef.current = tryStart;
 
     const io = new IntersectionObserver(
       ([entry]) => {
         inView = entry.isIntersecting;
+        if (!inView && started) return finish(true);
         tryStart();
       },
       { rootMargin: margin },
     );
     const welcome = new MutationObserver(tryStart);
     // Keyboard users never tab into faded content: focusing inside finishes the block at once.
-    const onFocus = () => finish();
+    const onFocus = () => finish(true);
+    // While thinking, check every frame (smooth scrolling moves the page inside its own animation frame, before
+    // the scroll event and the observer catch up): once the block is off screen, or well past its start, it ends
+    // in that same frame, so its card is never painted over another section.
+    let frame = 0;
+    const watch = () => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= innerHeight || r.top < -innerHeight * 0.5) return finish(true);
+      frame = requestAnimationFrame(watch);
+    };
     const stop = () => {
       io.disconnect();
       welcome.disconnect();
       el.removeEventListener('focusin', onFocus);
+      cancelAnimationFrame(frame);
       tryRef.current = () => {};
     };
     io.observe(el);
@@ -64,6 +95,7 @@ export function useGenerate<T extends HTMLElement>(ms: number, when = true, marg
     el.addEventListener('focusin', onFocus);
     return () => {
       clearTimeout(timer);
+      clearTimeout(settle);
       stop();
     };
   }, [ms, margin]);
