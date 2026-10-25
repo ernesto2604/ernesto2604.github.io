@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="mt-6 flex flex-col gap-6 text-sm text-muted md:flex-row md:items-end md:justify-between">
           <p className="max-w-[52ch]">{t('footer.built')}</p>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            <a href="https://github.com/ernesto2604/ernesto2604.github.io" className="inline-flex min-h-11 items-center hover:text-text">
+            <a href="https://github.com/ernesto2604/portfolio" className="inline-flex min-h-11 items-center hover:text-text">
               {t('footer.source')}
             </a>
             <a href="#main" className="inline-flex min-h-11 items-center gap-1.5 hover:text-text">
