@@ -481,7 +481,6 @@
     "working": "Consultando",
     "howTitle": "Cómo funciona",
     "how": "Este agente funciona con respuestas guionizadas y se ejecuta entero en tu navegador. Compara tu pregunta con una pequeña base de conocimiento bilingüe usando el mismo buscador BM25 de esta página, enseña las consultas reales que hace a datos locales y después escribe una respuesta preparada de antemano. Sin LLM, sin peticiones de red y sin guardar nada.",
-    "source": "Ver el código",
     "targets": {
       "retrieval": "Ver los proyectos",
       "ring-telemetryops": "Abrir el caso de Ring",

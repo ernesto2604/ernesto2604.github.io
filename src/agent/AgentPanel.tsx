@@ -220,9 +220,6 @@ export default function AgentPanel({ dialogRef }: { dialogRef: React.RefObject<H
       <details className="px-5 pb-4 text-sm text-muted">
         <summary className="inline-flex min-h-11 cursor-pointer items-center hover:text-text">{t('agent.howTitle')}</summary>
         <p className="mt-1 leading-relaxed">{t('agent.how')}</p>
-        <a href="https://github.com/ernesto2604/ernesto2604.github.io/tree/main/src/agent" className="mt-2 inline-flex min-h-11 items-center text-accent underline-offset-4 hover:underline">
-          {t('agent.source')}
-        </a>
       </details>
     </div>
   );

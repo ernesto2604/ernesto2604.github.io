@@ -139,7 +139,7 @@ export default function Story() {
             {/* Plain text in the HTML (no-JS, crawlers, first paint); it unfolds once the hero has finished thinking. */}
             <h1 className="hero-title">
               {heroGen.state === 'done' ? (
-                <FoldText text={t('hero.role')} fontSize="1em" fontWeight="inherit" duration={0.8} stagger={0.05} style={{ lineHeight: 'inherit', letterSpacing: 'inherit' }} />
+                <FoldText text={t('hero.role')} fontSize="1em" fontWeight="inherit" duration={0.8} stagger={0.05} hoverRefold refoldRadius={160} refoldAngle={45} style={{ lineHeight: 'inherit', letterSpacing: 'inherit' }} />
               ) : (
                 t('hero.role')
               )}

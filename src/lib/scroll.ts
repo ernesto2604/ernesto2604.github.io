@@ -34,7 +34,9 @@ export function focusTarget(id: string) {
 }
 
 export function scrollToElement(el: HTMLElement, immediate = false) {
-  const offset = isPinned() && el.hasAttribute('data-anchor') ? 0 : 88;
+  // Pinned story points and section seams are whole screens: land on them exactly, never just short of a seam
+  // (that would leave the previous section on screen and the next one waiting to swap in).
+  const offset = isPinned() && (el.hasAttribute('data-anchor') || el.hasAttribute('data-seam')) ? 0 : 88;
   scrollToY(el.getBoundingClientRect().top + window.scrollY - offset, immediate);
 }
 

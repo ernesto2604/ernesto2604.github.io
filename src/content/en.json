@@ -481,7 +481,6 @@
     "working": "Looking it up",
     "howTitle": "How this works",
     "how": "This agent is scripted and runs entirely in your browser. It scores your question against a small bilingual knowledge base with the same BM25 scorer used on this page, shows the real lookups it makes in local data, then streams a pre-written answer. No LLM, no network requests, nothing stored.",
-    "source": "See the code",
     "targets": {
       "retrieval": "See the projects",
       "ring-telemetryops": "Open the Ring case study",

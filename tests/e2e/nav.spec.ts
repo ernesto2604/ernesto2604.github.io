@@ -83,3 +83,15 @@ test('scrolling into a section seam swaps the next section in at the top', async
   await page.mouse.wheel(0, 240);
   await expect.poll(seamTop, { timeout: 5000 }).toBe(0);
 });
+
+test('"Read the case studies" lands on section 03 with its content on screen', async ({ page }, info) => {
+  test.skip(info.project.name === 'mobile', 'pinned desktop layout');
+  await page.goto('/#retrieval');
+  await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+  await page.waitForSelector('html.lenis', { state: 'attached' }); // smooth scrolling is loaded after hydration
+  await page.getByRole('link', { name: 'Read the case studies' }).click();
+  // Generous: under a parallel run the software-rendered hologram starves the smooth-scroll frames.
+  await expect.poll(() => page.evaluate(() => Math.round(document.getElementById('generate')!.getBoundingClientRect().top)), { timeout: 20000 }).toBe(0);
+  await expect(page.getByRole('heading', { level: 2, name: 'Three systems, from the inside' })).toBeInViewport({ timeout: 5000 });
+  await expect(page.getByRole('button', { name: 'Open Ring TelemetryOps' })).toBeInViewport();
+});
