@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { ArrowUpRight, Send } from 'lucide-react';
 import ProfileCard from '../components/ui/ProfileCard';
 import StarBorder from '../components/ui/StarBorder';
-import Thinking, { useGenerate } from '../components/Thinking';
+import Thinking, { SETTLED, useGenerate } from '../components/Thinking';
 import profile from '../content/profile.json';
 import { useMessages, useT } from '../i18n';
 
@@ -95,13 +95,14 @@ const THINK_MS = 1200;
 
 export default function Output() {
   const t = useT();
-  const gen = useGenerate<HTMLDivElement>(THINK_MS);
+  const gen = useGenerate<HTMLDivElement>(THINK_MS, true, SETTLED);
   const o = useMessages().output;
   return (
-    <section id="output" data-stage="output" aria-labelledby="output-title" className="scroll-mt-24 px-5 py-24 sm:px-8 md:py-36">
+    <section id="output" data-stage="output" data-seam aria-labelledby="output-title" className="scroll-mt-24 px-5 py-24 sm:px-8 md:py-36">
       <div ref={gen.ref} data-gen={gen.state} className="relative mx-auto grid max-w-6xl gap-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
-        <Thinking block="output" ms={THINK_MS} />
-        <div data-stream>
+        <Thinking block="output" ms={THINK_MS} center />
+        {/* Both columns push their last block to the bottom of the row, so Experience/Languages end level with the contact links. */}
+        <div data-stream className="lg:flex lg:flex-col">
           <header className="relative">
             <span aria-hidden="true" className="ghost-numeral" data-n="04" />
             <h2 id="output-title" className="relative font-display text-3xl leading-[1.05]">{o.title}</h2>
@@ -112,7 +113,7 @@ export default function Output() {
             ))}
           </div>
 
-          <div className="mt-16 grid gap-12 sm:grid-cols-2">
+          <div className="mt-16 grid gap-12 sm:grid-cols-2 lg:mt-auto lg:pt-16">
             <div>
               <h3 className="text-xl font-medium tracking-tight">{o.experienceTitle}</h3>
               {o.experience.map((e) => (
@@ -126,7 +127,7 @@ export default function Output() {
                 </div>
               ))}
             </div>
-            <div>
+            <div className="flex flex-col">
               <h3 className="text-xl font-medium tracking-tight">{o.educationTitle}</h3>
               <ul className="mt-6 space-y-5">
                 {o.education.map((e) => (
@@ -136,22 +137,23 @@ export default function Output() {
                   </li>
                 ))}
               </ul>
-              <h3 className="mt-10 text-xl font-medium tracking-tight">{o.languagesTitle}</h3>
-              <ul className="mt-4 space-y-1.5 text-muted">
-                {o.languages.map((l) => <li key={l}>{l}</li>)}
-              </ul>
+              {/* Pushed to the column's end so it finishes level with Experience and the contact links. */}
+              <div className="mt-10 sm:mt-auto sm:pt-10">
+                <h3 className="text-xl font-medium tracking-tight">{o.languagesTitle}</h3>
+                <ul className="mt-4 space-y-1.5 text-muted">
+                  {o.languages.map((l) => <li key={l}>{l}</li>)}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* The aside stretches to the column height so Contact can stay sticky once the card scrolls past. */}
         <aside aria-label={t('contact.title')} className="flex flex-col gap-12">
           <ProfileCard
             className="mx-auto"
             theme="light"
             backdropColor="#F6E2C0"
             avatarUrl={`${profile.photo}-640.webp`}
-            miniAvatarUrl="/icon-192.png"
             name={profile.name}
             title={t('hero.role')}
             handle="ernesto2604"
@@ -160,7 +162,7 @@ export default function Output() {
             contactText={t('contact.cardButton')}
             contactHref={`mailto:${profile.email}`}
           />
-          <div className="lg:sticky lg:top-28">
+          <div className="lg:mt-auto">
             <Contact />
           </div>
         </aside>

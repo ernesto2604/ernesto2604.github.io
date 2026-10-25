@@ -7,7 +7,11 @@ async function seriousViolations(page: Page) {
   // Endless loops (status dot, shimmer, caret) never finish and are skipped.
   await page.waitForTimeout(300);
   await page.waitForFunction(
-    () => !document.querySelector('.story-hero[data-gen="thinking"]') && document.getAnimations().every((a) => a.playState !== 'running' || a.effect?.getTiming().iterations === Infinity),
+    () =>
+      !document.querySelector('.story-hero[data-gen="thinking"]') &&
+      // A finished block's thinking card fades out; wait until it is fully hidden.
+      [...document.querySelectorAll('[data-gen="done"] > .thinking')].every((el) => !el.checkVisibility({ visibilityProperty: true })) &&
+      document.getAnimations().every((a) => a.playState !== 'running' || a.effect?.getTiming().iterations === Infinity),
     null,
     { timeout: 20000 },
   );

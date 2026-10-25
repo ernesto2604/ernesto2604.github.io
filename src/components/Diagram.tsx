@@ -4,8 +4,8 @@ import { useMessages, useT } from '../i18n';
 import { DIAGRAMS, NODE_H, wrap } from './diagrams';
 
 // Accessible architecture diagram: role="img" with title/desc, and a toggle that swaps it for the same flow as a list.
-// Drawing progress is the CSS variable --p (0..1): set by scroll in the pinned scene, or animated once on view.
-export default function Diagram({ slug, scrollDriven = false }: { slug: string; scrollDriven?: boolean }) {
+// Drawing progress is the CSS variable --p (0..1), animated once when the diagram comes into view.
+export default function Diagram({ slug }: { slug: string }) {
   const t = useT();
   const c = (useMessages().cases as Record<string, { nodes: Record<string, string>; edges: Record<string, string>; steps: string[] }>)[slug];
   const spec = DIAGRAMS[slug];
@@ -16,7 +16,6 @@ export default function Diagram({ slug, scrollDriven = false }: { slug: string; 
   const [asList, setAsList] = useState(false);
 
   useEffect(() => {
-    if (scrollDriven) return;
     const el = ref.current!;
     // Already on screen: show it drawn (a re-run, e.g. React's dev double effect, must undo an earlier reset).
     if (el.getBoundingClientRect().top < innerHeight) return setDrawn(true);
@@ -29,7 +28,7 @@ export default function Diagram({ slug, scrollDriven = false }: { slug: string; 
     }, { threshold: 0.3 });
     io.observe(el);
     return () => io.disconnect();
-  }, [scrollDriven]);
+  }, []);
 
   const id = `dg-${slug}`;
   return (
@@ -55,7 +54,7 @@ export default function Diagram({ slug, scrollDriven = false }: { slug: string; 
         role="img"
         aria-labelledby={`${id}-t ${id}-d`}
         data-drawn={drawn}
-        className={`diagram h-auto w-full min-w-[560px] ${scrollDriven ? 'scroll-driven' : ''}`}
+        className="diagram h-auto w-full min-w-[560px]"
         style={{ ['--n' as string]: n }}
       >
         <title id={`${id}-t`}>{t(`cases.${slug}.diagramTitle`)}</title>

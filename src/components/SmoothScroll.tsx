@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { focusTarget, registerScroller, resolveAnchor, scrollToElement } from '../lib/scroll';
+import { focusTarget, registerScroller, resolveAnchor, scrollToElement, swapAtSeam } from '../lib/scroll';
 
 // In-page links go through resolveAnchor so story stages land on their scroll progress point.
 // Lenis smooths wheel scrolling on fine pointers only; touch keeps native scrolling.
@@ -20,6 +20,14 @@ export default function SmoothScroll() {
     };
     document.addEventListener('click', onClick);
 
+    // Swap sections in place as soon as a seam comes into view (see swapAtSeam).
+    let lastY = scrollY;
+    const onScroll = () => {
+      if (scrollY !== lastY) swapAtSeam(scrollY > lastY);
+      lastY = scrollY;
+    };
+    addEventListener('scroll', onScroll, { passive: true });
+
     if (location.hash) {
       const target = resolveAnchor(location.hash.slice(1));
       if (target) requestAnimationFrame(() => scrollToElement(target, true));
@@ -38,6 +46,7 @@ export default function SmoothScroll() {
     return () => {
       cancelled = true;
       document.removeEventListener('click', onClick);
+      removeEventListener('scroll', onScroll);
       registerScroller(null);
       lenis?.destroy();
     };

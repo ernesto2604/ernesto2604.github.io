@@ -65,7 +65,7 @@ test.describe('welcome loader', () => {
     await expect(page.locator('#welcome')).toBeVisible();
     await page.keyboard.press('Tab');
     await expect(page.locator('html')).not.toHaveAttribute('data-welcome', '', { timeout: 300 });
-    await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
+    await expect(page.getByRole('button', { name: 'Open menu' })).toBeFocused();
   });
 
   test('reduced motion never shows it', async ({ browser }) => {

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useMessages, useT } from '../i18n';
 
 export type GenState = 'idle' | 'thinking' | 'done';
-type Block = 'hero' | 'retrieval' | 'generate' | 'stack' | 'output';
+type Block = 'hero' | 'retrieval' | 'generate' | 'output';
 
 // Revealed in order once a block is done: its direct children, or the children of [data-stream] wrappers.
 const STREAM = ':scope > :not(.thinking):not([data-stream]), :scope [data-stream] > :not([data-stream])';
@@ -10,7 +10,11 @@ const STREAM = ':scope > :not(.thinking):not([data-stream]), :scope [data-stream
 // A block "generates" like a chat answer: it thinks for `ms` once it scrolls into view (and `when`
 // allows it), then its content streams in. The content is in the HTML the whole time, only faded,
 // so no-JS readers, crawlers and screen readers get it; reduced motion skips straight to done.
-export function useGenerate<T extends HTMLElement>(ms: number, when = true) {
+// For whole-screen sections that settle at the top: start once their top is in the upper 30% of the screen.
+export const SETTLED = '0px 0px -70% 0px';
+
+// `margin` is the IntersectionObserver rootMargin: whole-screen sections wait until they reach the top.
+export function useGenerate<T extends HTMLElement>(ms: number, when = true, margin = '0px 0px -20% 0px') {
   const ref = useRef<T>(null);
   const [state, setState] = useState<GenState>('idle');
   const whenRef = useRef(when);
@@ -44,7 +48,7 @@ export function useGenerate<T extends HTMLElement>(ms: number, when = true) {
         inView = entry.isIntersecting;
         tryStart();
       },
-      { rootMargin: '0px 0px -20% 0px' },
+      { rootMargin: margin },
     );
     const welcome = new MutationObserver(tryStart);
     // Keyboard users never tab into faded content: focusing inside finishes the block at once.
@@ -62,7 +66,7 @@ export function useGenerate<T extends HTMLElement>(ms: number, when = true) {
       clearTimeout(timer);
       stop();
     };
-  }, [ms]);
+  }, [ms, margin]);
 
   useEffect(() => {
     whenRef.current = when;

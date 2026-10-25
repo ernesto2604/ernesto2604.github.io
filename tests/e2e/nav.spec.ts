@@ -19,27 +19,14 @@ test('language toggle keeps the hash and stores the choice', async ({ page }) =>
   await expect(page).toHaveURL(/localhost:\d+\/#retrieval$/);
 });
 
-test('first Tab press reaches the skip link', async ({ page, browserName }) => {
+test('first Tab press reaches the menu button (no skip link)', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium');
   await page.goto('/');
   await page.keyboard.press('Tab');
-  await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Open menu' })).toBeFocused();
 });
 
 
-test('progress pill shows the stage in view and its list jumps to a section', async ({ page }) => {
-  await page.goto('/#generate');
-  await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
-  const pill = page.getByRole('navigation', { name: 'Progress' });
-  const button = pill.getByRole('button');
-  await expect(button).toContainText('Generate');
-  await button.click();
-  await expect(button).toHaveAttribute('aria-expanded', 'true');
-  await expect(pill.locator('[aria-current="step"]')).toHaveAttribute('href', '#generate');
-  await pill.getByRole('link', { name: /Output/ }).click();
-  await expect(pill.getByRole('list')).toBeHidden();
-  await expect(button).toContainText('Output', { timeout: 5000 });
-});
 
 test('without JavaScript the hero and projects are readable and JS-only buttons hidden', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
@@ -67,14 +54,16 @@ test('keyboard reaches the re-score chips in the pinned story and focus reveals 
   await expect(page.locator('.story-cap-retrieval')).toHaveClass(/is-active/, { timeout: 3000 });
 });
 
-test('deep link to a case study puts its card on top with the diagram drawn', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile', 'pinned mode is desktop only');
-  await page.goto('/es/#hybrid-rag-api');
+test('a project folder opens its case behind a curtain, and Back returns to the page', async ({ page }) => {
+  await page.goto('/#generate');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
-  await expect(page.locator('#hybrid-rag-api')).toHaveAttribute('data-pos', 'current');
-  await expect(page.locator('#ring-telemetryops')).toHaveAttribute('data-pos', 'past');
-  const drawn = await page.evaluate(() => Number(getComputedStyle(document.querySelector('#hybrid-rag-api .diagram')!).getPropertyValue('--p')));
-  expect(drawn).toBeGreaterThan(0.95);
+  await page.getByRole('button', { name: 'Open Hybrid RAG API' }).click();
+  const back = page.getByRole('button', { name: 'Back', exact: true });
+  await expect(back).toBeFocused({ timeout: 4000 });
+  await expect(page.getByRole('heading', { level: 2, name: 'Hybrid RAG API' })).toBeVisible();
+  await back.click();
+  await expect(page.locator('.case-dialog')).toBeHidden({ timeout: 4000 });
+  await expect(page.getByRole('button', { name: 'Open Hybrid RAG API' })).toBeFocused();
 });
 
 test('deep link into the story sets the matching phase', async ({ page }, info) => {
@@ -82,4 +71,15 @@ test('deep link into the story sets the matching phase', async ({ page }, info) 
   await page.goto('/es/#retrieval');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   await expect(page.locator('.story')).toHaveAttribute('data-phase', 'retrieval');
+});
+
+test('scrolling into a section seam swaps the next section in at the top', async ({ page }, info) => {
+  test.skip(info.project.name === 'mobile', 'section swaps are for the pinned desktop layout');
+  await page.goto('/');
+  await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+  const seamTop = () => page.evaluate(() => Math.round(document.getElementById('generate')!.getBoundingClientRect().top));
+  await page.evaluate(() => scrollTo(0, document.getElementById('generate')!.getBoundingClientRect().top + scrollY - innerHeight - 40));
+  await page.mouse.move(600, 400);
+  await page.mouse.wheel(0, 240);
+  await expect.poll(seamTop, { timeout: 5000 }).toBe(0);
 });

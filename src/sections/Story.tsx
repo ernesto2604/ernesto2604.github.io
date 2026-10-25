@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import Hologram from '../components/Hologram';
+import FoldText from '../components/ui/FoldText';
 import Thinking, { useGenerate, type GenState } from '../components/Thinking';
 import ScoreBar from '../components/ScoreBar';
 import { useShortcutLabel, openAgent, AGENT_READY } from '../components/Nav';
@@ -135,7 +136,14 @@ export default function Story() {
         {/* 01 · Input: the role, who I am, the two ways in, and the hologram. */}
         <Caption stage="input" active={phase === 'input'} gen={heroGen} ms={HERO_THINK_MS} className="story-hero grid min-h-[100svh] content-center gap-x-12 gap-y-8 pb-16 pt-24 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center">
           <div className="lg:order-1" data-stream>
-            <h1 className="hero-title">{t('hero.role')}</h1>
+            {/* Plain text in the HTML (no-JS, crawlers, first paint); it unfolds once the hero has finished thinking. */}
+            <h1 className="hero-title">
+              {heroGen.state === 'done' ? (
+                <FoldText text={t('hero.role')} fontSize="1em" fontWeight="inherit" duration={0.8} stagger={0.05} style={{ lineHeight: 'inherit', letterSpacing: 'inherit' }} />
+              ) : (
+                t('hero.role')
+              )}
+            </h1>
             <p className="mt-6 max-w-[42ch] text-lg leading-relaxed sm:mt-8 sm:text-xl">
               <span className="font-semibold">{t('hero.greeting')}</span> {t('hero.valueProp')}
             </p>

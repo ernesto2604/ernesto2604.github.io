@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
 import { Search } from 'lucide-react';
+import { gsap } from 'gsap';
 import { localePath, otherLocale, useLocale, useT } from '../i18n';
-import { setScrollLock } from '../lib/scroll';
+import { focusTarget, setScrollLock } from '../lib/scroll';
 import { useActiveStage } from '../hooks/useActiveStage';
 import profile from '../content/profile.json';
 
@@ -59,7 +60,38 @@ function LangToggle() {
   );}
 
 // Side menu: a hamburger button opens a modal slide-over (native <dialog>: inert background, Escape closes).
-// Tab wraps inside the panel and a backdrop click closes it.
+// Tab wraps inside the panel and a backdrop click closes it. The motion is React Bits' StaggeredMenu (via the
+// shadcn registry @react-bits) ported onto this dialog: colour layers sweep in one after another, then the panel,
+// then the links rise in with their numbers; it all slides back out on close.
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function playOpen(d: HTMLDialogElement) {
+  const layers = [...d.querySelectorAll<HTMLElement>('.menu-prelayer')];
+  const panel = d.querySelector<HTMLElement>('.menu-panel')!;
+  const labels = [...d.querySelectorAll<HTMLElement>('.menu-link-label')];
+  const links = [...d.querySelectorAll<HTMLElement>('.menu-link')];
+  const fades = [...d.querySelectorAll<HTMLElement>('[data-menu-fade]')];
+  gsap.killTweensOf([...layers, panel, ...labels, ...links, ...fades]);
+  if (reduced()) return gsap.set([...layers, panel, ...labels, ...fades], { clearProps: 'all' });
+  gsap.set([...layers, panel], { xPercent: 100 });
+  gsap.set(labels, { yPercent: 140, rotate: 10 });
+  gsap.set(links, { '--num': 0 });
+  gsap.set(fades, { y: 25, opacity: 0 });
+  const tl = gsap.timeline();
+  layers.forEach((el, i) => tl.to(el, { xPercent: 0, duration: 0.5, ease: 'power4.out' }, i * 0.07));
+  const at = (layers.length - 1) * 0.07 + 0.08;
+  tl.to(panel, { xPercent: 0, duration: 0.65, ease: 'power4.out' }, at);
+  tl.to(labels, { yPercent: 0, rotate: 0, duration: 1, ease: 'power4.out', stagger: 0.1 }, at + 0.1);
+  tl.to(links, { '--num': 1, duration: 0.6, ease: 'power2.out', stagger: 0.08 }, at + 0.2);
+  tl.to(fades, { y: 0, opacity: 1, duration: 0.55, ease: 'power3.out', stagger: 0.08 }, at + 0.26);
+}
+
+function playClose(d: HTMLDialogElement, done: () => void) {
+  const parts = [d.querySelector<HTMLElement>('.menu-panel')!, ...d.querySelectorAll<HTMLElement>('.menu-prelayer')];
+  gsap.killTweensOf(parts);
+  if (reduced()) return done();
+  gsap.to(parts, { xPercent: 100, duration: 0.32, ease: 'power3.in', onComplete: done });
+}
 export default function Nav() {
   const t = useT();
   const shortcut = useShortcutLabel();
@@ -69,16 +101,23 @@ export default function Nav() {
   const stage = useActiveStage();
   const current: LinkKey = stage === 'input' ? 'home' : stage === 'output' ? 'about' : 'work';
 
-  // Unlock before closing so an in-page link clicked in the panel can scroll right away.
-  const close = () => {
+  // Unlock before closing so an in-page link clicked in the panel can scroll right away. The panel is still
+  // modal while it slides out, so a chosen section takes focus once it has closed.
+  const close = (focusId?: string) => {
+    const d = dialogRef.current!;
     setScrollLock(false);
-    dialogRef.current?.close();
+    if (d.open)
+      playClose(d, () => {
+        d.close();
+        if (focusId) focusTarget(focusId);
+      });
   };
   const show = () => {
     const d = dialogRef.current!;
     if (d.open) return;
     setScrollLock(true);
     d.showModal();
+    playOpen(d);
     // The language toggle comes first in the panel; start on the first section link instead.
     d.querySelector<HTMLElement>('.menu-link')?.focus();
     setOpen(true);
@@ -91,16 +130,24 @@ export default function Nav() {
       setOpen(false);
       setScrollLock(false);
     };
+    // Escape slides the panel out instead of closing it at once.
+    const onCancel = (e: Event) => {
+      e.preventDefault();
+      setScrollLock(false);
+      playClose(d, () => d.close());
+    };
     // The agent opens over everything, so the menu steps aside first (its button or Ctrl/Cmd+K).
     const onAgent = () => d.open && d.close();
     const onKey = (e: globalThis.KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') onAgent();
     };
     d.addEventListener('close', onClose);
+    d.addEventListener('cancel', onCancel);
     addEventListener('agent:open', onAgent);
     addEventListener('keydown', onKey, true);
     return () => {
       d.removeEventListener('close', onClose);
+      d.removeEventListener('cancel', onCancel);
       removeEventListener('agent:open', onAgent);
       removeEventListener('keydown', onKey, true);
     };
@@ -144,19 +191,22 @@ export default function Nav() {
         onKeyDown={onKeyDown}
         onClick={(e) => e.target === e.currentTarget && close()}
       >
+        {/* StaggeredMenu's pre-layers: they sweep in ahead of the panel. */}
+        <div className="menu-prelayer menu-prelayer-amber" aria-hidden="true" />
+        <div className="menu-prelayer menu-prelayer-slate" aria-hidden="true" />
         <nav aria-label={t('a11y.primaryNav')} className="menu-panel">
           {/* Top row, level with the close button. */}
-          <div className="flex min-h-12 items-center">
+          <div className="flex min-h-12 items-center" data-menu-fade>
             <LangToggle />
           </div>
-          <p className="menu-label menu-label-rule mt-10">{t('menu.navigation')}</p>
+          <p className="menu-label menu-label-rule mt-10" data-menu-fade>{t('menu.navigation')}</p>
           {/* The dot marks the section in view, and follows the pointer or keyboard focus across the links. */}
           <ul className="menu-links" onMouseLeave={() => setPointed(null)}>
-            {LINKS.map(({ key, href }) => (
-              <li key={key}>
+            {LINKS.map(({ key, href }, i) => (
+              <li key={key} className="overflow-hidden">
                 <a
                   href={href}
-                  onClick={close}
+                  onClick={() => close(href.slice(1))}
                   onMouseEnter={() => setPointed(key)}
                   onFocus={() => setPointed(key)}
                   onBlur={() => setPointed(null)}
@@ -164,21 +214,22 @@ export default function Nav() {
                   className="menu-link"
                 >
                   <span className="menu-dot" data-on={key === (pointed ?? current) || undefined} aria-hidden="true" />
-                  {t(key === 'home' ? 'menu.home' : `nav.${key}`)}
+                  <span className="menu-link-label">{t(key === 'home' ? 'menu.home' : `nav.${key}`)}</span>
+                  <span className="menu-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
                 </a>
               </li>
             ))}
           </ul>
 
-          <p className="menu-label mt-12">{t('menu.socials')}</p>
-          <ul className="mt-4 flex flex-wrap gap-x-7 gap-y-2">
+          <p className="menu-label mt-12" data-menu-fade>{t('menu.socials')}</p>
+          <ul className="mt-4 flex flex-wrap gap-x-7 gap-y-2" data-menu-fade>
             <li><a href={profile.linkedin} className="menu-social">{t('contact.linkedin')}</a></li>
             <li><a href={profile.github} className="menu-social">{t('contact.github')}</a></li>
             <li><a href={`mailto:${profile.email}`} className="menu-social">{t('contact.email')}</a></li>
           </ul>
 
           {AGENT_READY && (
-            <div className="mt-auto pt-12">
+            <div className="mt-auto pt-12" data-menu-fade>
               <button
                 type="button"
                 onClick={() => {
@@ -195,7 +246,7 @@ export default function Nav() {
           )}
         </nav>
         {/* Sits exactly over the open button and stays put while the panel slides in, so the lines seem to cross in place. */}
-        <button type="button" onClick={close} aria-label={t('menu.close')} className="menu-button menu-close no-js-hide fixed right-4 top-4 grid size-12 place-items-center sm:right-6 sm:top-6">
+        <button type="button" onClick={() => close()} aria-label={t('menu.close')} className="menu-button menu-close no-js-hide fixed right-4 top-4 grid size-12 place-items-center sm:right-6 sm:top-6">
           <Burger />
         </button>
       </dialog>

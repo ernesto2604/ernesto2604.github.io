@@ -38,12 +38,5 @@ for (const locale of ['en', 'es']) {
   await page.evaluate(() => document.fonts.ready);
   await page.screenshot({ path: `public/og-${locale}.png` });
 }
-const svg = await readFile(new URL('public/favicon.svg', root), 'utf8');
-for (const size of [32, 180, 192, 512]) {
-  const icon = await browser.newPage({ viewport: { width: size, height: size } });
-  await icon.setContent(`<html><body style="margin:0">${svg.replace('<svg ', `<svg width="${size}" height="${size}" `)}</body></html>`);
-  await icon.screenshot({ path: `public/${size === 180 ? 'apple-touch-icon' : `icon-${size}`}.png`, omitBackground: true });
-  await icon.close();
-}
 await browser.close();
-console.log('[og] wrote public/og-en.png, public/og-es.png and icons');
+console.log('[og] wrote public/og-en.png and public/og-es.png (icons: scripts/favicon.mjs)');

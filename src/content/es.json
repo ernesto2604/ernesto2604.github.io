@@ -6,7 +6,6 @@
     "jobTitle": "AI Engineer · Forward Deployed Engineer"
   },
   "a11y": {
-    "skip": "Saltar al contenido",
     "primaryNav": "Principal"
   },
   "lang": {
@@ -37,7 +36,7 @@
   "hero": {
     "role": "AI Engineer",
     "greeting": "Hola, soy Ernesto.",
-    "valueProp": "Construyo sistemas de IA de principio a fin: recuperación, agentes y el backend que los hace fiables.",
+    "valueProp": "Construyo sistemas de IA de principio a fin: RAG, agentes y el backend que los hace fiables.",
     "ctaAgent": "Pregunta al agente",
     "ctaWork": "Ver proyectos",
     "kbdHint": "Ctrl K",
@@ -120,7 +119,9 @@
     "repo": "Código en GitHub",
     "demo": "Ver la demo",
     "viewList": "Ver como lista",
-    "viewDiagram": "Ver diagrama"
+    "viewDiagram": "Ver diagrama",
+    "back": "Volver",
+    "openCase": "Abrir {name}"
   },
   "stack": {
     "label": "Mi stack",
@@ -442,16 +443,7 @@
     "output": [
       "Resumiendo el perfil",
       "Preparando el contacto"
-    ],
-    "stack": [
-      "Listando las herramientas que uso",
-      "Agrupándolas por capa"
     ]
-  },
-  "progress": {
-    "nav": "Progreso",
-    "generating": "Generando",
-    "current": "Sección actual"
   },
   "contact": {
     "title": "Hablemos",

@@ -133,20 +133,6 @@
   }
 
 
-  .skip-link {
-    position: fixed;
-    left: 1rem;
-    top: 1rem;
-    z-index: 60;
-    padding: 0.75rem 1rem;
-    border-radius: 999px;
-    background: var(--accent-fill);
-    color: var(--accent-ink);
-    font-weight: 500;
-    transform: translateY(-200%);
-  }
-  .skip-link:focus-visible { transform: none; }
-
   /* Depth layer (Background.tsx). */
   .backdrop {
     background:
@@ -374,45 +360,69 @@ html[data-pinned] .story-cap-retrieval:not(.is-active) .story-chips > * { opacit
   stroke: var(--surface);
   stroke-width: 4px;
 }
-/* Generate scene (Generate.tsx). Pinned: the header stays left while the case cards deal in on the right like a
-   stacked deck, one per third of the scroll. The switch is a transition; each diagram draws with the scroll. */
-.gen-deck { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4rem; }
-.gen-stage > header { margin-bottom: 4rem; }
-.gen-counter { display: none; }
-.gen-card { box-shadow: 0 24px 60px -40px var(--glass-shadow); }
-html[data-pinned] .gen-scene { height: 260vh; }
-html[data-pinned] .gen-stage {
-  position: sticky;
-  top: 0;
-  height: 100svh;
+/* Generate (Generate.tsx): three project folders; opening one plays a two-colour curtain into the case page. */
+.gen-folders {
   display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  column-gap: clamp(2.5rem, 5vw, 4.5rem);
+  gap: 9rem 2rem;
+  margin-top: 13rem; /* room for the notes that float up out of the first row */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.case-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: transparent;
+}
+.case-dialog::backdrop { background: transparent; }
+.case-page {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  background: var(--bg-0);
+  visibility: hidden;
+}
+/* The case shows while it is being revealed, while open, and while the curtain covers it on the way back. */
+.case-dialog:is([data-stage="shown"], [data-stage="open"], [data-stage="out"]) .case-page { visibility: visible; }
+.case-back {
+  position: fixed;
+  top: 1.25rem;
+  left: 1.25rem;
+  z-index: 2;
+  display: inline-flex;
   align-items: center;
-  padding-top: 4.5rem;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-weight: 500;
 }
-html[data-pinned] .gen-stage > header { margin-bottom: 0; }
-html[data-pinned] .gen-counter { display: block; }
-html[data-pinned] .gen-deck { gap: 0; }
-html[data-pinned] .gen-card {
-  grid-area: 1 / 1;
-  z-index: calc(var(--k) + 1);
-  transform-origin: 50% 0;
-  transition: transform var(--dur-4) var(--ease-out), opacity var(--dur-3) var(--ease-std), filter var(--dur-4) var(--ease-std);
-}
-/* Cards already seen sink back, a little smaller and darker per step; the next one waits below the screen. */
-html[data-pinned] .gen-card[data-pos="past"] {
-  transform: translateY(calc(var(--d) * -14px)) scale(calc(1 - var(--d) * 0.05));
-  filter: brightness(0.95);
+.case-back:hover { background: var(--surface-2); }
+.case-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
   pointer-events: none;
+  transform: translateY(100%);
 }
-html[data-pinned] .gen-card[data-pos="next"] { transform: translateY(100vh); opacity: 0; pointer-events: none; }
-/* The card must fit one screen, so the diagram gives up height first (it scales, centred). */
-html[data-pinned] .gen-card .diagram { max-height: min(330px, 36svh); }
-html[data-pinned] .gen-scene .diagram.scroll-driven {
-  --p: clamp(0, calc((var(--sp, 1) * 3 - var(--k)) / 0.7), 1);
-  transition: none;
-}
+.case-curtain-ink { background: var(--ink-panel); }
+.case-curtain-amber { background: var(--accent-fill); }
+/* Cover: ink then amber rise from the bottom. Reveal: both carry on up and off the top. */
+.case-dialog:is([data-stage="in"], [data-stage="out"]) .case-curtain { animation: curtain-cover 480ms var(--ease-out) both; }
+.case-dialog:is([data-stage="shown"], [data-stage="gone"]) .case-curtain { animation: curtain-reveal 480ms var(--ease-in) both; }
+.case-dialog .case-curtain-amber { animation-delay: 90ms !important; }
+.case-dialog:is([data-stage="shown"], [data-stage="gone"]) .case-curtain-ink { animation-delay: 90ms !important; }
+.case-dialog:is([data-stage="shown"], [data-stage="gone"]) .case-curtain-amber { animation-delay: 0ms !important; }
+@keyframes curtain-cover { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes curtain-reveal { from { transform: translateY(0); } to { transform: translateY(-100%); } }
 
 @media (max-height: 860px) {
   html[data-pinned] .story-matched { display: none; }
@@ -545,9 +555,24 @@ html[data-scroll-lock] { overflow: hidden; padding-right: var(--scrollbar-w, 0px
 .menu-lang a { display: inline-flex; align-items: center; min-height: 2.75rem; color: var(--on-ink-muted); transition: color var(--dur-2) var(--ease-std); }
 .menu-lang a:hover { color: var(--on-ink); }
 .menu-dialog::backdrop { background: var(--scrim); }
-.menu-dialog[open] > .menu-panel { animation: menu-in var(--dur-3) var(--ease-out); }
 .menu-dialog[open]::backdrop { animation: fade-in var(--dur-3) var(--ease-out); }
-@keyframes menu-in { from { transform: translateX(100%); } }
+/* StaggeredMenu pre-layers (Nav.tsx): the site's amber, then slate, sweep in ahead of the ink panel. */
+.menu-prelayer { position: absolute; inset: 0; }
+.menu-prelayer-amber { background: var(--accent-fill); }
+.menu-prelayer-slate { background: #2A2E36; }
+.menu-panel { position: relative; }
+.menu-link-label { display: inline-block; transform-origin: 50% 100%; }
+/* Numbers after each link, faded in by the open timeline (--num). */
+.menu-num {
+  align-self: flex-start;
+  margin: 0.35em 0 0 0.6em;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--accent-fill);
+  opacity: var(--num, 1);
+}
 @keyframes fade-in { from { opacity: 0; } }
 /* Without JS the panel cannot open, so its links render as a plain block at the top of the page. */
 html:not(.js) .menu-dialog { display: block; position: static; width: auto; height: auto; margin: 0; }
@@ -647,60 +672,7 @@ html:not(.js) .menu-dialog { display: block; position: static; width: auto; heig
 @keyframes thinking-step { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @keyframes thinking-caret { 50% { opacity: 0; } }
 
-/* Progress pill (ProgressPill.tsx): top center, above the content, below the welcome loader and dialogs. */
-.progress-pill {
-  position: fixed;
-  top: max(1rem, env(safe-area-inset-top));
-  left: 50%;
-  z-index: 30;
-  transform: translateX(-50%);
-  /* Clear of the menu button on the right at any width. */
-  max-width: calc(100vw - 10rem);
-}
-.progress-button {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  min-height: 2.75rem;
-  max-width: 100%;
-  padding: 0 0.9rem 0 1rem;
-  border-radius: 999px;
-  font-size: var(--text-xs);
-  white-space: nowrap;
-}
-.progress-status { color: var(--text-muted); }
-@media (max-width: 639px) { .progress-button { gap: 0.4rem; padding: 0 0.6rem 0 0.8rem; } }
-.thinking-dot[data-still] { animation: none; }
-.progress-track { width: 3.5rem; height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; }
-.progress-fill {
-  display: block;
-  height: 100%;
-  background: var(--accent-fill);
-  transform-origin: left;
-  transform: scaleX(var(--p, 0));
-}
-.progress-list {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  left: 50%;
-  translate: -50% 0; /* separate from transform, which the open animation uses */
-  min-width: 15rem;
-  padding: 0.375rem;
-  font-size: var(--text-xs);
-  border-radius: var(--radius-card);
-  background: var(--glass-solid);
-}
-.progress-list[hidden] { display: none; }
-.progress-list:not([hidden]) { animation: dialog-in var(--dur-3) var(--ease-out); }
-.progress-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-height: 2.75rem;
-  padding: 0 0.75rem;
-  border-radius: var(--radius-chip);
-  color: var(--text-muted);
-  transition: background-color var(--dur-2) var(--ease-std), color var(--dur-2) var(--ease-std);
-}
-.progress-item:hover { background: var(--surface-2); color: var(--text); }
-.progress-item[aria-current] { background: var(--surface-2); color: var(--text); font-weight: 500; }
+
+/* Section swap (lib/scroll.ts swapAtSeam): the page fades out, jumps across a seam and fades back in place. */
+#main { transition: opacity var(--dur-3) var(--ease-std); }
+html[data-swap] #main { opacity: 0; transition-duration: var(--dur-2); }
