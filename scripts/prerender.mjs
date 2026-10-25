@@ -3,7 +3,6 @@ import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
 
 const dist = new URL('../dist/', import.meta.url);
 const ssr = new URL('../dist-ssr/', import.meta.url);
-const SITE = 'https://ernesto2604.github.io/';
 
 const { render, buildHead, messagesFor, welcomeMarkup } = await import(new URL('entry-server.js', ssr).href);
 const template = await readFile(new URL('index.html', dist), 'utf8');
@@ -13,6 +12,7 @@ const welcomeJs = await inline('welcome.js');
 
 // The hero shows a neutral "photo pending" panel when no photo is set; that must never ship unnoticed.
 const profile = JSON.parse(await readFile(new URL('../src/content/profile.json', import.meta.url), 'utf8'));
+const SITE = profile.siteUrl;
 const photoFile = profile.photo && new URL(`.${profile.photo}-960.avif`, dist);
 if (!photoFile || !(await readFile(photoFile).then(() => true, () => false))) {
   const bar = '!'.repeat(72);

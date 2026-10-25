@@ -110,17 +110,24 @@ Edit both `src/content/en.json` and `src/content/es.json`. The client downloads 
 
 The language toggle is a real link to the other page and keeps the current `#hash`. It stores the choice in `localStorage`. A small inline script on `/` sends a returning visitor to `/es/` only if they chose Spanish before; nothing is detected from IP or browser language.
 
-## Deploy to GitHub Pages
+## Deploy to Cloudflare Pages
 
-The workflow is in `.github/workflows/deploy.yml`. On every push to `main` it runs the unit tests and the build, then deploys `dist/`.
+Cloudflare Pages builds and deploys from Git on every push to `main`; other branches get preview URLs.
 
-1. Create a public repository named `ernesto2604.github.io` under the `ernesto2604` account, then push this project to its `main` branch.
-2. In the repository, open **Settings → Pages → Build and deployment** and set **Source** to **GitHub Actions**.
-3. The site will be served at https://ernesto2604.github.io/ with base path `/`.
+1. In the Cloudflare dashboard, open **Workers & Pages → Create → Pages → Connect to Git** and pick this repository.
+2. Name the project `ernesto-portfolio` so it is served at https://ernesto-portfolio.pages.dev/. A different name or a custom domain means changing `siteUrl` in `src/content/profile.json`, `public/robots.txt`, `public/llms.txt` and `tests/unit/head.test.ts`, then running `npm run og`.
+3. Build settings:
+   - **Framework preset:** None
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+   - Node version comes from `.node-version` (22).
+4. Optional: add a `GITHUB_TOKEN` environment variable (a read-only token) to raise the GitHub API rate limit.
 
-The build asks the GitHub API for repository metadata using the workflow's `GITHUB_TOKEN`. If that fails, it falls back to the committed snapshot, so the build never breaks on rate limits.
+The build asks the GitHub API for repository metadata. If that fails, it falls back to the committed snapshot, so the build never breaks on rate limits.
 
-Unknown paths are served `dist/404.html` by GitHub Pages. That file is a static, bilingual, `noindex` page.
+Unknown paths are served `dist/404.html` by Cloudflare Pages. That file is a static, bilingual, `noindex` page. `public/_headers` marks the hashed files in `/assets/` as immutable.
+
+`.github/workflows/ci.yml` runs the unit tests and the build on pushes and pull requests; it does not deploy.
 
 ## Design notes
 
@@ -141,6 +148,7 @@ Portfolio personal de Ernesto Contreras. La página recorre un pipeline de IA (e
 - **Textos:** están en `src/content/en.json` y `src/content/es.json`, con las mismas claves (un test lo comprueba).
 - **Proyectos:** se definen en `src/content/projects.json` y los casos de estudio en `cases.<slug>`.
 - **Agente:** su base de conocimiento está en `src/content/agent/kb.json`.
-- **Despliegue:**
-  1. Crea el repositorio `ernesto2604.github.io` y sube el código a `main`.
-  2. En **Settings → Pages**, elige **GitHub Actions** como origen.
+- **Despliegue:** Cloudflare Pages, conectado al repositorio por Git.
+  1. En Cloudflare, **Workers & Pages → Create → Pages → Connect to Git**, con el proyecto llamado `ernesto-portfolio`.
+  2. Comando de build `npm run build`, directorio de salida `dist`. La versión de Node sale de `.node-version`.
+  3. Si cambia el dominio, actualiza `siteUrl` en `src/content/profile.json`, `public/robots.txt`, `public/llms.txt` y `tests/unit/head.test.ts`, y ejecuta `npm run og`.

@@ -9,26 +9,26 @@ describe('buildHead', () => {
     expect(html).toContain('<title>Ernesto Contreras</title>');
     expect(html).toContain('<meta property="og:title" content="Ernesto Contreras · AI Engineer &amp; Forward Deployed Engineer">');
     expect(html).toMatch(/<meta name="description" content="Ernesto Contreras builds AI systems/);
-    expect(html).toContain('<link rel="canonical" href="https://ernesto2604.github.io/">');
+    expect(html).toContain('<link rel="canonical" href="https://ernesto-portfolio.pages.dev/">');
   });
 
   it('sets Spanish canonical and og:locale on /es/', () => {
     const html = buildHead('es');
-    expect(html).toContain('<link rel="canonical" href="https://ernesto2604.github.io/es/">');
+    expect(html).toContain('<link rel="canonical" href="https://ernesto-portfolio.pages.dev/es/">');
     expect(html).toContain('<meta property="og:locale" content="es_ES">');
     expect(html).toContain('<meta property="og:locale:alternate" content="en_US">');
   });
 
   it.each(['en', 'es'] as const)('lists hreflang alternates for %s', (locale) => {
     const html = buildHead(locale);
-    expect(html).toContain('<link rel="alternate" hreflang="en" href="https://ernesto2604.github.io/">');
-    expect(html).toContain('<link rel="alternate" hreflang="es" href="https://ernesto2604.github.io/es/">');
-    expect(html).toContain('<link rel="alternate" hreflang="x-default" href="https://ernesto2604.github.io/">');
+    expect(html).toContain('<link rel="alternate" hreflang="en" href="https://ernesto-portfolio.pages.dev/">');
+    expect(html).toContain('<link rel="alternate" hreflang="es" href="https://ernesto-portfolio.pages.dev/es/">');
+    expect(html).toContain('<link rel="alternate" hreflang="x-default" href="https://ernesto-portfolio.pages.dev/">');
   });
 
   it('points Open Graph and Twitter at the locale image', () => {
     const html = buildHead('es');
-    expect(html).toContain('<meta property="og:image" content="https://ernesto2604.github.io/og-es.png">');
+    expect(html).toContain('<meta property="og:image" content="https://ernesto-portfolio.pages.dev/og-es.png">');
     expect(html).toContain('<meta name="twitter:card" content="summary_large_image">');
   });
 
