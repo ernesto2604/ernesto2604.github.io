@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ernesto-portfolio.pages.dev/sitemap.xml
+Sitemap: https://ernesto2406.pages.dev/sitemap.xml

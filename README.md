@@ -115,7 +115,7 @@ The language toggle is a real link to the other page and keeps the current `#has
 Cloudflare Pages builds and deploys from Git on every push to `main`; other branches get preview URLs.
 
 1. In the Cloudflare dashboard, open **Workers & Pages → Create → Pages → Connect to Git** and pick this repository.
-2. Name the project `ernesto-portfolio` so it is served at https://ernesto-portfolio.pages.dev/. A different name or a custom domain means changing `siteUrl` in `src/content/profile.json`, `public/robots.txt`, `public/llms.txt` and `tests/unit/head.test.ts`, then running `npm run og`.
+2. Name the project `ernesto2406` so it is served at https://ernesto2406.pages.dev/. A different name or a custom domain means changing `siteUrl` in `src/content/profile.json`, `public/robots.txt`, `public/llms.txt` and `tests/unit/head.test.ts`, then running `npm run og`.
 3. Build settings:
    - **Framework preset:** None
    - **Build command:** `npm run build`
@@ -149,6 +149,6 @@ Portfolio personal de Ernesto Contreras. La página recorre un pipeline de IA (e
 - **Proyectos:** se definen en `src/content/projects.json` y los casos de estudio en `cases.<slug>`.
 - **Agente:** su base de conocimiento está en `src/content/agent/kb.json`.
 - **Despliegue:** Cloudflare Pages, conectado al repositorio por Git.
-  1. En Cloudflare, **Workers & Pages → Create → Pages → Connect to Git**, con el proyecto llamado `ernesto-portfolio`.
+  1. En Cloudflare, **Workers & Pages → Create → Pages → Connect to Git**, con el proyecto llamado `ernesto2406`.
   2. Comando de build `npm run build`, directorio de salida `dist`. La versión de Node sale de `.node-version`.
   3. Si cambia el dominio, actualiza `siteUrl` en `src/content/profile.json`, `public/robots.txt`, `public/llms.txt` y `tests/unit/head.test.ts`, y ejecuta `npm run og`.

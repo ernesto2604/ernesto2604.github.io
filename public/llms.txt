@@ -6,8 +6,8 @@ The site is static and bilingual. Every project fact on it comes from the linked
 
 ## Pages
 
-- [Portfolio in English](https://ernesto-portfolio.pages.dev/): projects, case studies, experience and contact
-- [Portfolio in Spanish](https://ernesto-portfolio.pages.dev/es/): the same content in Spanish
+- [Portfolio in English](https://ernesto2406.pages.dev/): projects, case studies, experience and contact
+- [Portfolio in Spanish](https://ernesto2406.pages.dev/es/): the same content in Spanish
 
 ## Featured projects
 
