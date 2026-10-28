@@ -129,6 +129,15 @@ Unknown paths are served `dist/404.html` by Cloudflare Pages. That file is a sta
 
 `.github/workflows/ci.yml` runs the unit tests and the build on pushes and pull requests; it does not deploy.
 
+## Mirror on GitHub Pages
+
+`.github/workflows/pages.yml` builds on every push to `main` and publishes `dist` to https://ernesto2604.github.io/. Canonical and Open Graph URLs still point to Cloudflare.
+
+1. The repository must be named `ernesto2604.github.io` so the base path stays `/`.
+2. In **Settings → Pages → Build and deployment**, set **Source** to **GitHub Actions**.
+
+GitHub Pages serves `dist/404.html` for unknown paths and ignores `public/_headers`.
+
 ## Design notes
 
 - **Pinned story.** Stages 1 to 3 form a sticky scene driven by native scroll on screens of at least 1024 × 740 px.
@@ -152,3 +161,4 @@ Portfolio personal de Ernesto Contreras. La página recorre un pipeline de IA (e
   1. En Cloudflare, **Workers & Pages → Create → Pages → Connect to Git**, con el proyecto llamado `ernesto2406`.
   2. Comando de build `npm run build`, directorio de salida `dist`. La versión de Node sale de `.node-version`.
   3. Si cambia el dominio, actualiza `siteUrl` en `src/content/profile.json`, `public/robots.txt`, `public/llms.txt` y `tests/unit/head.test.ts`, y ejecuta `npm run og`.
+- **Espejo en GitHub Pages:** `.github/workflows/pages.yml` publica `dist` en https://ernesto2604.github.io/ en cada push a `main`. El repositorio debe llamarse `ernesto2604.github.io` y en **Settings → Pages** la fuente debe ser **GitHub Actions**.
