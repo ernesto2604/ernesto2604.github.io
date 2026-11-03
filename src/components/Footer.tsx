@@ -1,30 +1,44 @@
-import { ArrowUp } from 'lucide-react';
 import { useT } from '../i18n';
+import profile from '../content/profile.json';
+import HalftoneWordmarkFooter from './ui/HalftoneWordmarkFooter';
+
+// Canvas colours need literal hex: keep in sync with --text and --accent in tokens.css.
+// Transparent ground so the fixed backdrop (Background.tsx) runs on under the footer without a seam.
+const PALETTE = { background: 'transparent', ink: '#0D1015', warm: '#8C4A00' };
 
 export default function Footer() {
   const t = useT();
   return (
-    <footer className="relative overflow-hidden px-5 pb-24 pt-16 sm:px-8 lg:pb-0">
-      <div className="mx-auto max-w-6xl">
-        <p className="font-mono text-[0.8125rem] text-ok">{t('footer.status')}</p>
-        <div className="mt-6 flex flex-col gap-6 text-sm text-muted md:flex-row md:items-end md:justify-between">
-          <p className="max-w-[52ch]">{t('footer.built')}</p>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            <a href="https://github.com/ernesto2604/portfolio" className="inline-flex min-h-11 items-center hover:text-text">
-              {t('footer.source')}
-            </a>
-            <a href="#main" className="inline-flex min-h-11 items-center gap-1.5 hover:text-text">
-              {t('footer.top')}
-              <ArrowUp className="size-4" aria-hidden="true" strokeWidth={1.75} />
-            </a>
-            <span>{t('footer.rights', { year: __BUILD_YEAR__ })}</span>
-          </div>
-        </div>
-      </div>
-      {/* Oversized, cropped wordmark that closes the page (decorative). */}
-      <p aria-hidden="true" className="wordmark pointer-events-none mt-10 select-none text-center font-display leading-[0.78] tracking-[-0.06em]">
-        {t('footer.wordmark')}
-      </p>
-    </footer>
+    <HalftoneWordmarkFooter
+      wordmark={t('footer.wordmark')}
+      label={t('footer.rights', { year: __BUILD_YEAR__ })}
+      meta={t('footer.built')}
+      columns={[
+        {
+          title: t('menu.navigation'),
+          links: [
+            { label: t('nav.work'), href: '#retrieval' },
+            { label: t('nav.about'), href: '#output' },
+            { label: t('nav.contact'), href: '#contact' },
+          ],
+        },
+        {
+          title: t('menu.socials'),
+          links: [
+            { label: t('contact.linkedin'), href: profile.linkedin },
+            { label: t('contact.github'), href: profile.github },
+            { label: t('contact.email'), href: `mailto:${profile.email}` },
+          ],
+        },
+        { title: t('footer.status'), links: [{ label: t('footer.source'), href: 'https://github.com/ernesto2604/portfolio' }] },
+      ]}
+      topLabel={t('footer.top')}
+      topHref="#main"
+      palette={PALETTE}
+      grain={0}
+      fontFamily='"Inter", ui-sans-serif, system-ui, sans-serif'
+      monoFamily="var(--font-mono)"
+      height="auto"
+    />
   );
 }

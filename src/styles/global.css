@@ -429,13 +429,6 @@ html[data-pinned] .story-cap-retrieval:not(.is-active) .story-chips > * { opacit
   html[data-pinned] .story-query { margin-bottom: 1rem; }
 }
 
-/* Footer wordmark: the name returns at full width, cropped by the page edge. */
-.wordmark {
-  font-size: clamp(6rem, 27vw, 26rem);
-  color: var(--accent);
-  margin-bottom: -0.18em;
-}
-
 /* Welcome loader (public/welcome.js). Hidden unless boot.js set html[data-welcome], so no-JS and
    reduced-motion visitors never see it. Fixed overlay: no layout shift; the page below renders as usual. */
 #welcome { display: none; }
