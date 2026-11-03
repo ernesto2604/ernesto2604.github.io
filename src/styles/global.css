@@ -224,32 +224,17 @@
 
   .score-fill { transition: transform var(--dur-5) var(--ease-out); }
 
-  /* Hologram (Hologram.tsx): dark ink panel, faint scan grid, projector glow at the base. */
+  /* Hologram (Hologram.tsx): the figure alone on the page, no panel behind it. */
   .holo-panel {
     position: relative;
     aspect-ratio: 4 / 5;
     width: 100%;
-    overflow: hidden;
-    border-radius: var(--radius-panel);
-    background:
-      radial-gradient(60% 22% at 50% 100%, color-mix(in srgb, var(--holo) 22%, transparent), transparent 70%),
-      linear-gradient(color-mix(in srgb, var(--holo) 5%, transparent) 1px, transparent 1px) 0 0 / 100% 24px,
-      linear-gradient(180deg, var(--holo-panel-2), var(--holo-panel));
-    box-shadow: 0 30px 60px -40px var(--glass-shadow);
   }
   .holo-canvas { display: block; width: 100%; height: 100%; }
   /* Soft bloom without a post-processing pass; skipped on small/touch screens. */
   @media (min-width: 768px) and (pointer: fine) {
     .holo-canvas { filter: drop-shadow(0 0 10px color-mix(in srgb, var(--holo) 45%, transparent)); }
   }
-  .holo-label {
-    position: absolute; left: 1.25rem; bottom: 1rem;
-    display: flex; align-items: center; gap: 0.5rem;
-    font-family: var(--font-mono); font-size: var(--text-2xs);
-    color: var(--holo-text);
-  }
-  .holo-dot { width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--holo); box-shadow: 0 0 8px var(--holo); }
-  .holo-panel:not([data-status="ready"]) .holo-dot { opacity: 0.4; }
 
   @media (pointer: coarse) { .kbd-hint { display: none !important; } }
 }

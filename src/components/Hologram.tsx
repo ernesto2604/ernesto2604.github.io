@@ -6,7 +6,7 @@ const MODEL_URL = '/models/ernesto.glb';
 
 type Status = 'idle' | 'loading' | 'ready' | 'error';
 
-// Dark panel with the 3D hologram. three.js and the model load only when the panel is within
+// The 3D hologram, straight on the page (no panel). three.js and the model load only when the panel is within
 // ~1 screen of the viewport. It renders only while on screen and `active` (the pinned hero fades
 // out without leaving the viewport), and materializes once the welcome loader has finished.
 export default function Hologram({ className = '', active = true }: { className?: string; active?: boolean }) {
@@ -100,10 +100,6 @@ export default function Hologram({ className = '', active = true }: { className?
   return (
     <div ref={panelRef} className={`holo-panel ${className}`} data-status={status}>
       <canvas ref={canvasRef} className="holo-canvas" role="img" aria-label={t('hologram.alt')} />
-      <p className="holo-label" aria-hidden="true">
-        <span className="holo-dot" />
-        {status === 'error' ? t('hologram.error') : status === 'ready' ? t('hologram.label') : t('hologram.loading')}
-      </p>
     </div>
   );
 }
