@@ -1,17 +1,13 @@
 // Hologram scene for components/Hologram.tsx. Loaded with a dynamic import so three.js
 // stays out of the main bundle and is only fetched when the section gets close.
 import {
-  AdditiveBlending,
   Box3,
-  BufferAttribute,
-  BufferGeometry,
   Color,
-  DoubleSide,
   Group,
   Mesh,
   NoColorSpace,
+  NormalBlending,
   PerspectiveCamera,
-  Points,
   Scene,
   ShaderMaterial,
   Texture,
@@ -22,9 +18,11 @@ import {
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 
-// Tuning knobs. Color is also exposed as --holo in tokens.css for the panel glow.
+// Tuning knobs. Color is also exposed as --holo in tokens.css.
+// Graphite lines on light paper; the print head is amber.
 export const HOLO = {
-  color: '#19f5d0',
+  color: '#1d2427',
+  edge: '#c46a00',
   revealMs: 2500, // materialize duration
   sweepSeconds: 3.2, // one pass of the bright band, top to bottom
   textureMix: 0.55, // how much of the original texture shows through (0 = none)
@@ -62,6 +60,7 @@ const vertexShader = /* glsl */ `
 
 const fragmentShader = /* glsl */ `
   uniform vec3 uColor;
+  uniform vec3 uEdge;
   uniform sampler2D uMap;
   uniform float uHasMap;
   uniform float uTime;
@@ -72,6 +71,7 @@ const fragmentShader = /* glsl */ `
   uniform float uSweep;
   uniform float uTexMix;
   uniform float uGrid;
+  uniform float uRadius;
   varying vec2 vUv;
   varying vec3 vNormal;
   varying vec3 vView;
@@ -85,9 +85,15 @@ const fragmentShader = /* glsl */ `
 
   void main() {
     float h = (vWorld.y - uMinY) / (uMaxY - uMinY);
-    // The cut line runs from just below the feet (0) to just above the head (1).
-    float cut = h - (uReveal * 1.1 - 0.05);
-    if (cut > 0.0) discard;
+    // The model prints itself in layers, one grid row each (the horizontal grid lines are their seams), from just
+    // below the feet (0) to just above the head (1). The newest layer is laid down left to right by a print head.
+    float front = uReveal * 1.1 - 0.05;
+    float layer = floor(h * uGrid) / uGrid;
+    if (layer > front) discard;
+    float layerT = clamp((front - layer) * uGrid, 0.0, 1.0);
+    float xn = clamp(vWorld.x / (uRadius * 2.4) + 0.5, 0.0, 1.0);
+    float isNew = step(front - 1.0 / uGrid, layer) * step(uReveal, 0.999);
+    if (isNew > 0.5 && xn > layerT) discard;
     #ifdef DEPTH_ONLY
       gl_FragColor = vec4(0.0);
       return;
@@ -106,41 +112,12 @@ const fragmentShader = /* glsl */ `
     float scan = 0.82 + 0.18 * sin(gl_FragCoord.y * 1.7);
     float bandAt = 1.08 - fract(uTime / uSweep) * 1.16;
     float band = exp(-pow((h - bandAt) * 16.0, 2.0)) * uFlicker;
-    float edge = smoothstep(0.035, 0.0, -cut) * step(uReveal, 0.999);
+    float edge = isNew * smoothstep(0.12, 0.0, layerT - xn); // the print head
 
-    float body = 0.1 + lum * uTexMix + fresnel * 1.5 + grid * 0.55;
-    vec3 col = uColor * body * scan + uColor * band * 0.9 + vec3(0.75, 1.0, 0.95) * edge * 2.2;
     float alpha = clamp((0.18 + lum * uTexMix * 0.7 + fresnel + grid * 0.5) * scan + band * 0.5 + edge, 0.0, 1.0);
-    gl_FragColor = vec4(col * uFlicker, alpha * uFlicker);
-  }
-`;
-
-// Sparks that rise off the cut line while the model materializes.
-const sparkVertex = /* glsl */ `
-  uniform float uTime;
-  uniform float uEdgeY;
-  uniform float uSize;
-  attribute float aSeed;
-  varying float vAlpha;
-  void main() {
-    float life = fract(uTime * 0.9 + aSeed);
-    vec3 p = position;
-    p.y = uEdgeY + life * 0.12;
-    vAlpha = (1.0 - life) * (1.0 - life);
-    vec4 mv = modelViewMatrix * vec4(p, 1.0);
-    gl_PointSize = uSize * (0.5 + aSeed) / -mv.z;
-    gl_Position = projectionMatrix * mv;
-  }
-`;
-
-const sparkFragment = /* glsl */ `
-  uniform vec3 uColor;
-  uniform float uOpacity;
-  varying float vAlpha;
-  void main() {
-    float d = length(gl_PointCoord - 0.5);
-    float a = smoothstep(0.5, 0.0, d) * vAlpha * uOpacity;
-    gl_FragColor = vec4(mix(uColor, vec3(1.0), 0.4) * a, a);
+    // Straight colour over paper (normal blending); the print head pulls toward uEdge.
+    vec3 col = mix(uColor, uEdge, clamp(edge, 0.0, 1.0));
+    gl_FragColor = vec4(col, alpha * 0.85 * uFlicker);
   }
 `;
 
@@ -163,6 +140,7 @@ export async function createHologram(canvas: HTMLCanvasElement, url: string, opt
 
   const uniforms = {
     uColor: { value: new Color(HOLO.color) },
+    uEdge: { value: new Color(HOLO.edge) },
     uMap: { value: null as Texture | null },
     uHasMap: { value: 0 },
     uTime: { value: 0 },
@@ -174,8 +152,9 @@ export async function createHologram(canvas: HTMLCanvasElement, url: string, opt
     uTexMix: { value: HOLO.textureMix },
     uGrid: { value: HOLO.gridDensity },
     uGlitch: { value: 0 },
+    uRadius: { value: 0.25 },
   };
-  // Depth pre-pass so only the nearest surface glows; without it the additive back faces turn into noise.
+  // Depth pre-pass so only the nearest surface glows; without it the translucent back faces turn into noise.
   const depthMaterial = new ShaderMaterial({ vertexShader, fragmentShader, uniforms, defines: { DEPTH_ONLY: '' }, colorWrite: false });
   const holoMaterial = new ShaderMaterial({
     vertexShader,
@@ -183,7 +162,7 @@ export async function createHologram(canvas: HTMLCanvasElement, url: string, opt
     uniforms,
     transparent: true,
     depthWrite: false,
-    blending: AdditiveBlending,
+    blending: NormalBlending,
   });
 
   const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
@@ -221,40 +200,7 @@ export async function createHologram(canvas: HTMLCanvasElement, url: string, opt
   model.position.set(-center.x / size.y, -center.y / size.y, -center.z / size.y);
   pivot.add(model);
   const radius = Math.max(size.x, size.z) / size.y / 2;
-
-  // Sparks: a ring of points around the body at the cut height.
-  const sparkCount = opts.lite ? 90 : 260;
-  const positions = new Float32Array(sparkCount * 3);
-  const seeds = new Float32Array(sparkCount);
-  for (let i = 0; i < sparkCount; i++) {
-    const a = Math.random() * Math.PI * 2;
-    const r = radius * (0.4 + Math.random() * 0.8);
-    positions.set([Math.cos(a) * r, 0, Math.sin(a) * r], i * 3);
-    seeds[i] = Math.random();
-  }
-  const sparkGeometry = new BufferGeometry();
-  sparkGeometry.setAttribute('position', new BufferAttribute(positions, 3));
-  sparkGeometry.setAttribute('aSeed', new BufferAttribute(seeds, 1));
-  const sparkUniforms = {
-    uColor: uniforms.uColor,
-    uTime: uniforms.uTime,
-    uEdgeY: { value: -0.5 },
-    uSize: { value: 26 * renderer.getPixelRatio() },
-    uOpacity: { value: 0 },
-  };
-  const sparkMaterial = new ShaderMaterial({
-    vertexShader: sparkVertex,
-    fragmentShader: sparkFragment,
-    uniforms: sparkUniforms,
-    transparent: true,
-    depthWrite: false,
-    blending: AdditiveBlending,
-    side: DoubleSide,
-  });
-  const sparks = new Points(sparkGeometry, sparkMaterial);
-  sparks.visible = false;
-  pivot.add(sparks);
-  disposables.push(sparkGeometry, sparkMaterial);
+  uniforms.uRadius.value = radius;
 
   // Frame the model: fit its height with a little headroom.
   const fit = () => {
@@ -290,9 +236,6 @@ export async function createHologram(canvas: HTMLCanvasElement, url: string, opt
       const p = Math.min(1, (now - revealStart) / HOLO.revealMs);
       const r = easeInOut(p);
       uniforms.uReveal.value = r;
-      sparkUniforms.uEdgeY.value = r * 1.1 - 0.55;
-      sparkUniforms.uOpacity.value = Math.sin(Math.PI * p);
-      sparks.visible = p < 1;
       if (p >= 1) revealStart = -1;
     }
 
