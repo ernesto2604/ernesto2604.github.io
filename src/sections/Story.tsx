@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import Hologram from '../components/Hologram';
-import FoldText from '../components/ui/FoldText';
-import Thinking, { useGenerate, type GenState } from '../components/Thinking';
+import MorphingText from '../components/ui/MorphingText';
+import ScrambleText from '../components/ui/ScrambleText';
+import TypeLoop from '../components/ui/TypeLoop';
 import ScoreBar from '../components/ScoreBar';
 import { useShortcutLabel, openAgent, AGENT_READY } from '../components/Nav';
 import { useFlip } from '../hooks/useFlip';
+import { useReducedMotion } from '../hooks/useMedia';
 import { useLocale, useMessages, useT } from '../i18n';
 import { projects, repoIndex, type Project } from '../lib/projects';
 import { rerank } from '../lib/rerank';
@@ -20,19 +22,27 @@ type Phase = 'input' | 'retrieval';
 const PHASE_AT: [Phase, number][] = [['input', 0], ['retrieval', 0.25]];
 const ANCHOR_AT = { input: 0, retrieval: 0.7 } as const;
 
-// How long each block "thinks" before its content streams in (components/Thinking.tsx).
-const HERO_THINK_MS = 3000;
-const THINK_MS = 1200;
-
 const phaseFor = (p: number): Phase => PHASE_AT.filter(([, at]) => p >= at).at(-1)![0];
 
 function Ghost({ n }: { n: number }) {
   return <span aria-hidden="true" className="ghost-numeral" data-n={String(n).padStart(2, '0')} />;
 }
 
-type Gen = { ref: React.RefObject<HTMLDivElement | null>; state: GenState };
+// True once the welcome loader has lifted (public/welcome.js removes html[data-welcome]).
+function useWelcomeDone() {
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    const html = document.documentElement;
+    const check = () => !html.hasAttribute('data-welcome') && setDone(true);
+    const observer = new MutationObserver(check);
+    observer.observe(html, { attributes: true, attributeFilter: ['data-welcome'] });
+    check();
+    return () => observer.disconnect();
+  }, []);
+  return done;
+}
 
-function Caption({ stage, active, gen, ms, className = '', children }: { stage: Phase; active: boolean; gen: Gen; ms: number; className?: string; children: ReactNode }) {
+function Caption({ stage, active, className = '', children }: { stage: Phase; active: boolean; className?: string; children: ReactNode }) {
   // Keyboard users tabbing into a hidden caption are scrolled to its phase instead of focusing something invisible.
   const onFocus = () => {
     if (!isPinned() || active) return;
@@ -40,8 +50,7 @@ function Caption({ stage, active, gen, ms, className = '', children }: { stage: 
     if (marker) scrollToElement(marker, true);
   };
   return (
-    <div ref={gen.ref} id={stage} data-stage={stage} data-mode="stacked" data-gen={gen.state} onFocusCapture={onFocus} className={`story-cap story-cap-${stage} relative ${active ? 'is-active' : ''} ${className}`}>
-      <Thinking block={stage === 'input' ? 'hero' : stage} ms={ms} center={stage === 'input'} />
+    <div id={stage} data-stage={stage} data-mode="stacked" onFocusCapture={onFocus} className={`story-cap story-cap-${stage} relative ${active ? 'is-active' : ''} ${className}`}>
       {children}
     </div>
   );
@@ -52,15 +61,23 @@ export default function Story() {
   const t = useT();
   const shortcut = useShortcutLabel();
   const terms = useMessages().retrieval.terms;
+  const askExamples = useMessages().hero.askExamples;
   const locale = useLocale();
   const fmt = (n: number) => (locale === 'es' ? n.toFixed(3).replace('.', ',') : n.toFixed(3));
   const [term, setTerm] = useState<string | null>(null);
   // Server HTML holds the finished state, so no-JS readers and crawlers get scores and the final order.
   const [phase, setPhase] = useState<Phase>('retrieval');
   const [pinned, setPinned] = useState(false);
-  // Pinned captions share one sticky stage, so each one generates when its phase is on; stacked ones when scrolled to.
-  const heroGen = useGenerate<HTMLDivElement>(HERO_THINK_MS, !pinned || phase === 'input');
-  const retrievalGen = useGenerate<HTMLDivElement>(THINK_MS, !pinned || phase === 'retrieval');
+  const ready = useWelcomeDone();
+  const reducedMotion = useReducedMotion();
+  // The [ask] tag by the pointer decodes each time the pointer enters the hologram.
+  const [askPlay, setAskPlay] = useState(0);
+  const replayAsk = () => setAskPlay((n) => n + 1);
+  const followPointer = (e: ReactPointerEvent<HTMLElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty('--cx', `${e.clientX - r.left}px`);
+    e.currentTarget.style.setProperty('--cy', `${e.clientY - r.top}px`);
+  };
   const rootRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLOListElement>(null);
 
@@ -134,36 +151,48 @@ export default function Story() {
 
       <div className="story-stage mx-auto max-w-6xl px-5 sm:px-8">
         {/* 01 · Input: the role, who I am, the two ways in, and the hologram. */}
-        <Caption stage="input" active={phase === 'input'} gen={heroGen} ms={HERO_THINK_MS} className="story-hero grid min-h-[100svh] content-center gap-x-12 gap-y-8 pb-16 pt-24 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center">
-          <div className="lg:order-1" data-stream>
-            {/* Plain text in the HTML (no-JS, crawlers, first paint); it unfolds once the hero has finished thinking. */}
+        <Caption stage="input" active={phase === 'input'} className="story-hero grid min-h-[100svh] content-center gap-x-12 gap-y-8 pb-16 pt-24 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center">
+          <div className="lg:order-1">
+            {/* Loops between my name and my role. The heading's name is the sr-only line; without JS (or with reduced
+                motion) it rests on the first text. */}
             <h1 className="hero-title">
-              {heroGen.state === 'done' ? (
-                <FoldText text={t('hero.role')} fontSize="1em" fontWeight="inherit" duration={0.8} stagger={0.05} hoverRefold refoldRadius={160} refoldAngle={45} style={{ lineHeight: 'inherit', letterSpacing: 'inherit' }} />
-              ) : (
-                t('hero.role')
-              )}
+              <span className="sr-only">{`${t('hero.greeting')}, ${t('hero.role')}`}</span>
+              <MorphingText texts={[t('hero.greeting'), t('hero.role')]} play={ready && !reducedMotion && (!pinned || phase === 'input')} cooldownTime={2.5} />
             </h1>
-            <p className="mt-6 max-w-[42ch] text-lg leading-relaxed sm:mt-8 sm:text-xl">
-              <span className="font-semibold">{t('hero.greeting')}</span> {t('hero.valueProp')}
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-10">
-              <a href="#retrieval" className="magnetic inline-flex h-12 items-center gap-2 rounded-full bg-accent-fill px-6 font-medium text-accent-ink transition-transform duration-200 hover:-translate-y-0.5">
-                {t('hero.ctaWork')}
-                <ArrowDown className="size-4" aria-hidden="true" strokeWidth={2} />
-              </a>
-              {AGENT_READY && (
-                <button type="button" onClick={openAgent} className="no-js-hide inline-flex h-12 items-center gap-3 rounded-full bg-surface pl-5 pr-2 font-medium transition-colors duration-200 hover:bg-surface-2">
-                  {t('hero.ctaAgent')}
-                  <kbd className="kbd-hint whitespace-nowrap rounded-full bg-surface-2 px-2.5 py-1 font-mono text-[0.8125rem] text-muted">{shortcut}</kbd>
-                </button>
-              )}
-            </div>
+            <p className="mt-5 max-w-[42ch] text-base leading-relaxed text-muted sm:mt-6">{t('hero.valueProp')}</p>
           </div>
-          <Hologram className="hero-photo lg:order-2" active={(!pinned || phase === 'input') && heroGen.state === 'done'} />
+          {/* The hologram is the way into the agent: clicking it (or Ctrl/Cmd+K) asks "me". */}
+          {AGENT_READY ? (
+            // The name comes from the visible label (label-in-name); without JS neither the model nor the agent can run.
+            <button type="button" onClick={openAgent} onPointerEnter={replayAsk} onPointerMove={followPointer} aria-keyshortcuts={shortcut === '⌘K' ? 'Meta+K' : 'Control+K'} className="hero-ask no-js-hide lg:order-2">
+              <Hologram className="hero-photo" active={(!pinned || phase === 'input') && ready} />
+              <span className="sr-only">{t('hero.askHologram')}</span>
+              {/* Under the feet: example questions typing in a loop, so the invitation shows without a hover,
+                  then how to open it: the shortcut with a keyboard and mouse, a tap on touch screens. */}
+              <span className="hero-ask-label">
+                <TypeLoop
+                  items={askExamples}
+                  play={ready && (!pinned || phase === 'input')}
+                  className="hero-ask-typed"
+                  suffix={
+                    <>
+                      <kbd className="kbd-hint">[{shortcut.replace(' ', ' + ')}]</kbd>
+                      <span className="tap-hint">[{t('hero.askTap')}]</span>
+                    </>
+                  }
+                />
+              </span>
+              {/* Mouse only: an [ask] tag rides next to the pointer over the figure. */}
+              <span className="hero-ask-cursor" aria-hidden="true">
+                [<ScrambleText text={t('hero.askCursor')} play={askPlay} />]
+              </span>
+            </button>
+          ) : (
+            <Hologram className="hero-photo lg:order-2" active={(!pinned || phase === 'input') && ready} />
+          )}
         </Caption>
         {/* 02 · Retrieval */}
-        <Caption stage="retrieval" active={phase === 'retrieval'} gen={retrievalGen} ms={THINK_MS} className="pt-24 lg:pt-0">
+        <Caption stage="retrieval" active={phase === 'retrieval'} className="pt-24 lg:pt-0">
           {/* The query the scores answer: it opens Retrieval instead of the hero. */}
           <p className="text-sm text-muted">{t('retrieval.queryLabel')}</p>
           <p className="story-query mt-1 mb-10 text-xl font-medium tracking-tight">{t('retrieval.query')}</p>
@@ -192,8 +221,7 @@ export default function Story() {
         </Caption>
 
         {/* Result set: order changes with the chosen term; DOM order is the final ranking. */}
-        {/* The result set is part of Retrieval's answer: it waits until that block is generated. */}
-        <div className="story-list-wrap pt-10" data-wait={retrievalGen.state !== 'done' || undefined}>
+        <div className="story-list-wrap pt-10">
           <p className="mb-4 min-h-5 text-sm text-muted" aria-hidden="true">{listLabel}</p>
           <ol ref={listRef} className="flex flex-col gap-2">
             {final.map((p) => {

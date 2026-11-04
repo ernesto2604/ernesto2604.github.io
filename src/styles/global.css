@@ -63,10 +63,12 @@
   html {
     background: var(--bg-0);
     color: var(--text);
-    scrollbar-color: var(--line-strong) var(--bg-1);
+    /* No visible scrollbar (design choice); wheel, touch, keyboard and the menu still scroll. */
+    scrollbar-width: none;
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 5rem;
   }
+  html::-webkit-scrollbar { display: none; }
   body {
     font-family: var(--font-sans);
     font-size: var(--text-base);
@@ -100,7 +102,7 @@
 }
 
 @layer components {
-  /* Glass is reserved for nav and agent panel (spec §5). */
+  /* Glass is reserved for nav and agent panel (spec Â§5). */
   .glass {
     background: var(--glass-bg);
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
@@ -133,42 +135,75 @@
   }
 
 
-  /* Depth layer (Background.tsx). */
-  .backdrop {
-    background:
-      radial-gradient(120% 70% at 50% -10%, var(--surface) 0%, transparent 60%),
-      linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 55%, var(--bg-0) 100%);
-  }
-  .orb {
+  /* Page ground (Background.tsx): flat paper and dashed column guides. The grid is the hero container's
+     content box (max-w-6xl, px-5 / sm:px-8) in 4 / 6 / 8 columns; its rhythm repeats out to both edges of
+     the window. Each gutter is a tight pair of rules (--g-gap apart); pairs sit a column apart.
+     The same guides are drawn again on top of the masthead blur, so the rules never break under it. */
+  .backdrop { background: var(--bg-0); container-type: inline-size; }
+  .guides {
+    --g-cols: 4;
+    --g-pad: 1.25rem;
+    --g-gap: 0.5rem;
+    --g-w: min(100cqw, 72rem);
+    --g-x0: calc((100cqw - var(--g-w)) / 2 + var(--g-pad));
+    --g-p: calc((var(--g-w) - 2 * var(--g-pad) + var(--g-gap)) / var(--g-cols));
     position: absolute;
-    border-radius: 50%;
-    will-change: transform;
-    animation: drift 48s var(--ease-std) infinite alternate;
+    inset: 0;
   }
-  .orb-a {
-    width: 60vmax; height: 60vmax; top: -22vmax; right: -18vmax;
-    background: radial-gradient(closest-side, var(--orb-a), transparent);
+  @media (min-width: 640px) { .guides { --g-pad: 2rem; } }
+  @media (min-width: 768px) { .guides { --g-cols: 6; } }
+  @media (min-width: 1024px) { .guides { --g-cols: 8; } }
+  /* Gutter k: from the right edge of column k-1 to the left edge of column k. */
+  .guide {
+    position: absolute;
+    top: 0;
+    height: 100vh;
+    left: calc(var(--g-x0) + var(--k) * var(--g-p) - var(--g-gap) - 1px);
+    width: calc(var(--g-gap) + 2px);
+    background:
+      linear-gradient(var(--guide-strong) 50%, transparent 0) left top / 1px 8px repeat-y,
+      linear-gradient(var(--guide-strong) 50%, transparent 0) right top / 1px 8px repeat-y;
   }
-  .orb-b {
-    width: 70vmax; height: 70vmax; top: 30vh; left: -30vmax;
-    background: radial-gradient(closest-side, var(--orb-b), transparent);
-    animation-duration: 64s;
-    animation-direction: alternate-reverse;
+  /* Cascade once after the welcome loader (public/welcome.js removes html[data-welcome]): each pair falls
+     from the top, left to right. Pairs left of the window start at once. */
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-welcome]) .guide {
+      animation: guide-fall 1.1s var(--ease-out) both;
+      animation-delay: calc(max(0, var(--k) + 4) * 45ms);
+    }
   }
-  .orb-c {
-    width: 50vmax; height: 50vmax; bottom: -25vmax; right: 5vw;
-    background: radial-gradient(closest-side, var(--orb-c), transparent);
-    animation-duration: 80s;
+  @keyframes guide-fall { from { clip-path: inset(0 0 100% 0); } }
+  @media (forced-colors: active) { .guides { display: none; } }
+
+  /* Masthead (Masthead.tsx): a progressive blur the page scrolls under. Three layers blur more toward the top
+     and each fades out further up, so there is no edge; a paper tint under the clock fades the same way. */
+  .masthead { height: 6rem; overflow: hidden; container-type: inline-size; }
+  .masthead-blur, .masthead-blur > span { position: absolute; inset: 0; }
+  .masthead-blur > span:nth-child(1) { -webkit-backdrop-filter: blur(1px); backdrop-filter: blur(1px); -webkit-mask: linear-gradient(#000 50%, transparent); mask: linear-gradient(#000 50%, transparent); }
+  .masthead-blur > span:nth-child(2) { -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); -webkit-mask: linear-gradient(#000 30%, transparent 75%); mask: linear-gradient(#000 30%, transparent 75%); }
+  .masthead-blur > span:nth-child(3) { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); -webkit-mask: linear-gradient(#000 15%, transparent 50%); mask: linear-gradient(#000 15%, transparent 50%); }
+  .masthead-blur > span:nth-child(4) { background: linear-gradient(var(--bg-0) 35%, color-mix(in srgb, var(--bg-0) 60%, transparent) 60%, transparent); }
+  html[data-lite] .masthead-blur > span { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  @media (prefers-reduced-transparency: reduce) {
+    .masthead-blur > span { -webkit-backdrop-filter: none; backdrop-filter: none; }
+    .masthead-blur > span:nth-child(4) { background: linear-gradient(var(--bg-0) 60%, transparent); }
   }
-  @keyframes drift {
-    from { transform: translate3d(0, 0, 0) scale(1); }
-    to { transform: translate3d(-6vmax, 4vmax, 0) scale(1.08); }
+  /* On one line with the menu button (top-2 / sm:top-3, 3rem tall), mirrored: its left edge matches the
+     burger's right edge (the 1.75rem burger is centred in the 3rem button at right-4 / sm:right-6). */
+  .masthead-clock {
+    position: absolute;
+    top: 2rem;
+    left: 1.625rem;
+    transform: translateY(-50%);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    line-height: 1;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
   }
-  html[data-lite] .orb { animation: none; }
-  .grain {
-    opacity: var(--grain-opacity);
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  @media (min-width: 640px) {
+    .masthead-clock { top: 2.25rem; left: 2.125rem; }
   }
 
   /* Huge stage numeral behind each section title (decorative). */
@@ -188,7 +223,7 @@
   /* Pseudo-content: decorative, so contrast checkers and screen readers skip it. */
   .ghost-numeral::before { content: attr(data-n); }
 
-  /* Load sequence (spec §6). H1 animates transform only so LCP is not delayed. */
+  /* Load sequence (spec Â§6). H1 animates transform only so LCP is not delayed. */
   .rise { animation: rise var(--dur-5) var(--ease-out) both; }
   .fade-up { animation: fade-up var(--dur-4) var(--ease-out) both; }
   @keyframes rise { from { transform: translateY(14px); } }
@@ -222,6 +257,65 @@
   }
 
 
+  /* Hologram as the agent trigger (Story.tsx): the figure is the button. Under its feet a line types example
+     questions; with a mouse an [ask] tag also rides next to the pointer. */
+  .hero-ask {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    width: 100%;
+    cursor: pointer;
+    border-radius: var(--radius-panel);
+  }
+  .hero-ask .hero-photo { transition: transform var(--dur-4) var(--ease-out); }
+  .hero-ask:hover .hero-photo { transform: translateY(-4px); }
+  .hero-ask-label, .hero-ask-cursor {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    line-height: 1;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: pre;
+  }
+  /* The model's feet sit at ~93% of the canvas height (camera framing in hologram.ts); the line hangs just below. */
+  .hero-ask-label {
+    position: absolute;
+    top: calc(93% + 0.75rem);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.75em;
+    text-align: left;
+    color: var(--text-muted);
+    transition: color var(--dur-2) var(--ease-out);
+  }
+  .hero-ask:hover .hero-ask-label, .hero-ask:focus-visible .hero-ask-label { color: var(--text); }
+  .hero-ask-label kbd, .hero-ask-label .tap-hint { margin-left: 1.25em; font-family: inherit; }
+  .tap-hint { display: none; }
+  @media (pointer: coarse) { .tap-hint { display: inline; } }
+  .type-caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.1em;
+    margin-left: 0.15em;
+    vertical-align: -0.2em;
+    background: currentColor;
+    animation: caret-blink 1.06s steps(1) infinite;
+  }
+  @keyframes caret-blink { 50% { opacity: 0; } }
+  .hero-ask-cursor {
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--text);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(calc(var(--cx, 0px) + 18px), calc(var(--cy, 0px) + 18px));
+    transition: opacity var(--dur-2) var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .hero-ask:hover .hero-ask-cursor { opacity: 1; }
+  }
+
   .score-fill { transition: transform var(--dur-5) var(--ease-out); }
 
   /* Hologram (Hologram.tsx): the figure alone on the page, no panel behind it. */
@@ -231,16 +325,12 @@
     width: 100%;
   }
   .holo-canvas { display: block; width: 100%; height: 100%; }
-  /* Soft bloom without a post-processing pass; skipped on small/touch screens. */
-  @media (min-width: 768px) and (pointer: fine) {
-    .holo-canvas { filter: drop-shadow(0 0 10px color-mix(in srgb, var(--holo) 45%, transparent)); }
-  }
 
   @media (pointer: coarse) { .kbd-hint { display: none !important; } }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .orb, .signal-dot { animation: none !important; }
+  .signal-dot { animation: none !important; }
 }
 
 /* Unlayered so it beats Tailwind display utilities: JS-only controls vanish without JS. */
@@ -256,7 +346,7 @@ html:not(.js) .no-js-hide { display: none !important; }
 }
 
 /* Unlayered: these mode overrides must beat Tailwind utilities on the same elements. */
-/* Pinned story (spec §12b). html[data-pinned] is set before first paint by boot.js. */
+/* Pinned story (spec Â§12b). html[data-pinned] is set before first paint by boot.js. */
 .story-marker { display: none; }
 html[data-pinned] .story { height: 200vh; }
 html[data-pinned] .story-marker {
@@ -297,7 +387,8 @@ html[data-pinned] .story-list-wrap { grid-column: 2; padding-top: 0; }
 html[data-pinned] .story-hero { min-height: 0; padding: 0; }
 /* The hero spans both columns over the result list; the list appears once the query is scored. */
 html[data-pinned] .story-cap-input { grid-column: 1 / -1; }
-html[data-pinned] .story-hero .hero-photo { max-height: calc(100svh - 9rem); justify-self: end; width: 100%; }
+html[data-pinned] .story-hero .hero-photo { max-height: calc(100svh - 12rem); justify-self: end; width: 100%; }
+html[data-pinned] .story-hero .hero-ask { justify-self: end; }
 html[data-pinned] .story-list-wrap { transition: opacity var(--dur-4) var(--ease-out), visibility var(--dur-4); }
 html[data-pinned] .story[data-phase="input"] .story-list-wrap { opacity: 0; visibility: hidden; }
 html[data-pinned] .story-summary {
@@ -555,11 +646,86 @@ html[data-scroll-lock] { overflow: hidden; padding-right: var(--scrollbar-w, 0px
 /* Without JS the panel cannot open, so its links render as a plain block at the top of the page. */
 html:not(.js) .menu-dialog { display: block; position: static; width: auto; height: auto; margin: 0; }
 
-/* Agent dialog (native <dialog>, glass). */
+/* Agent dialog (native <dialog>, AgentPanel.tsx): no card of its own. A glass bar that opens from an orb,
+   the conversation in a glass card under it, and a mono chrome row. */
 .agent-dialog { max-height: none; overflow: visible; }
+/* While it is open only the answers scroll: the page behind stays put (wheel past the card's end, or over the backdrop). */
+html:has(.agent-dialog[open]) { overflow: hidden; }
+/* Focus lands on the field a frame later; the dialog box itself never shows a ring. */
+.agent-dialog:focus-visible { outline: none; }
 .agent-dialog::backdrop { background: var(--scrim); }
-.agent-dialog[open] { animation: dialog-in var(--dur-3) var(--ease-out); }
-@keyframes dialog-in { from { opacity: 0; transform: translateY(-8px) scale(0.985); } }
+/* The page blurs behind it, so the bare mono chrome row stays readable over anything. */
+.agent-dialog::backdrop { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }[data-lite] .agent-dialog::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; }
+@media (prefers-reduced-transparency: reduce) { .agent-dialog::backdrop { -webkit-backdrop-filter: none; backdrop-filter: none; } }
+.agent-stack { display: grid; gap: 0.75rem; container-type: inline-size; }
+.agent-shell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-self: center;
+  width: 100%;
+  height: 3.5rem;
+  padding: 0 calc(0.5rem - 1px); /* minus the glass border: a 40px orb fills the 56px circle exactly */
+  border-radius: 999px;
+  overflow: clip;
+  transition: width 560ms var(--ease-out), border-color var(--dur-2) var(--ease-out);
+}
+.agent-shell[data-stage="orb"], .agent-shell[data-stage="think"] { width: 3.5rem; transition-duration: 420ms, var(--dur-2); }
+/* The field has the open bar's width in every stage and the shell clips it while it stretches (overflow: clip,
+   unlike hidden, cannot be scrolled sideways by focus). An input that resizes under the caret loses it: letters
+   typed straight after Ctrl+K, accented ones above all, landed at the start. 7.25rem = padding and border (1rem),
+   orb (2.5rem), two gaps (1rem) and the send button (2.75rem). */
+.agent-field { flex: none; width: calc(100cqi - 7.25rem); }
+.agent-dialog[open] .agent-shell { animation: agent-pop 360ms var(--ease-out); }
+@keyframes agent-pop { from { opacity: 0; transform: scale(0.6); } }
+/* Focus shows on the bar itself, in neutral ink (no amber ring on the field). */
+.agent-shell:has(.agent-input:focus-visible) { border-color: var(--line-strong); }
+.agent-orb { flex: none; }
+.agent-field, .agent-send { transition: opacity 240ms var(--ease-out) 300ms; }
+.agent-shell:not([data-stage="bar"]) .agent-field,
+.agent-shell:not([data-stage="bar"]) .agent-send { opacity: 0; pointer-events: none; transition-delay: 0ms; transition-duration: 140ms; }
+.agent-field { position: relative; }
+.agent-input { width: 100%; height: 2.5rem; background: transparent; font-size: var(--text-base); outline: none; }
+.agent-hint {
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  overflow: hidden;
+  white-space: pre;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.agent-key { margin-left: 0.75em; font-family: var(--font-mono); font-size: var(--text-2xs); letter-spacing: 0.06em; text-transform: uppercase; }
+.agent-send {
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text);
+}
+.agent-send:disabled { color: var(--text-muted); }
+.agent-card { max-height: calc(min(80svh, 720px) - 8rem); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; padding: 1.25rem; border-radius: var(--radius-panel); }
+.agent-card::-webkit-scrollbar { display: none; } /* still scrolls by wheel, touch and keys (it is focusable) */
+.agent-chrome { transition: opacity 240ms var(--ease-out) 300ms; }
+.agent-stack[data-stage="orb"] .agent-chrome { opacity: 0; transition: none; }
+.agent-chrome { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: 0 1rem; }
+.agent-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  transition: color var(--dur-2) var(--ease-out);
+}
+.agent-link:hover { color: var(--text); }
+.agent-chrome summary { list-style: none; }
+.agent-chrome summary::-webkit-details-marker { display: none; }
+.agent-how { max-width: 52ch; font-size: var(--text-xs); line-height: 1.6; color: var(--text-muted); }
 
 /* Agent "highlight" action. */
 .flash { animation: flash 2.4s var(--ease-out); }
@@ -567,95 +733,6 @@ html:not(.js) .menu-dialog { display: block; position: static; width: auto; heig
   0%, 30% { background-color: var(--accent-soft); box-shadow: 0 0 0 2px var(--accent); }
   100% { background-color: transparent; box-shadow: 0 0 0 2px transparent; }
 }
-
-/* Generation (components/Thinking.tsx): each block "thinks", then streams in like a chat answer.
-   Only with JS and motion allowed; without them the content is simply there. */
-.thinking { display: none; }
-@media (prefers-reduced-motion: no-preference) {
-  html.js .thinking {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 5;
-    pointer-events: none;
-    transition: opacity var(--dur-2) var(--ease-std), visibility var(--dur-2);
-  }
-  /* The hero's thinking sits in the middle of the screen, on its own, right after the welcome loader. */
-  html.js .thinking[data-center] { position: fixed; inset: 0; display: grid; place-items: center; padding: 1.25rem; }
-  /* A card only shows while its block is actually thinking: never as a placeholder for a block not yet reached. */
-  html.js [data-gen="idle"] > .thinking { display: none; }
-  /* A pinned caption that is not the current phase never shows its card (the hero's is fixed to the screen). */
-  html[data-pinned] .story-cap:not(.is-active) > .thinking { display: none; }
-  html.js [data-gen="done"] > .thinking { opacity: 0; visibility: hidden; }
-
-  html.js [data-gen]:not([data-gen="done"]) > :not(.thinking):not([data-stream]),
-  html.js [data-gen]:not([data-gen="done"]) [data-stream] > :not([data-stream]),
-  html.js .story-list-wrap[data-wait] { opacity: 0; pointer-events: none; }
-  [data-gen="done"] > :not(.thinking):not([data-stream]),
-  [data-gen="done"] [data-stream] > :not([data-stream]) {
-    animation: stream-in var(--dur-4) var(--ease-out) both;
-    /* Starts once the card has faded (--dur-2), so the answer never appears under the thinking message. */
-    animation-delay: calc(var(--dur-2) + 60ms + var(--i, 0) * 110ms);
-  }
-  .story-list-wrap { transition: opacity var(--dur-4) var(--ease-out); }
-}
-@keyframes stream-in { from { opacity: 0; transform: translateY(10px); } }
-/* Finished instantly (left mid-thought, or landed on by a link): no card fading out over the content. */
-[data-gen-instant] > .thinking { display: none !important; }
-[data-gen-instant][data-gen="done"] > :not(.thinking):not([data-stream]),
-[data-gen-instant][data-gen="done"] [data-stream] > :not([data-stream]) { animation: none !important; }
-
-.thinking-card {
-  min-width: min(22rem, calc(100vw - 2.5rem));
-  padding: 1rem 1.25rem 1.1rem;
-  border-radius: var(--radius-card);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  box-shadow: 0 18px 40px -28px var(--glass-shadow);
-}
-.thinking[data-center] .thinking-card { padding: 1.25rem 1.5rem 1.4rem; }
-.thinking-head { display: flex; align-items: center; gap: 0.6rem; font-weight: 500; }
-.thinking-dot {
-  width: 0.55rem; height: 0.55rem; border-radius: 50%;
-  background: var(--accent-fill);
-  animation: thinking-pulse 1.2s var(--ease-std) infinite;
-}
-@keyframes thinking-pulse { 50% { transform: scale(0.6); opacity: 0.5; } }
-/* A highlight sweeps through the label, like a model that is still working. */
-.thinking-label {
-  background: linear-gradient(90deg, var(--text-muted) 0%, var(--text-muted) 35%, var(--text) 50%, var(--text-muted) 65%, var(--text-muted) 100%) 0 0 / 250% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: thinking-shimmer 1.8s linear infinite;
-}
-@keyframes thinking-shimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
-.thinking-steps {
-  margin-top: 0.6rem;
-  padding-left: 0.3rem;
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  color: var(--text-muted);
-}
-.thinking-steps li { display: flex; gap: 0.5rem; line-height: 1.9; opacity: 0; }
-.thinking-steps li::before { content: "├"; color: var(--line-strong); }
-.thinking-steps li:last-child::before { content: "└"; }
-/* Steps arrive one by one across the thinking time; the newest one carries the cursor. */
-[data-gen="thinking"] > .thinking .thinking-steps li {
-  animation: thinking-step var(--dur-3) var(--ease-out) both;
-  animation-delay: calc(var(--ms) * 0.85 * var(--k) / var(--n));
-}
-.thinking-steps li:last-child::after {
-  content: "";
-  width: 0.45em;
-  height: 1.05em;
-  align-self: center;
-  background: var(--accent-fill);
-  animation: thinking-caret 0.9s steps(1) infinite;
-}
-@keyframes thinking-step { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-@keyframes thinking-caret { 50% { opacity: 0; } }
 
 
 /* Section swap (lib/scroll.ts swapAtSeam): the page fades out, jumps across a seam and fades back in place. */

@@ -3,17 +3,33 @@ import type { Page } from '@playwright/test';
 import { expect, test } from './fixtures';
 
 async function seriousViolations(page: Page) {
-  // Let the hero's thinking phase and every entrance animation finish, so contrast is measured at rest.
-  // Endless loops (status dot, shimmer, caret) never finish and are skipped.
+  // Let every entrance animation finish, so contrast is measured at rest.
+  // Endless loops (status dot) never finish and are skipped.
   await page.waitForTimeout(300);
   await page.waitForFunction(
-    () =>
-      !document.querySelector('.story-hero[data-gen="thinking"]') &&
-      // A finished block's thinking card fades out; wait until it is fully hidden.
-      [...document.querySelectorAll('[data-gen="done"] > .thinking')].every((el) => !el.checkVisibility({ visibilityProperty: true })) &&
-      document.getAnimations().every((a) => a.playState !== 'running' || a.effect?.getTiming().iterations === Infinity),
+    () => document.getAnimations().every((a) => a.playState !== 'running' || a.effect?.getTiming().iterations === Infinity),
     null,
     { timeout: 20000 },
+  );
+  // The hero title morphs in a script loop (MorphingText): start right as a morph lands, at the top of its hold.
+  // Gives up after 6s when the loop is not playing (reduced motion, title off screen).
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        const layers = [...document.querySelectorAll<HTMLElement>('h1 [aria-hidden] > .absolute')];
+        const atRest = () => layers.every((l) => ['0', '1'].includes(getComputedStyle(l).opacity));
+        let done = false;
+        const finish = () => ((done = true), resolve());
+        const giveUp = setTimeout(finish, 6000);
+        let moving = false;
+        const frame = () => {
+          if (done) return;
+          if (!atRest()) moving = true;
+          else if (moving) return (clearTimeout(giveUp), finish());
+          requestAnimationFrame(frame);
+        };
+        frame();
+      }),
   );
   const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
   return violations

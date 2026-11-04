@@ -32,8 +32,10 @@ test('without JavaScript the hero and projects are readable and JS-only buttons 
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1, name: 'AI Engineer' })).toBeVisible();
-  await expect(page.getByText("Hi, I'm Ernesto.")).toBeVisible();
+  const title = page.getByRole('heading', { level: 1, name: "I'm Ernesto, AI Engineer", exact: true });
+  await expect(title).toBeVisible();
+  // Without JS the loop rests on its first text.
+  await expect(title.getByText("I'm Ernesto", { exact: true }).last()).toBeVisible();
   // The query now opens Retrieval; its scores below still answer it.
   await expect(page.getByText('Who is Ernesto and what has he built?').first()).toBeVisible();
   // The menu cannot open without JS, so its links render as a plain block.
@@ -41,6 +43,35 @@ test('without JavaScript the hero and projects are readable and JS-only buttons 
   await expect(page.getByRole('link', { name: 'Ring TelemetryOps' })).toBeVisible();
   await expect(page.locator('.story-row').first()).toContainText('1.000');
   await expect(page.getByRole('button', { name: /Ask the agent/ })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /Ask my hologram/ })).toHaveCount(0);
+  await context.close();
+});
+
+test('the hero title opens on my name and morphs into my role', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+  // The shown text is the morph layer at full opacity.
+  const shown = () =>
+    page.evaluate(() =>
+      [...document.querySelectorAll<HTMLElement>('h1 [aria-hidden] > .absolute')].find((s) => getComputedStyle(s).opacity === '1')?.textContent,
+    );
+  await page.waitForFunction(() => !document.documentElement.hasAttribute('data-welcome'), null, { timeout: 15000 });
+  await expect.poll(shown).toBe("I'm Ernesto");
+  // The first morph goes to the role: one hold (2.5s) plus one morph (1.5s), with margin.
+  await expect.poll(shown, { timeout: 6000 }).toBe('AI Engineer');
+  // Settled, not a single frame: it holds for the cooldown.
+  await page.waitForTimeout(800);
+  expect(await shown()).toBe('AI Engineer');
+});
+
+test('with reduced motion the hero title stays on my name', async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  await page.goto('/');
+  await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+  await page.waitForTimeout(5000);
+  await expect(page.locator('h1 [aria-hidden] > .absolute').last()).toHaveText("I'm Ernesto");
+  await expect(page.locator('h1 [aria-hidden] > .absolute').first()).toHaveCSS('opacity', '0');
   await context.close();
 });
 

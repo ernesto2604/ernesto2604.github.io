@@ -35,10 +35,13 @@
   },
   "hero": {
     "role": "AI Engineer",
-    "greeting": "Hola, soy Ernesto.",
-    "valueProp": "Construyo sistemas de IA de principio a fin: RAG, agentes y el backend que los hace fiables.",
+    "greeting": "Soy Ernesto",
+    "valueProp": "No vengo a seguir. Vengo a construir.",
     "ctaAgent": "Pregunta al agente",
-    "ctaWork": "Ver proyectos",
+    "askHologram": "Pregunta a mi holograma",
+    "askCursor": "Pregunta",
+    "askTap": "Clic",
+    "askExamples": ["¿Qué ha construido?", "¿Cómo funciona el agente de Ring?", "¿Qué tecnologías usa?", "¿Está disponible?"],
     "kbdHint": "Ctrl K",
     "name": "Ernesto Contreras"
   },
@@ -422,28 +425,6 @@
     "label": "ernesto.glb · render en vivo",
     "loading": "Cargando holograma…",
     "error": "Vista 3D no disponible en este dispositivo"
-  },
-  "thinking": {
-    "label": "Pensando",
-    "hero": [
-      "Leyendo la consulta: ¿quién es Ernesto?",
-      "Recuperando perfil y proyectos",
-      "Redactando la respuesta"
-    ],
-    "retrieval": [
-      "Expandiendo la consulta en términos",
-      "Recuperando 5 repositorios públicos",
-      "Puntuando la relevancia"
-    ],
-    "generate": [
-      "Abriendo los casos de estudio",
-      "Dibujando la arquitectura",
-      "Generando la respuesta"
-    ],
-    "output": [
-      "Resumiendo el perfil",
-      "Preparando el contacto"
-    ]
   },
   "contact": {
     "title": "Hablemos",

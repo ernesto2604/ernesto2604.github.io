@@ -35,10 +35,13 @@
   },
   "hero": {
     "role": "AI Engineer",
-    "greeting": "Hi, I'm Ernesto.",
-    "valueProp": "I build AI systems end to end: RAG, agents and the backend that makes them reliable.",
+    "greeting": "I'm Ernesto",
+    "valueProp": "Not here to follow. Here to build.",
     "ctaAgent": "Ask the agent",
-    "ctaWork": "See the work",
+    "askHologram": "Ask my hologram",
+    "askCursor": "Ask",
+    "askTap": "Click",
+    "askExamples": ["What has he built?", "How does the Ring agent work?", "What's his stack?", "Is he available?"],
     "kbdHint": "Ctrl K",
     "name": "Ernesto Contreras"
   },
@@ -422,28 +425,6 @@
     "label": "ernesto.glb · live render",
     "loading": "Loading hologram…",
     "error": "3D preview unavailable on this device"
-  },
-  "thinking": {
-    "label": "Thinking",
-    "hero": [
-      "Reading the query: who is Ernesto?",
-      "Retrieving profile and projects",
-      "Drafting the answer"
-    ],
-    "retrieval": [
-      "Expanding the query into terms",
-      "Retrieving 5 public repositories",
-      "Scoring relevance"
-    ],
-    "generate": [
-      "Opening the case studies",
-      "Drawing the architecture",
-      "Generating the answer"
-    ],
-    "output": [
-      "Summarizing the profile",
-      "Preparing contact details"
-    ]
   },
   "contact": {
     "title": "Let's talk",
