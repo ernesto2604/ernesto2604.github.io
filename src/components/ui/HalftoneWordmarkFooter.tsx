@@ -164,6 +164,8 @@ const HWF_CSS = `
   background-image: linear-gradient(currentColor, currentColor); background-size: 0% 1px;
   background-repeat: no-repeat; background-position: 0 100%; transition: opacity .25s ease, background-size .35s cubic-bezier(.2,.7,.1,1);
 }
+/* WCAG 2.5.8: a 24px tall hit area; the underline stays under the text. */
+.hwf-col a { display: inline-block; line-height: 24px; background-position: 0 80%; }
 .hwf-col a:hover, .hwf-up:hover { opacity: 1; background-size: 100% 1px; }
 .hwf-col a:focus-visible, .hwf-up:focus-visible { outline: 1px solid currentColor; outline-offset: 3px; opacity: 1; }
 .hwf-rule {

@@ -1,4 +1,5 @@
 import Background from './components/Background';
+import Masthead from './components/Masthead';
 import Nav from './components/Nav';
 import SmoothScroll from './components/SmoothScroll';
 import { I18nProvider, type Locale, type Messages } from './i18n';
@@ -13,6 +14,7 @@ function Page() {
   return (
     <>
       <Background />
+      <Masthead />
       <Nav />
       <main id="main" tabIndex={-1}>
         <Story />

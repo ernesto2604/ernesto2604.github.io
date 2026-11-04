@@ -177,7 +177,7 @@ export default function Nav() {
         aria-expanded={open}
         aria-controls="site-menu"
         aria-label={t('menu.open')}
-        className="menu-button no-js-hide fixed right-4 top-4 z-40 grid size-12 place-items-center sm:right-6 sm:top-6"
+        className="menu-button no-js-hide fixed right-4 top-2 z-40 grid size-12 place-items-center sm:right-6 sm:top-3"
       >
         <Burger />
       </button>
@@ -246,7 +246,7 @@ export default function Nav() {
           )}
         </nav>
         {/* Sits exactly over the open button and stays put while the panel slides in, so the lines seem to cross in place. */}
-        <button type="button" onClick={() => close()} aria-label={t('menu.close')} className="menu-button menu-close no-js-hide fixed right-4 top-4 grid size-12 place-items-center sm:right-6 sm:top-6">
+        <button type="button" onClick={() => close()} aria-label={t('menu.close')} className="menu-button menu-close no-js-hide fixed right-4 top-2 grid size-12 place-items-center sm:right-6 sm:top-3">
           <Burger />
         </button>
       </dialog>

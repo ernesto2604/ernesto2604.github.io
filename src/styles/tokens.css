@@ -7,36 +7,34 @@
 
   /* Light palette: cool paper and ink. Signal amber is a fill only (CTA, scores, active dot) with dark ink on it;
      --accent is a deeper amber for text, icons and the focus ring, since #FFB547 fails AA on light grounds. */
-  --bg-0: #F5F6F8;
-  --bg-1: #ECEEF2;
-  --surface: #FFFFFF;
-  --surface-2: #EBEEF3;
-  --line: #D9DEE6;
-  --line-strong: #7B8494;
-  --text: #0D1015;
-  --text-muted: #4B5361;
+  --bg-0: #F6F4EF;
+  --bg-1: #EEEBE4;
+  --surface: #FCFBF8;
+  --surface-2: #ECE8E0;
+  --line: #DDD8CE;
+  --line-strong: #7C766A;
+  --text: #14120F;
+  --text-muted: #55504A;
+
+  /* Column guides (Background.tsx). Decorative, kept well under text contrast. */
+  --guide-strong: rgb(20 18 15 / 0.07);
   --accent: #8C4A00;
   --accent-fill: #FFB547;
   --accent-ink: #1A1204;
   --accent-soft: rgb(255 181 71 / 0.22);
   --ok: #1E7547;
 
-  --glass-bg: rgb(255 255 255 / 0.78);
+  /* Subtle glass: near-opaque with a light blur; the flat ground has nothing to refract. */
+  --glass-bg: rgb(255 255 255 / 0.92);
   --glass-solid: rgb(255 255 255 / 0.97);
   --glass-edge: rgb(13 16 21 / 0.08);
   --glass-shadow: rgb(13 16 21 / 0.10);
-  --glass-blur: 24px;
+  --glass-blur: 8px;
   --scrim: rgb(13 16 21 / 0.32);
 
-  /* Depth layer (Background.tsx). */
-  --orb-a: rgb(255 181 71 / 0.20);
-  --orb-b: rgb(120 150 200 / 0.16);
-  --orb-c: rgb(160 175 200 / 0.14);
-  --grain-opacity: 0.035;
-
-  /* Hologram panel (Hologram.tsx). Dark on purpose: the hologram is additive light and vanishes on paper.
+  /* Hologram (Hologram.tsx): graphite lines straight on the paper.
      The model color itself lives in HOLO.color (src/lib/hologram.ts); keep --holo in sync. */
-  --holo: #19f5d0;
+  --holo: #1d2427;
   --holo-panel: #0B1116;
   --holo-panel-2: #121C24;
   --holo-text: #9FB8C2;
