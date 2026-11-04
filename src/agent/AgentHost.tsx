@@ -10,10 +10,13 @@ export default function AgentHost() {
   const t = useT();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [mounted, setMounted] = useState(false);
+  // Bumped on every open so the panel replays its orb-to-bar entrance; 0 while closed.
+  const [opened, setOpened] = useState(0);
 
   useEffect(() => {
     const open = () => {
       setMounted(true);
+      setOpened((n) => Math.abs(n) + 1);
       const d = dialogRef.current!;
       if (!d.open) d.showModal();
       requestAnimationFrame(() => d.querySelector<HTMLInputElement>('#agent-input')?.focus());
@@ -40,12 +43,14 @@ export default function AgentHost() {
       ref={dialogRef}
       data-lenis-prevent
       aria-label={t('agent.title')}
-      className="agent-dialog glass m-auto mt-[10svh] w-[min(42rem,calc(100vw-1.5rem))] rounded-panel p-0 text-text"
+      className="agent-dialog m-auto mt-[10svh] w-[min(42rem,calc(100vw-1.5rem))] bg-transparent p-0 text-text"
       onClick={(e) => e.target === e.currentTarget && dialogRef.current?.close()}
+      // The close event is async: skip it when Ctrl+K has already reopened the dialog.
+      onClose={() => !dialogRef.current?.open && setOpened((n) => -Math.abs(n))}
     >
       {mounted && (
-        <Suspense fallback={<div className="h-40" />}>
-          <AgentPanel dialogRef={dialogRef} />
+        <Suspense fallback={<div className="h-14" />}>
+          <AgentPanel dialogRef={dialogRef} opened={opened} />
         </Suspense>
       )}
     </dialog>
