@@ -12,3 +12,4 @@ playwright-report
 .shots
 .taste-skill
 assets-src
+tsconfig.tsbuildinfo
