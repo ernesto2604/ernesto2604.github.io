@@ -3,7 +3,7 @@ import TechIcon from '../components/TechIcon';
 import { useMessages } from '../i18n';
 
 // The tools I use, one row per layer: the layer name large on the left, logos and names on the right.
-// It continues section 03 (Generate): no thinking of its own, and the same stage for the progress pill.
+// It continues section 03 (Generate): the same stage for the progress pill.
 export default function Stack() {
   const s = useMessages().stack;
   return (

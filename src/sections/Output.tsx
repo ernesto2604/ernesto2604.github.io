@@ -2,7 +2,6 @@ import { useState, type FormEvent } from 'react';
 import { ArrowUpRight, Send } from 'lucide-react';
 import ProfileCard from '../components/ui/ProfileCard';
 import StarBorder from '../components/ui/StarBorder';
-import Thinking, { SETTLED, useGenerate } from '../components/Thinking';
 import profile from '../content/profile.json';
 import { useMessages, useT } from '../i18n';
 
@@ -91,18 +90,14 @@ function Contact() {
   );
 }
 
-const THINK_MS = 1200;
-
 export default function Output() {
   const t = useT();
-  const gen = useGenerate<HTMLDivElement>(THINK_MS, true, SETTLED);
   const o = useMessages().output;
   return (
     <section id="output" data-stage="output" data-seam aria-labelledby="output-title" className="scroll-mt-24 px-5 pb-12 pt-24 sm:px-8 md:pb-16 md:pt-36">
-      <div ref={gen.ref} data-gen={gen.state} className="relative mx-auto grid max-w-6xl gap-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
-        <Thinking block="output" ms={THINK_MS} center />
+      <div className="relative mx-auto grid max-w-6xl gap-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
         {/* Both columns push their last block to the bottom of the row, so Experience/Languages end level with the contact links. */}
-        <div data-stream className="lg:flex lg:flex-col">
+        <div className="lg:flex lg:flex-col">
           <header className="relative">
             <span aria-hidden="true" className="ghost-numeral" data-n="04" />
             <h2 id="output-title" className="relative font-display text-3xl leading-[1.05]">{o.title}</h2>

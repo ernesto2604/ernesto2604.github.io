@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, Play } from 'lucide-react';
 import Diagram from '../components/Diagram';
-import Thinking, { SETTLED, useGenerate } from '../components/Thinking';
 import FolderFloat from '../components/ui/FolderFloat';
 import { useMessages, useT } from '../i18n';
 import { featured, type Project } from '../lib/projects';
@@ -12,8 +11,6 @@ type CaseCopy = { tagline: string; decisions: string[] };
 // back: cover the case (out) → reveal the page (gone) → closed.
 type Stage = 'closed' | 'in' | 'shown' | 'open' | 'out' | 'gone';
 const STEP_MS = 520;
-
-const THINK_MS = 1200;
 
 function CaseDetail({ project }: { project: Project }) {
   const t = useT();
@@ -58,8 +55,6 @@ function CaseDetail({ project }: { project: Project }) {
 export default function Generate() {
   const t = useT();
   const cases = useMessages().cases as Record<string, CaseCopy>;
-  // It thinks once the section has swapped in at the top (see swapAtSeam), centred like the hero.
-  const gen = useGenerate<HTMLDivElement>(THINK_MS, true, SETTLED);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const openerRef = useRef<HTMLElement | null>(null);
   const backRef = useRef<HTMLButtonElement>(null);
@@ -115,9 +110,8 @@ export default function Generate() {
 
   return (
     <section id="generate" data-stage="generate" data-seam aria-labelledby="generate-title" className="scroll-mt-24 px-5 py-24 sm:px-8 md:py-36">
-      <div ref={gen.ref} data-gen={gen.state} className="relative mx-auto max-w-6xl">
-        <Thinking block="generate" ms={THINK_MS} center />
-        <header className="relative" data-stream>
+      <div className="relative mx-auto max-w-6xl">
+        <header className="relative">
           <span aria-hidden="true" className="ghost-numeral" data-n="03" />
           <h2 id="generate-title" className="relative max-w-3xl font-display text-3xl leading-[1.05]">
             {t('generate.title')}
@@ -125,7 +119,7 @@ export default function Generate() {
           <p className="relative mt-5 max-w-[52ch] text-lg text-muted">{t('generate.lead')}</p>
         </header>
         {/* Hovering a folder floats its key decisions out as notes; opening it plays the curtain into the case. */}
-        <ul className="gen-folders" data-stream>
+        <ul className="gen-folders">
           {featured.map((p) => (
             <li key={p.slug} id={p.slug} className="flex justify-center scroll-mt-48">
               <FolderFloat
