@@ -4,7 +4,7 @@ import gsap from 'gsap';
 export type StackItem = { id: string; num: string; name: string; sublabel?: string; image: string; ariaLabel: string };
 
 // Each item gets one of these masks, in order; the photo grows in through it, breathes, then shrinks out, on a loop.
-const CLIPS = ['stack-clip-bands', 'stack-clip-tiles', 'stack-clip-grid'];
+const CLIPS = ['stack-clip-columns', 'stack-clip-tiles', 'stack-clip-grid'];
 
 // A numbered list beside a masked photo: hovering or focusing a name shows its photo, clicking it calls onSelect.
 // Reduced motion: the photo rests fully shown.
@@ -57,12 +57,15 @@ export default function StackInteractor({ items, onSelect }: { items: StackItem[
 
       <svg ref={svgRef} viewBox="0 0 500 500" aria-hidden="true" className="h-auto w-full max-w-[500px] lg:w-1/2">
         <defs>
-          <clipPath id="stack-clip-bands">
-            <path className="path" d="M480.6,235H19.4c-6,0-10.8-4.9-10.8-10.8v-9.5c0-6,4.9-10.8,10.8-10.8h461.1c6,0,10.8,4.9,10.8,10.8v9.5C491.4,230.2,486.6,235,480.6,235z" />
-            <path className="path" d="M483.1,362.4H16.9c-4.6,0-8.3-3.7-8.3-8.3v-1.8c0-4.6,3.7-8.3,8.3-8.3h466.1c4.6,0,8.3,3.7,8.3,8.3v1.8C491.4,358.7,487.7,362.4,483.1,362.4z" />
-            <path className="path" d="M460.3,336.3H39.7c-17.2,0-31.1-13.9-31.1-31.1v-31.5c0-17.2,13.9-31.1,31.1-31.1h420.7c17.2,0,31.1,13.9,31.1,31.1v31.5C491.4,322.4,477.5,336.3,460.3,336.3z" />
-            <path className="path" d="M459.2,196.2H40.8v-35c0-47.5,38.5-86,86-86h246.5c47.5,0,86,38.5,86,86V196.2z" />
-            <path className="path" d="M441.9,424.9H58.1c-9.6,0-17.3-7.8-17.3-17.3v-37.4h418.5v37.4C459.2,417.1,451.5,424.9,441.9,424.9z" />
+          <clipPath id="stack-clip-columns">
+            <rect className="path" x="20" y="20" width="100" height="180" rx="12" />
+            <rect className="path" x="20" y="220" width="100" height="260" rx="12" />
+            <rect className="path" x="140" y="20" width="100" height="280" rx="12" />
+            <rect className="path" x="140" y="320" width="100" height="160" rx="12" />
+            <rect className="path" x="260" y="20" width="100" height="120" rx="12" />
+            <rect className="path" x="260" y="160" width="100" height="320" rx="12" />
+            <rect className="path" x="380" y="20" width="100" height="220" rx="12" />
+            <rect className="path" x="380" y="260" width="100" height="220" rx="12" />
           </clipPath>
           <clipPath id="stack-clip-tiles">
             <rect className="path" x="20" y="20" width="200" height="280" rx="12" />
