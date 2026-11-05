@@ -22,6 +22,6 @@ test('a failed send says so and points to the email', async ({ page }) => {
   await page.goto('/#contact');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   await page.getByRole('textbox', { name: 'Your message' }).fill('Hello');
-  await page.getByRole('button', { name: 'Send message' }).click();
+  await page.getByRole('button', { name: 'Send', exact: true }).click();
   await expect(page.getByRole('status').filter({ hasText: 'ercoal04@gmail.com' })).toBeVisible();
 });

@@ -402,7 +402,7 @@
     "formTitle": "Tu mensaje",
     "messagePlaceholder": "¿Qué quieres contarme?",
     "replyTo": "Tus datos de contacto, para poder responderte (opcional)",
-    "send": "Enviar mensaje",
+    "send": "Enviar",
     "sending": "Enviando…",
     "sent": "Enviado. Gracias, te responderé pronto.",
     "sendError": "No se pudo enviar. Escríbeme a {email}.",

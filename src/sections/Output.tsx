@@ -56,7 +56,7 @@ function MessageForm() {
               <path fill="currentColor" d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" />
             </svg>
           </span>
-          <span className="send-label ml-1 transition-transform duration-300">{state === 'sending' ? t('contact.sending') : t('contact.send')}</span>
+          <span className="send-label ml-1 transition-[translate,transform,opacity] duration-300">{state === 'sending' ? t('contact.sending') : t('contact.send')}</span>
         </button>
         <p role="status" className={`text-sm ${state === 'error' ? 'text-accent' : 'text-ok'}`}>
           {state === 'sent' ? t('contact.sent') : state === 'error' ? t('contact.sendError', { email: profile.email }) : ''}
