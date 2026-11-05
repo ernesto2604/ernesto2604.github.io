@@ -351,11 +351,11 @@
     }
   },
   "output": {
-    "title": "The answer, in short",
+    "title": "A little about me",
     "about": [
-      "I'm Ernesto, an engineer who builds AI systems end to end: the retrieval, the agent, the backend around them and the tests that say what still breaks.",
-      "I graduated from York St John University in the UK with a First Class BSc (Hons), after a Higher Technician diploma in multiplatform app development in Spain. During my internship at CEU's IT Innovation department I worked on an AI tutor that connected institutional data in Snowflake with OpenAI models on Azure.",
-      "I'm based in Madrid, available now and open to relocation or hybrid work. I'm looking for AI Engineer, Forward Deployed Engineer and related roles."
+      "I'm Ernesto, an AI Engineer focused on building intelligent systems end to end — from retrieval and agents to the backend infrastructure behind them.",
+      "I graduated from York St John University with First Class Honours in Software Engineering. During my internship at CEU, I developed an AI tutor integrating institutional data with OpenAI models.",
+      "Based in Madrid · Available now · Open to relocation."
     ],
     "experienceTitle": "Experience",
     "experience": [

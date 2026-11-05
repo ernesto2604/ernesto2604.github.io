@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { ArrowUpRight, Send } from 'lucide-react';
+import BlurReveal from '../components/ui/BlurReveal';
 import ProfileCard from '../components/ui/ProfileCard';
 import StarBorder from '../components/ui/StarBorder';
 import profile from '../content/profile.json';
@@ -100,7 +101,9 @@ export default function Output() {
         <div className="lg:flex lg:flex-col">
           <header className="relative">
             <span aria-hidden="true" className="ghost-numeral" data-n="03" />
-            <h2 id="output-title" className="relative font-display text-3xl leading-[1.05]">{o.title}</h2>
+            <h2 id="output-title" className="relative font-display text-3xl leading-[1.05]">
+              <BlurReveal as="span" inView>{o.title}</BlurReveal>
+            </h2>
           </header>
           <div className="mt-8 grid max-w-[62ch] gap-4 text-lg leading-relaxed">
             {o.about.map((p, i) => (
@@ -151,7 +154,7 @@ export default function Output() {
             avatarUrl={`${profile.photo}-640.webp`}
             name={profile.name}
             title={t('hero.role')}
-            handle="ernesto2604"
+            handle=""
             status={t('contact.status')}
             statusColor="#1E7547"
             contactText={t('contact.cardButton')}

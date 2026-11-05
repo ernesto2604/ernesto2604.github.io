@@ -351,11 +351,11 @@
     }
   },
   "output": {
-    "title": "La respuesta, en pocas palabras",
+    "title": "Un poco sobre mí",
     "about": [
-      "Soy Ernesto, ingeniero. Construyo sistemas de IA de principio a fin: la recuperación, el agente, el backend que los rodea y los tests que dicen qué sigue fallando.",
-      "Me gradué en York St John University (Reino Unido) con un BSc (Hons) con First Class Honours, la máxima calificación en el Reino Unido, después de un ciclo de Técnico Superior en Desarrollo de Aplicaciones Multiplataforma en España. En mis prácticas en el departamento de Innovación IT del CEU trabajé en un tutor con IA que conectaba datos institucionales en Snowflake con modelos de OpenAI en Azure.",
-      "Vivo en Madrid, tengo incorporación inmediata y estoy abierto a cambiar de ciudad o a trabajar en modelo híbrido. Busco puestos de AI Engineer, Forward Deployed Engineer y similares."
+      "Soy Ernesto, AI Engineer centrado en construir sistemas inteligentes de principio a fin, desde la recuperación y los agentes hasta la infraestructura backend que los sostiene.",
+      "Me gradué en York St John University con First Class Honours en Ingeniería del Software. Durante mis prácticas en el CEU desarrollé un tutor con IA que integraba datos institucionales con modelos de OpenAI.",
+      "Vivo en Madrid · Incorporación inmediata · Abierto a cambiar de ciudad."
     ],
     "experienceTitle": "Experiencia",
     "experience": [
