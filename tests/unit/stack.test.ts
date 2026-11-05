@@ -10,7 +10,7 @@ describe('stack', () => {
   });
 
   it('lists the same icons in both languages', () => {
-    const ids = (m: typeof en) => m.stack.groups.map((g) => g.items.map((it) => it.icon));
+    const ids = (m: typeof en) => [...m.stack.groups.map((g) => g.items.map((it) => it.icon)), m.stack.also.items.map((it) => it.icon)];
     expect(ids(es)).toEqual(ids(en));
   });
 });

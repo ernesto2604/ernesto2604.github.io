@@ -2,7 +2,7 @@ import { Asterisk } from 'lucide-react';
 import TechIcon from '../components/TechIcon';
 import { useMessages } from '../i18n';
 
-// The tools I use, one row per layer: the layer name large on the left, logos and names on the right.
+// Skills: three main groups (name large on the left, logos and names on the right), then the rest in a marquee.
 // It continues section 03 (Generate): the same stage for the progress pill.
 export default function Stack() {
   const s = useMessages().stack;
@@ -28,6 +28,24 @@ export default function Stack() {
               </ul>
             </div>
           ))}
+          {/* The rest, smaller and moving: names only, since brand colours would invert under the blend. */}
+          <div className="border-t border-line py-10 lg:py-14">
+            <h3 className="ink-auto font-display text-xl leading-[1.05]">{s.also.title}</h3>
+            <div className="marquee mt-8">
+              <div className="marquee-track ink-auto ink-muted">
+                {[0, 1].map((copy) => (
+                  <ul key={copy} aria-hidden={copy === 1 || undefined} className="gap-x-10 gap-y-3 pr-10">
+                    {s.also.items.map((it) => (
+                      <li key={it.name} className="flex items-center gap-10 whitespace-nowrap text-xl font-medium tracking-tight">
+                        {it.name}
+                        <span aria-hidden="true" className="text-sm">✱</span>
+                      </li>
+                    ))}
+                  </ul>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

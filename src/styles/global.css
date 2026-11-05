@@ -822,3 +822,16 @@ html:not(.js) [data-blur-reveal], html:not(.js) [data-blur-reveal] * { opacity: 
 /* Outlined name: a black fill changes nothing under difference, so only the stroke shows; filled when on. */
 .ink-name { color: #000; -webkit-text-stroke: 2px rgb(161 164 165); paint-order: stroke fill; transition: color 0.7s, -webkit-text-stroke-color 0.7s; }
 .ink-name[data-on] { color: rgb(226 226 224); -webkit-text-stroke-color: rgb(226 226 224); }
+
+/* "Also worked with" (Stack.tsx): two copies of the list slide left by one copy's width, so the loop has no seam.
+   The blend sits on the moving track itself: a transform on an ancestor would cut it off from the page. */
+.marquee { overflow: hidden; }
+.marquee-track { display: flex; width: max-content; animation: marquee 45s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+.marquee-track > ul { display: flex; flex-shrink: 0; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none !important; width: auto; }
+  .marquee-track > ul { flex-wrap: wrap; flex-shrink: 1; }
+  .marquee-track > ul + ul { display: none; }
+}

@@ -94,10 +94,10 @@
     "moreHint": "los proyectos en GitHub"
   },
   "stack": {
-    "label": "Mi stack",
+    "label": "Habilidades",
     "groups": [
       {
-        "group": "IA y recuperación",
+        "group": "Ingeniería de IA",
         "items": [
           {
             "name": "RAG híbrido (HNSW, GIN, RRF)",
@@ -118,18 +118,6 @@
           {
             "name": "Google Gemini",
             "icon": "googlegemini"
-          },
-          {
-            "name": "Prompts estructurados",
-            "icon": "prompting"
-          },
-          {
-            "name": "OpenCV",
-            "icon": "opencv"
-          },
-          {
-            "name": "YOLOv8",
-            "icon": "ultralytics"
           }
         ]
       },
@@ -145,20 +133,8 @@
             "icon": "fastapi"
           },
           {
-            "name": "Flask",
-            "icon": "flask"
-          },
-          {
-            "name": "Node.js",
-            "icon": "nodedotjs"
-          },
-          {
-            "name": "Express",
-            "icon": "express"
-          },
-          {
-            "name": "Go",
-            "icon": "go"
+            "name": "PostgreSQL + pgvector",
+            "icon": "postgresql"
           },
           {
             "name": "Java",
@@ -167,84 +143,108 @@
           {
             "name": "Spring Boot",
             "icon": "springboot"
-          },
-          {
-            "name": "PostgreSQL + pgvector",
-            "icon": "postgresql"
-          },
-          {
-            "name": "Snowflake",
-            "icon": "snowflake"
-          },
-          {
-            "name": "SQLite",
-            "icon": "sqlite"
-          },
-          {
-            "name": "MySQL",
-            "icon": "mysql"
           }
         ]
       },
       {
-        "group": "Cloud y despliegue",
+        "group": "Cloud y desarrollo",
         "items": [
-          {
-            "name": "Docker",
-            "icon": "docker"
-          },
           {
             "name": "AWS",
             "icon": "aws"
           },
           {
-            "name": "Microsoft Azure",
-            "icon": "azure"
-          },
-          {
-            "name": "CI/CD",
-            "icon": "cicd"
+            "name": "Docker",
+            "icon": "docker"
           },
           {
             "name": "Git",
             "icon": "git"
           },
           {
-            "name": "Linux",
-            "icon": "linux"
-          }
-        ]
-      },
-      {
-        "group": "Frontend y móvil",
-        "items": [
-          {
-            "name": "TypeScript",
-            "icon": "typescript"
-          },
-          {
-            "name": "React",
-            "icon": "react"
-          },
-          {
-            "name": "Next.js",
-            "icon": "nextdotjs"
-          },
-          {
-            "name": "Tailwind CSS",
-            "icon": "tailwindcss"
-          },
-          {
-            "name": "Flutter",
-            "icon": "flutter"
-          },
-          {
-            "name": "Dart",
-            "icon": "dart"
+            "name": "CI/CD",
+            "icon": "cicd"
           }
         ]
       }
-    ]
+    ],
+    "also": {
+      "title": "También he trabajado con",
+      "items": [
+        {
+          "name": "Flask",
+          "icon": "flask"
+        },
+        {
+          "name": "Node.js",
+          "icon": "nodedotjs"
+        },
+        {
+          "name": "Express",
+          "icon": "express"
+        },
+        {
+          "name": "Go",
+          "icon": "go"
+        },
+        {
+          "name": "Snowflake",
+          "icon": "snowflake"
+        },
+        {
+          "name": "SQLite",
+          "icon": "sqlite"
+        },
+        {
+          "name": "MySQL",
+          "icon": "mysql"
+        },
+        {
+          "name": "Prompts estructurados",
+          "icon": "prompting"
+        },
+        {
+          "name": "OpenCV",
+          "icon": "opencv"
+        },
+        {
+          "name": "YOLOv8",
+          "icon": "ultralytics"
+        },
+        {
+          "name": "Microsoft Azure",
+          "icon": "azure"
+        },
+        {
+          "name": "Linux",
+          "icon": "linux"
+        },
+        {
+          "name": "TypeScript",
+          "icon": "typescript"
+        },
+        {
+          "name": "React",
+          "icon": "react"
+        },
+        {
+          "name": "Next.js",
+          "icon": "nextdotjs"
+        },
+        {
+          "name": "Tailwind CSS",
+          "icon": "tailwindcss"
+        },
+        {
+          "name": "Flutter",
+          "icon": "flutter"
+        },
+        {
+          "name": "Dart",
+          "icon": "dart"
+        }
+      ]
+    }
   },
   "cases": {
     "ring-telemetryops": {
