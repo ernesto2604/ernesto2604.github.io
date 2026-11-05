@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, Play } from 'lucide-react';
 import Diagram from '../components/Diagram';
 import BlurReveal from '../components/ui/BlurReveal';
-import FolderFloat from '../components/ui/FolderFloat';
+import StackInteractor from '../components/ui/StackInteractor';
 import profile from '../content/profile.json';
 import { useMessages, useT } from '../i18n';
 import { featured, type Project } from '../lib/projects';
@@ -56,7 +56,6 @@ function CaseDetail({ project }: { project: Project }) {
 
 export default function Generate() {
   const t = useT();
-  const cases = useMessages().cases as Record<string, CaseCopy>;
   const dialogRef = useRef<HTMLDialogElement>(null);
   const openerRef = useRef<HTMLElement | null>(null);
   const backRef = useRef<HTMLButtonElement>(null);
@@ -122,30 +121,20 @@ export default function Generate() {
             {t('generate.lead')}
           </BlurReveal>
         </header>
-        {/* Hovering a folder floats its key decisions out as notes; opening it plays the curtain into the case. */}
-        <ul className="gen-folders">
-          {featured.map((p) => (
-            <li key={p.slug} id={p.slug} className="flex justify-center scroll-mt-48">
-              <FolderFloat
-                label={t(`projects.${p.slug}.name`)}
-                sublabel={p.stack.slice(0, 3).join(' · ')}
-                items={cases[p.slug].decisions}
-                ariaLabel={t('generate.openCase', { name: t(`projects.${p.slug}.name`) })}
-                onActivate={() => open(p)}
-                folderColor="#2A2E36"
-                frontColor="#3A3F49"
-                paperColor="#F5F6F8"
-                itemColor="#FFFFFF"
-                itemTextColor="#0D1015"
-                labelColor="#F5F6F8"
-                width={260}
-                height={190}
-                spread={210}
-                lift={34}
-              />
-            </li>
-          ))}
-        </ul>
+        {/* Hovering a project shows its photo through an animated mask; opening it plays the curtain into the case. */}
+        <div className="relative mt-20 md:mt-28">
+          <StackInteractor
+            items={featured.map((p, i) => ({
+              id: p.slug,
+              num: String(i + 1).padStart(2, '0'),
+              name: t(`projects.${p.slug}.name`),
+              sublabel: p.stack.slice(0, 3).join(' · '),
+              image: `/projects/${p.slug}.jpg`,
+              ariaLabel: t('generate.openCase', { name: t(`projects.${p.slug}.name`) }),
+            }))}
+            onSelect={(i) => open(featured[i])}
+          />
+        </div>
         <a href={profile.github} className="relative mt-12 inline-flex min-h-11 items-center gap-2 font-medium text-accent underline-offset-4 hover:underline">
           {t('generate.more')}
           <ArrowUpRight className="size-4" aria-hidden="true" strokeWidth={1.75} />

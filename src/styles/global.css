@@ -406,13 +406,7 @@ html:not(.js) .no-js-hide { display: none !important; }
   stroke: var(--surface);
   stroke-width: 4px;
 }
-/* Generate (Generate.tsx): three project folders; opening one plays a two-colour curtain into the case page. */
-.gen-folders {
-  display: grid;
-  gap: 9rem 2rem;
-  margin-top: 13rem; /* room for the notes that float up out of the first row */
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
+/* Generate (Generate.tsx): opening a project plays a two-colour curtain into the case page. */
 .case-dialog {
   position: fixed;
   inset: 0;
