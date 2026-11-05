@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react';
-import { Search } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { gsap } from 'gsap';
 import { localePath, otherLocale, useLocale, useT } from '../i18n';
 import { focusTarget, setScrollLock } from '../lib/scroll';
-import { useActiveStage } from '../hooks/useActiveStage';
+import { useMedia } from '../hooks/useMedia';
+import TypeLoop from './ui/TypeLoop';
+import { Guides } from './Background';
 import profile from '../content/profile.json';
 
 // Flipped to true when the agent panel ships (Phase 6); until then no control promises it.
@@ -30,6 +32,7 @@ const Burger = () => (
 const LINKS = [
   { key: 'home', href: '#input' },
   { key: 'work', href: '#generate' },
+  { key: 'stack', href: '#skills' },
   { key: 'about', href: '#output' },
   { key: 'contact', href: '#contact' },
 ] as const;
@@ -47,7 +50,7 @@ function LangToggle() {
     }
     e.currentTarget.href = localePath(other, location.hash);
   };
-  // Segmented "EN / ES": the current language is plain text, the other one is the link.
+  // Mono "EN / ES": the current language is plain text, the other one is the link.
   return (
     <p className="menu-lang">
       <span aria-hidden="true">{locale.toUpperCase()}</span>
@@ -98,8 +101,9 @@ export default function Nav() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [open, setOpen] = useState(false);
   const [pointed, setPointed] = useState<LinkKey | null>(null);
-  const stage = useActiveStage();
-  const current: LinkKey = stage === 'input' ? 'home' : stage === 'output' ? 'about' : 'work';
+  const [current, setCurrent] = useState<LinkKey>('home');
+  // The key is typed after the invitation with a keyboard; on touch screens the line is the button alone.
+  const askKey = useMedia('(pointer: coarse)') ? '' : `[${shortcut.replace(' ', ' + ')}]`;
 
   // Unlock before closing so an in-page link clicked in the panel can scroll right away. The panel is still
   // modal while it slides out, so a chosen section takes focus once it has closed.
@@ -115,6 +119,9 @@ export default function Nav() {
   const show = () => {
     const d = dialogRef.current!;
     if (d.open) return;
+    // The section in view: the last link target whose top has passed 40% of the window.
+    const seen = LINKS.filter(({ href }) => (document.querySelector(href)?.getBoundingClientRect().top ?? Infinity) <= innerHeight * 0.4);
+    setCurrent(seen.at(-1)?.key ?? 'home');
     setScrollLock(true);
     d.showModal();
     playOpen(d);
@@ -195,12 +202,16 @@ export default function Nav() {
         <div className="menu-prelayer menu-prelayer-amber" aria-hidden="true" />
         <div className="menu-prelayer menu-prelayer-slate" aria-hidden="true" />
         <nav aria-label={t('a11y.primaryNav')} className="menu-panel">
+          <Guides />
           {/* Top row, level with the close button. */}
           <div className="flex min-h-12 items-center" data-menu-fade>
             <LangToggle />
           </div>
-          <p className="menu-label menu-label-rule mt-10" data-menu-fade>{t('menu.navigation')}</p>
-          {/* The dot marks the section in view, and follows the pointer or keyboard focus across the links. */}
+          <p className="menu-label menu-label-rule mt-10" data-menu-fade>
+            <span className="sr-only">{t('menu.navigation')}</span>
+            <TypeLoop once items={[t('menu.navigation')]} play={open} />
+          </p>
+          {/* Like the project list: names in outline, filled for the section in view or under the pointer/focus. */}
           <ul className="menu-links" onMouseLeave={() => setPointed(null)}>
             {LINKS.map(({ key, href }, i) => (
               <li key={key} className="overflow-hidden">
@@ -211,36 +222,50 @@ export default function Nav() {
                   onFocus={() => setPointed(key)}
                   onBlur={() => setPointed(null)}
                   aria-current={key === current ? 'location' : undefined}
+                  data-on={key === (pointed ?? current) || undefined}
                   className="menu-link"
                 >
-                  <span className="menu-dot" data-on={key === (pointed ?? current) || undefined} aria-hidden="true" />
-                  <span className="menu-link-label">{t(key === 'home' ? 'menu.home' : `nav.${key}`)}</span>
                   <span className="menu-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="menu-link-label">{t(key === 'home' ? 'menu.home' : `nav.${key}`)}</span>
                 </a>
               </li>
             ))}
           </ul>
 
-          <p className="menu-label mt-12" data-menu-fade>{t('menu.socials')}</p>
-          <ul className="mt-4 flex flex-wrap gap-x-7 gap-y-2" data-menu-fade>
-            <li><a href={profile.linkedin} className="menu-social">{t('contact.linkedin')}</a></li>
-            <li><a href={profile.github} className="menu-social">{t('contact.github')}</a></li>
-            <li><a href={`mailto:${profile.email}`} className="menu-social">{t('contact.email')}</a></li>
+          <p className="menu-label mt-12" data-menu-fade>
+            <span className="sr-only">{t('menu.socials')}</span>
+            <TypeLoop once items={[t('menu.socials')]} play={open} />
+          </p>
+          <ul className="mt-3 flex flex-wrap gap-x-7 gap-y-1" data-menu-fade>
+            {[
+              [profile.linkedin, t('contact.linkedin')],
+              [profile.github, t('contact.github')],
+              [`mailto:${profile.email}`, t('contact.email')],
+            ].map(([href, label]) => (
+              <li key={href}>
+                <a href={href} className="menu-social">
+                  <span className="sr-only">{label}</span>
+                  <TypeLoop once items={[label]} play={open} />
+                  <ArrowUpRight className="size-3.5" aria-hidden="true" strokeWidth={1.75} />
+                </a>
+              </li>
+            ))}
           </ul>
 
           {AGENT_READY && (
             <div className="mt-auto pt-12" data-menu-fade>
+              {/* The hero's invitation line: typed, then the key blinks. */}
               <button
                 type="button"
                 onClick={() => {
                   close();
                   openAgent();
                 }}
-                className="no-js-hide flex min-h-12 w-full items-center gap-3 rounded-full bg-accent-fill pl-5 pr-2 font-medium text-accent-ink"
+                aria-keyshortcuts={shortcut === '⌘K' ? 'Meta+K' : 'Control+K'}
+                className="menu-ask no-js-hide"
               >
-                <Search className="size-4" aria-hidden="true" strokeWidth={1.75} />
-                <span className="whitespace-nowrap">{t('nav.agent')}</span>
-                <kbd className="kbd-hint ml-auto whitespace-nowrap rounded-full bg-accent-ink/10 px-2.5 py-1 font-mono text-[0.8125rem]">{shortcut}</kbd>
+                <span className="sr-only">{t('hero.askHologram')}</span>
+                <TypeLoop once items={[t('hero.askHologram')]} tail={askKey} play={open} />
               </button>
             </div>
           )}

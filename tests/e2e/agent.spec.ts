@@ -8,7 +8,7 @@ test.describe('agent', () => {
     const button = page.getByRole('button', { name: 'Open menu' });
     await button.focus();
     await page.keyboard.press('Enter');
-    await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: /Ask the agent/ }).focus();
+    await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: /Ask my hologram/ }).focus();
     await page.keyboard.press('Enter');
     const dialog = page.getByRole('dialog', { name: 'Ask about Ernesto' });
     await expect(dialog).toBeVisible();

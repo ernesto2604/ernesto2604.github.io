@@ -40,11 +40,11 @@
   --holo-panel-2: #121C24;
   --holo-text: #9FB8C2;
 
-  /* Side menu (Nav.tsx): a dark ink panel over the light page. */
-  --ink-panel: #17191E;
-  --on-ink: #F5F6F8;
-  --on-ink-muted: #9AA1AD;
-  --on-ink-line: rgb(255 255 255 / 0.16);
+  /* Side menu (Nav.tsx) and the case curtain: the site ink, as the dark part of the page. */
+  --ink-panel: #14120F;
+  --on-ink: #F6F4EF;
+  --on-ink-muted: #A8A196;
+  --on-ink-line: rgb(246 244 239 / 0.14);
 
   --dur-1: 120ms;
   --dur-2: 200ms;

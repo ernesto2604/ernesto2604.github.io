@@ -42,7 +42,6 @@ test('without JavaScript the hero and projects are readable and JS-only buttons 
   await expect(page.locator('#site-menu').getByRole('link', { name: 'Work' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Ring TelemetryOps' })).toBeVisible();
   await expect(page.locator('.story-row').first()).toContainText('1.000');
-  await expect(page.getByRole('button', { name: /Ask the agent/ })).toHaveCount(0);
   await expect(page.getByRole('button', { name: /Ask my hologram/ })).toHaveCount(0);
   await context.close();
 });

@@ -16,8 +16,8 @@
   "nav": {
     "work": "Work",
     "about": "About",
-    "contact": "Contact",
-    "agent": "Ask the agent"
+    "stack": "Stack",
+    "contact": "Contact"
   },
   "menu": {
     "title": "Menu",

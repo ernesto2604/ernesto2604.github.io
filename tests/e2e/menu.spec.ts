@@ -19,7 +19,7 @@ test.describe('side menu', () => {
     await expect(menu.getByRole('link', { name: 'About' })).toBeVisible();
     await expect(menu.getByRole('link', { name: 'Contact' })).toBeVisible();
     await expect(menu.getByRole('link', { name: /Leer en español/ })).toBeVisible();
-    await expect(menu.getByRole('button', { name: /Ask the agent/ })).toBeVisible();
+    await expect(menu.getByRole('button', { name: /Ask my hologram/ })).toBeVisible();
 
     await page.keyboard.press('Escape');
     await expect(menu).toBeHidden();

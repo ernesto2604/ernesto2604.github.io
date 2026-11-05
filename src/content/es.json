@@ -16,8 +16,8 @@
   "nav": {
     "work": "Proyectos",
     "about": "Sobre mí",
-    "contact": "Contacto",
-    "agent": "Pregunta al agente"
+    "stack": "Stack",
+    "contact": "Contacto"
   },
   "menu": {
     "title": "Menú",
