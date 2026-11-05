@@ -7,6 +7,7 @@
 
   /* Light palette: cool paper and ink. Signal amber is a fill only (CTA, scores, active dot) with dark ink on it;
      --accent is a deeper amber for text, icons and the focus ring, since #FFB547 fails AA on light grounds. */
+  --paper: #F6F4EF; /* the fixed ground under the dark fog; never flips */
   --bg-0: #F6F4EF;
   --bg-1: #EEEBE4;
   --surface: #FCFBF8;
@@ -53,4 +54,24 @@
   --ease-out: cubic-bezier(.16, 1, .3, 1);
   --ease-std: cubic-bezier(.2, 0, 0, 1);
   --ease-in: cubic-bezier(.4, 0, 1, 1);
+}
+
+/* Dark set: from the stack down (html[data-dark], set by DarkFog.tsx) the palette inverts on the site ink.
+   Amber reads on ink as is, so --accent takes the fill shade. The flip is eased by the @property
+   registrations in global.css. */
+:root[data-dark] {
+  color-scheme: dark;
+  --bg-0: #14120F;
+  --bg-1: #1C1A16;
+  --surface: #1F1C18;
+  --surface-2: #2A2620;
+  --line: #34302A;
+  --line-strong: #8A8478;
+  --text: #F6F4EF;
+  --text-muted: #A8A196;
+  --guide-strong: rgb(246 244 239 / 0.08);
+  --accent: #FFB547;
+  --glass-bg: rgb(28 26 22 / 0.92);
+  --glass-solid: rgb(28 26 22 / 0.97);
+  --glass-edge: rgb(255 255 255 / 0.08);
 }

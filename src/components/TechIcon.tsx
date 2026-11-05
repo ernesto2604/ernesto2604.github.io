@@ -26,6 +26,7 @@ import {
   type SimpleIcon,
 } from 'simple-icons';
 import { EXTRA_LOGOS } from '../lib/brandLogos';
+import { contrastRatio } from '../lib/contrast';
 
 // Brand logos from simple-icons (single colour, drawn in the brand's hex), the few it lacks from EXTRA_LOGOS
 // (full colour), and Lucide glyphs for concepts that have no logo. Keys are the `icon` ids in content/*.json.
@@ -61,11 +62,13 @@ export const hasTechIcon = (id: string) => id in BRANDS || id in EXTRA_LOGOS || 
 
 export default function TechIcon({ id, className = 'size-7' }: { id: string; className?: string }) {
   const extra = EXTRA_LOGOS[id];
-  if (extra) return <svg viewBox={extra.viewBox} className={className} aria-hidden="true" dangerouslySetInnerHTML={{ __html: extra.body }} />;
+  // Paths with no fill of their own (the OpenAI mark) take the text colour, so they show on both grounds.
+  if (extra) return <svg viewBox={extra.viewBox} className={className} aria-hidden="true" fill="currentColor" dangerouslySetInnerHTML={{ __html: extra.body }} />;
   const brand = BRANDS[id];
   if (brand) {
     return (
-      <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill={`#${brand.hex}`}>
+      // Near-black brands (Next.js, Express, SQLite…) would vanish on the dark ground: they take the text colour.
+      <svg viewBox="0 0 24 24" className={className} aria-hidden="true" fill={contrastRatio(`#${brand.hex}`, '#14120F') < 2 ? 'currentColor' : `#${brand.hex}`}>
         <path d={brand.path} />
       </svg>
     );

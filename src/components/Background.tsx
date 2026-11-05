@@ -1,3 +1,5 @@
+import DarkFog from './DarkFog';
+
 // Gutter k sits between columns k-1 and k of the content grid; k runs past both ends so the pairs reach the
 // window edges (36 covers 1 to 12 columns at any width up to ~3300px). CSS places each one.
 const GUTTERS = Array.from({ length: 36 }, (_, i) => i - 12);
@@ -13,10 +15,11 @@ export function Guides() {
   );
 }
 
-// Fixed page ground: flat paper with the guides on top.
+// Fixed page ground: flat paper, the ink fog that covers it on the way into the stack, the guides on top.
 export default function Background() {
   return (
     <div aria-hidden="true" className="backdrop pointer-events-none fixed inset-0 -z-10">
+      <DarkFog />
       <Guides />
     </div>
   );

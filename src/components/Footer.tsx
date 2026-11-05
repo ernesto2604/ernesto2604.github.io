@@ -2,9 +2,10 @@ import { useT } from '../i18n';
 import profile from '../content/profile.json';
 import HalftoneWordmarkFooter from './ui/HalftoneWordmarkFooter';
 
-// Canvas colours need literal hex: keep in sync with --text and --accent in tokens.css.
+// Canvas colours need literal hex: keep in sync with --text and --accent in the dark set of tokens.css (the
+// footer is always below the stack, where the page is dark).
 // Transparent ground so the fixed backdrop (Background.tsx) runs on under the footer without a seam.
-const PALETTE = { background: 'transparent', ink: '#0D1015', warm: '#8C4A00' };
+const PALETTE = { background: 'transparent', ink: '#F6F4EF', warm: '#FFB547' };
 
 export default function Footer() {
   const t = useT();

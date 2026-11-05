@@ -149,7 +149,8 @@
      content box (max-w-6xl, px-5 / sm:px-8) in 4 / 6 / 8 columns; its rhythm repeats out to both edges of
      the window. Each gutter is a tight pair of rules (--g-gap apart); pairs sit a column apart.
      The same guides are drawn again on top of the masthead blur, so the rules never break under it. */
-  .backdrop { background: var(--bg-0); container-type: inline-size; }
+  .backdrop { background: var(--paper); container-type: inline-size; }
+  .dark-fog { position: absolute; inset: 0; width: 100%; height: 100%; visibility: hidden; }
   .guides {
     --g-cols: 4;
     --g-pad: 1.25rem;
@@ -758,3 +759,21 @@ html[data-swap] #main { opacity: 0; transition-duration: var(--dur-2); }
 
 /* BlurReveal prerenders its letters hidden; without JS nothing would ever reveal them. */
 html:not(.js) [data-blur-reveal], html:not(.js) [data-blur-reveal] * { opacity: 1 !important; filter: none !important; transform: none !important; }
+
+/* Light to dark (DarkFog.tsx): registered as colours so html[data-dark] eases the whole palette over instead of
+   snapping, while the fog covers the paper underneath. */
+@property --bg-0 { syntax: '<color>'; inherits: true; initial-value: #F6F4EF; }
+@property --bg-1 { syntax: '<color>'; inherits: true; initial-value: #EEEBE4; }
+@property --surface { syntax: '<color>'; inherits: true; initial-value: #FCFBF8; }
+@property --surface-2 { syntax: '<color>'; inherits: true; initial-value: #ECE8E0; }
+@property --line { syntax: '<color>'; inherits: true; initial-value: #DDD8CE; }
+@property --line-strong { syntax: '<color>'; inherits: true; initial-value: #7C766A; }
+@property --text { syntax: '<color>'; inherits: true; initial-value: #14120F; }
+@property --text-muted { syntax: '<color>'; inherits: true; initial-value: #55504A; }
+@property --guide-strong { syntax: '<color>'; inherits: true; initial-value: rgb(20 18 15 / 0.07); }
+@property --accent { syntax: '<color>'; inherits: true; initial-value: #8C4A00; }
+:root {
+  transition-property: --bg-0, --bg-1, --surface, --surface-2, --line, --line-strong, --text, --text-muted, --guide-strong, --accent;
+  transition-duration: 0.5s;
+  transition-timing-function: var(--ease-std);
+}
