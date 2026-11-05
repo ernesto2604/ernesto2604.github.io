@@ -31,7 +31,8 @@ export default function Stack() {
           {/* The rest, smaller and moving: names only, since brand colours would invert under the blend. */}
           <div className="border-t border-line py-10 lg:py-14">
             <h3 className="ink-auto font-display text-xl leading-[1.05]">{s.also.title}</h3>
-            <div className="marquee mt-8">
+            {/* Full bleed: margins, not a transform, so the blend still reaches the page. */}
+            <div className="marquee mt-8 mx-[calc(50%-50dvw)]">
               <div className="marquee-track ink-auto ink-muted">
                 {[0, 1].map((copy) => (
                   <ul key={copy} aria-hidden={copy === 1 || undefined} className="gap-x-10 gap-y-3 pr-10">
