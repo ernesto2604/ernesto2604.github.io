@@ -1,26 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 const GLYPHS = '#%&*+/<>=@$?';
 const STEP_MS = 28; // each character settles this long after the one before it
 const SPIN_MS = 260; // how long a character flickers before it settles
 
-type Props = { text: string; play?: number; every?: number; className?: string };
+type Props = { text: string; play?: number; className?: string };
 
-// Mono text that decodes left to right through random glyphs each time `play` changes, and on its own every
-// `every` ms when set. The settled text is what assistive tech reads; the flickering copy is aria-hidden.
-export default function ScrambleText({ text, play = 0, every, className }: Props) {
+// Mono text that decodes left to right through random glyphs each time `play` changes. The settled text is what
+// assistive tech reads; the flickering copy is aria-hidden.
+export default function ScrambleText({ text, play = 0, className }: Props) {
   const ref = useRef<HTMLSpanElement>(null);
-  const [ticks, setTicks] = useState(0);
-  useEffect(() => {
-    if (!every) return;
-    const timer = setInterval(() => setTicks((n) => n + 1), every);
-    return () => clearInterval(timer);
-  }, [every]);
-  const run = play + ticks;
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || run === 0 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!el || play === 0 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const start = performance.now();
     let frame = 0;
     const tick = (now: number) => {
@@ -40,7 +33,9 @@ export default function ScrambleText({ text, play = 0, every, className }: Props
       cancelAnimationFrame(frame);
       el.textContent = text;
     };
-  }, [run, text]);
+    // Only `play` replays it: a new text remounts the keyed node and shows settled.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [play]);
 
   return (
     <span className={className}>

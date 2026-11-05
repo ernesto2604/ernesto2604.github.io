@@ -17,7 +17,7 @@ export default function Footer() {
         {
           title: t('menu.navigation'),
           links: [
-            { label: t('nav.work'), href: '#retrieval' },
+            { label: t('nav.work'), href: '#generate' },
             { label: t('nav.about'), href: '#output' },
             { label: t('nav.contact'), href: '#contact' },
           ],

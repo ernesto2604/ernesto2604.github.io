@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Guides } from './Background';
-import ScrambleText from './ui/ScrambleText';
+import TypeLoop from './ui/TypeLoop';
+import { useWelcomeDone } from '../hooks/useWelcomeDone';
 
 const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Madrid', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'short' });
 
@@ -17,6 +18,7 @@ export function madridTime(date: Date) {
 export default function Masthead() {
   // Empty on the server: prerendered HTML would carry a stale time.
   const [time, setTime] = useState('');
+  const ready = useWelcomeDone();
   useEffect(() => {
     let timer = 0;
     const tick = () => {
@@ -37,9 +39,9 @@ export default function Masthead() {
         <span />
       </div>
       <Guides />
-      {/* Decodes again every few seconds, like the [ask] tag over the hologram. */}
+      {/* Types itself in after the loader, like the hero lines. */}
       <p className="masthead-clock tabular-nums">
-        <ScrambleText text={`Madrid ${time}`} every={9000} />
+        <TypeLoop once items={[`Madrid ${time}`]} play={ready && time !== ''} />
       </p>
     </div>
   );

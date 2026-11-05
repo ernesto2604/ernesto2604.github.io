@@ -29,7 +29,6 @@
   },
   "stages": {
     "input": "Input",
-    "retrieval": "Retrieval",
     "generate": "Generate",
     "output": "Output"
   },
@@ -45,37 +44,6 @@
     "askExamples": ["What has he built?", "How does the Ring agent work?", "What's his stack?", "Is he available?"],
     "kbdHint": "Ctrl K",
     "name": "Ernesto Contreras"
-  },
-  "retrieval": {
-    "queryLabel": "Incoming query",
-    "query": "Who is Ernesto and what has he built?",
-    "title": "Five repositories retrieved",
-    "expansionLabel": "Query expanded to",
-    "expansionNote": "Hand-written expansion for this page.",
-    "filterLabel": "Re-score with a single term",
-    "allTerms": "All terms",
-    "score": "score",
-    "language": "Lang",
-    "updated": "Updated",
-    "stars": "Stars",
-    "noMatch": "No match for this term",
-    "openRepo": "Open {name} on GitHub",
-    "terms": [
-      "agents",
-      "RAG",
-      "LLM",
-      "retrieval",
-      "computer vision",
-      "backend",
-      "mobile",
-      "security"
-    ],
-    "matched": "matched",
-    "viewCard": "Jump to {name}"
-  },
-  "rerank": {
-    "featured": "Featured",
-    "alsoBuilt": "Also built"
   },
   "notFound": {
     "title": "Page not found",
@@ -110,13 +78,9 @@
       "fact": "Standard library net/http, no framework"
     }
   },
-  "story": {
-    "results": "Ranked by relevance",
-    "seeCases": "Read the case studies"
-  },
   "generate": {
-    "title": "Three systems, from the inside",
-    "lead": "What each one solves and the decisions that shaped it. The details live in each repository.",
+    "title": "Things I've built",
+    "lead": "Three projects, different engineering challenges.",
     "decisions": "Key decisions",
     "stack": "Stack",
     "diagram": "Architecture",
@@ -125,7 +89,8 @@
     "viewList": "View as list",
     "viewDiagram": "View diagram",
     "back": "Back",
-    "openCase": "Open {name}"
+    "openCase": "Open {name}",
+    "more": "More projects on GitHub"
   },
   "stack": {
     "label": "My stack",
@@ -464,7 +429,7 @@
     "howTitle": "How this works",
     "how": "This agent is scripted and runs entirely in your browser. It scores your question against a small bilingual knowledge base with the same BM25 scorer used on this page, shows the real lookups it makes in local data, then streams a pre-written answer. No LLM, no network requests, nothing stored.",
     "targets": {
-      "retrieval": "See the projects",
+      "generate": "See the projects",
       "ring-telemetryops": "Open the Ring case study",
       "hybrid-rag-api": "Open the RAG case study",
       "wakemap": "Open the WakeMap case study",

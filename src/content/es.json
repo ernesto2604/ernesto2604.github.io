@@ -29,7 +29,6 @@
   },
   "stages": {
     "input": "Entrada",
-    "retrieval": "Recuperación",
     "generate": "Generación",
     "output": "Salida"
   },
@@ -45,37 +44,6 @@
     "askExamples": ["¿Qué ha construido?", "¿Cómo funciona el agente de Ring?", "¿Qué tecnologías usa?", "¿Está disponible?"],
     "kbdHint": "Ctrl K",
     "name": "Ernesto Contreras"
-  },
-  "retrieval": {
-    "queryLabel": "Consulta entrante",
-    "query": "¿Quién es Ernesto y qué ha construido?",
-    "title": "Cinco repositorios recuperados",
-    "expansionLabel": "Consulta ampliada a",
-    "expansionNote": "Ampliación escrita a mano para esta página.",
-    "filterLabel": "Volver a puntuar con un solo término",
-    "allTerms": "Todos los términos",
-    "score": "puntuación",
-    "language": "Lenguaje",
-    "updated": "Actualizado",
-    "stars": "Estrellas",
-    "noMatch": "Ninguna coincidencia con este término",
-    "openRepo": "Abrir {name} en GitHub",
-    "terms": [
-      "agentes",
-      "RAG",
-      "LLM",
-      "recuperación",
-      "visión por computador",
-      "backend",
-      "móvil",
-      "seguridad"
-    ],
-    "matched": "coinciden",
-    "viewCard": "Ir a {name}"
-  },
-  "rerank": {
-    "featured": "Destacados",
-    "alsoBuilt": "Otros proyectos"
   },
   "notFound": {
     "title": "Página no encontrada",
@@ -110,13 +78,9 @@
       "fact": "net/http de la librería estándar, sin framework"
     }
   },
-  "story": {
-    "results": "Ordenados por relevancia",
-    "seeCases": "Leer los casos de estudio"
-  },
   "generate": {
-    "title": "Tres sistemas, por dentro",
-    "lead": "Qué resuelve cada uno y las decisiones que le dieron forma. Los detalles, en cada repositorio.",
+    "title": "Lo que he construido",
+    "lead": "Tres proyectos, distintos retos de ingeniería.",
     "decisions": "Decisiones clave",
     "stack": "Tecnologías",
     "diagram": "Arquitectura",
@@ -125,7 +89,8 @@
     "viewList": "Ver como lista",
     "viewDiagram": "Ver diagrama",
     "back": "Volver",
-    "openCase": "Abrir {name}"
+    "openCase": "Abrir {name}",
+    "more": "Más proyectos en GitHub"
   },
   "stack": {
     "label": "Mi stack",
@@ -464,7 +429,7 @@
     "howTitle": "Cómo funciona",
     "how": "Este agente funciona con respuestas guionizadas y se ejecuta entero en tu navegador. Compara tu pregunta con una pequeña base de conocimiento bilingüe usando el mismo buscador BM25 de esta página, enseña las consultas reales que hace a datos locales y después escribe una respuesta preparada de antemano. Sin LLM, sin peticiones de red y sin guardar nada.",
     "targets": {
-      "retrieval": "Ver los proyectos",
+      "generate": "Ver los proyectos",
       "ring-telemetryops": "Abrir el caso de Ring",
       "hybrid-rag-api": "Abrir el caso de RAG",
       "wakemap": "Abrir el caso de WakeMap",

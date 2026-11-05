@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, Play } from 'lucide-react';
 import Diagram from '../components/Diagram';
+import BlurReveal from '../components/ui/BlurReveal';
 import FolderFloat from '../components/ui/FolderFloat';
+import profile from '../content/profile.json';
 import { useMessages, useT } from '../i18n';
 import { featured, type Project } from '../lib/projects';
 import { setScrollLock } from '../lib/scroll';
@@ -109,14 +111,16 @@ export default function Generate() {
   });
 
   return (
-    <section id="generate" data-stage="generate" data-seam aria-labelledby="generate-title" className="scroll-mt-24 px-5 py-24 sm:px-8 md:py-36">
+    <section id="generate" data-stage="generate" aria-labelledby="generate-title" className="scroll-mt-24 px-5 py-24 sm:px-8 md:py-36">
       <div className="relative mx-auto max-w-6xl">
         <header className="relative">
-          <span aria-hidden="true" className="ghost-numeral" data-n="03" />
-          <h2 id="generate-title" className="relative max-w-3xl font-display text-3xl leading-[1.05]">
-            {t('generate.title')}
+          <span aria-hidden="true" className="ghost-numeral" data-n="02" />
+          <h2 id="generate-title" className="relative max-w-3xl text-3xl leading-[1.05] font-[var(--font-weight-display)] tracking-[var(--tracking-display)]">
+            <BlurReveal as="span" inView>{t('generate.title')}</BlurReveal>
           </h2>
-          <p className="relative mt-5 max-w-[52ch] text-lg text-muted">{t('generate.lead')}</p>
+          <BlurReveal as="p" inView delay={0.3} className="hero-tagline relative mt-5 sm:mt-6">
+            {t('generate.lead')}
+          </BlurReveal>
         </header>
         {/* Hovering a folder floats its key decisions out as notes; opening it plays the curtain into the case. */}
         <ul className="gen-folders">
@@ -142,6 +146,10 @@ export default function Generate() {
             </li>
           ))}
         </ul>
+        <a href={profile.github} className="relative mt-12 inline-flex min-h-11 items-center gap-2 font-medium text-accent underline-offset-4 hover:underline">
+          {t('generate.more')}
+          <ArrowUpRight className="size-4" aria-hidden="true" strokeWidth={1.75} />
+        </a>
       </div>
 
       <dialog ref={dialogRef} aria-labelledby="case-title" className="case-dialog" data-stage={stage} data-lenis-prevent>

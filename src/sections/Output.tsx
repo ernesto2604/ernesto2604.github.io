@@ -99,7 +99,7 @@ export default function Output() {
         {/* Both columns push their last block to the bottom of the row, so Experience/Languages end level with the contact links. */}
         <div className="lg:flex lg:flex-col">
           <header className="relative">
-            <span aria-hidden="true" className="ghost-numeral" data-n="04" />
+            <span aria-hidden="true" className="ghost-numeral" data-n="03" />
             <h2 id="output-title" className="relative font-display text-3xl leading-[1.05]">{o.title}</h2>
           </header>
           <div className="mt-8 grid max-w-[62ch] gap-4 text-lg leading-relaxed">

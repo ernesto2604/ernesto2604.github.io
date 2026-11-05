@@ -59,7 +59,7 @@ export function scrollToY(y: number, immediate = false) {
 
 // Section seams ([data-seam]): crossing one never scrolls the next section into view. The page fades out,
 // jumps so the next section sits at the top (going up: the previous one ends at the bottom) and fades back in,
-// the same in-place change as the hero handing over to Retrieval. Pinned (desktop) mode only.
+// an in-place change instead of a scroll. Pinned (desktop) mode only.
 const SWAP_MS = 220;
 let swapping = false;
 
