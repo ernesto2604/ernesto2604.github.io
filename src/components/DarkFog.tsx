@@ -72,7 +72,12 @@ export default function DarkFog() {
       if (!force && p === last) return;
       last = p;
       canvas.style.visibility = p > 0 ? 'visible' : 'hidden';
-      document.documentElement.toggleAttribute('data-dark', p >= 0.5);
+      const html = document.documentElement;
+      html.toggleAttribute('data-dark', p >= 0.5);
+      // How much of the masthead strip the fog covers: the shader's alpha near the top, noise left out.
+      const edge = 1.9 - 2.8 * p;
+      const x = Math.min(1, Math.max(0, (0.05 - (edge - 0.35)) / 0.5));
+      html.style.setProperty('--fog-top', (x * x * (3 - 2 * x)).toFixed(3));
       if (p > 0) draw(p);
     };
     const resize = () => {
@@ -90,6 +95,7 @@ export default function DarkFog() {
       removeEventListener('scroll', onScroll);
       removeEventListener('resize', resize);
       document.documentElement.removeAttribute('data-dark');
+      document.documentElement.style.removeProperty('--fog-top');
     };
   }, []);
 

@@ -188,16 +188,18 @@
 
   /* Masthead (Masthead.tsx): a progressive blur the page scrolls under. Three layers blur more toward the top
      and each fades out further up, so there is no edge; a paper tint under the clock fades the same way. */
-  .masthead { height: 6rem; overflow: hidden; container-type: inline-size; }
+  /* Its tint, clock and the menu button follow how much of the window's top the dark fog covers (--fog-top, 0 to 1,
+     set by DarkFog.tsx), not the page tokens: those flip halfway, while the top is still paper. */
+  .masthead { height: 6rem; overflow: hidden; container-type: inline-size; --mast: color-mix(in srgb, #14120F calc(var(--fog-top, 0) * 100%), #F6F4EF); }
   .masthead-blur, .masthead-blur > span { position: absolute; inset: 0; }
   .masthead-blur > span:nth-child(1) { -webkit-backdrop-filter: blur(1px); backdrop-filter: blur(1px); -webkit-mask: linear-gradient(#000 50%, transparent); mask: linear-gradient(#000 50%, transparent); }
   .masthead-blur > span:nth-child(2) { -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); -webkit-mask: linear-gradient(#000 30%, transparent 75%); mask: linear-gradient(#000 30%, transparent 75%); }
   .masthead-blur > span:nth-child(3) { -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); -webkit-mask: linear-gradient(#000 15%, transparent 50%); mask: linear-gradient(#000 15%, transparent 50%); }
-  .masthead-blur > span:nth-child(4) { background: linear-gradient(var(--bg-0) 35%, color-mix(in srgb, var(--bg-0) 60%, transparent) 60%, transparent); }
+  .masthead-blur > span:nth-child(4) { background: linear-gradient(var(--mast) 35%, color-mix(in srgb, var(--mast) 60%, transparent) 60%, transparent); }
   html[data-lite] .masthead-blur > span { -webkit-backdrop-filter: none; backdrop-filter: none; }
   @media (prefers-reduced-transparency: reduce) {
     .masthead-blur > span { -webkit-backdrop-filter: none; backdrop-filter: none; }
-    .masthead-blur > span:nth-child(4) { background: linear-gradient(var(--bg-0) 60%, transparent); }
+    .masthead-blur > span:nth-child(4) { background: linear-gradient(var(--mast) 60%, transparent); }
   }
   /* On one line with the menu button (top-2 / sm:top-3, 3rem tall), mirrored: its left edge matches the
      burger's right edge (the 1.75rem burger is centred in the 3rem button at right-4 / sm:right-6). */
@@ -211,7 +213,7 @@
     line-height: 1;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: color-mix(in srgb, #A8A196 calc(var(--fog-top, 0) * 100%), #55504A);
   }
   @media (min-width: 640px) {
     .masthead-clock { left: 2.125rem; }
@@ -555,7 +557,7 @@ html[data-welcome] #welcome[data-zoom] {
 /* Side menu (Nav.tsx). The button is just two lines in ink; the panel is dark. */
 /* Scroll lock pads the page by the scrollbar's width (set in lib/scroll.ts), so nothing shifts. */
 html[data-scroll-lock] { overflow: hidden; padding-right: var(--scrollbar-w, 0px); }
-.menu-button { color: var(--text); }
+.menu-button { color: color-mix(in srgb, #F6F4EF calc(var(--fog-top, 0) * 100%), #14120F); } /* see .masthead */
 .menu-close { color: var(--on-ink); }
 .burger { position: relative; width: 1.75rem; height: 1.75rem; }
 .burger > span {
