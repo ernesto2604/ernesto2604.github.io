@@ -47,7 +47,7 @@ function MessageForm() {
       <label htmlFor="msg" className="text-sm text-muted">{t('contact.formTitle')}</label>
       <textarea id="msg" name="message" required maxLength={MAX} rows={4} placeholder={t('contact.messagePlaceholder')} className={`${field} resize-y py-3 leading-relaxed`} />
       <label htmlFor="msg-contact" className="sr-only">{t('contact.replyTo')}</label>
-      <input id="msg-contact" name="contact" type="text" maxLength={200} placeholder={t('contact.replyTo')} className={`${field} h-12`} />
+      <input id="msg-contact" name="contact" type="text" required maxLength={200} placeholder={t('contact.replyTo')} className={`${field} h-12`} />
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         {/* On hover or focus the plane takes off: it bobs, turns and flies right while the label slides out. */}
         <button type="submit" disabled={state === 'sending'} className="send-button flex h-12 cursor-pointer items-center overflow-hidden rounded-2xl bg-accent-fill py-2 pl-[0.9em] pr-5 text-lg font-medium text-accent-ink transition-all duration-200 active:scale-95 disabled:cursor-wait disabled:opacity-70">
