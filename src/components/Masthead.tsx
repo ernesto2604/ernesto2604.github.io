@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Guides } from './Background';
+import ScrambleText from './ui/ScrambleText';
 
 const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Madrid', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZoneName: 'short' });
 
@@ -36,8 +37,9 @@ export default function Masthead() {
         <span />
       </div>
       <Guides />
-      <p className="masthead-clock">
-        Madrid <span className="tabular-nums">{time}</span>
+      {/* Decodes again every few seconds, like the [ask] tag over the hologram. */}
+      <p className="masthead-clock tabular-nums">
+        <ScrambleText text={`Madrid ${time}`} every={9000} />
       </p>
     </div>
   );
