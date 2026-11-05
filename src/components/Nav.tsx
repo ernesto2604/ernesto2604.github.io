@@ -5,7 +5,6 @@ import { localePath, otherLocale, useLocale, useT } from '../i18n';
 import { focusTarget, setScrollLock } from '../lib/scroll';
 import { useMedia } from '../hooks/useMedia';
 import TypeLoop from './ui/TypeLoop';
-import { Guides } from './Background';
 import profile from '../content/profile.json';
 
 // Flipped to true when the agent panel ships (Phase 6); until then no control promises it.
@@ -202,7 +201,6 @@ export default function Nav() {
         <div className="menu-prelayer menu-prelayer-amber" aria-hidden="true" />
         <div className="menu-prelayer menu-prelayer-slate" aria-hidden="true" />
         <nav aria-label={t('a11y.primaryNav')} className="menu-panel">
-          <Guides />
           {/* Top row, level with the close button. */}
           <div className="flex min-h-12 items-center" data-menu-fade>
             <LangToggle />

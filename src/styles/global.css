@@ -612,8 +612,8 @@ html[data-scroll-lock] { overflow: hidden; padding-right: var(--scrollbar-w, 0px
   border-left: 1px solid var(--on-ink-line); /* parts it from the page once the page is dark too */
   box-shadow: -20px 0 60px -30px var(--glass-shadow);
 }
-/* The page's voice: mono labels like the masthead clock, links like the project list (outlined, filled when
-   current or pointed), the dashed column guides behind it all. */
+/* The page's voice on a flat ink panel: mono labels like the masthead clock, links like the project list
+   (outlined, filled when current or pointed). */
 .menu-label {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
@@ -691,9 +691,7 @@ html[data-scroll-lock] { overflow: hidden; padding-right: var(--scrollbar-w, 0px
 }
 .menu-ask .type-tail { margin-left: 1.25em; }
 .menu-ask [data-started]:not([data-typing]) .type-tail { animation: caret-blink 1.06s steps(1) infinite; }
-.menu-panel { container-type: inline-size; overflow-x: hidden; scrollbar-width: none; } /* the guides run past its edges */
-.menu-panel .guides { --guide-strong: rgb(246 244 239 / 0.06); }
-.menu-panel > :not(.guides) { position: relative; }
+.menu-panel { scrollbar-width: none; }
 .menu-dialog::backdrop { background: var(--scrim); }
 .menu-dialog[open]::backdrop { animation: fade-in var(--dur-3) var(--ease-out); }
 /* StaggeredMenu pre-layers (Nav.tsx): the site's amber, then a lighter ink, sweep in ahead of the ink panel. */
