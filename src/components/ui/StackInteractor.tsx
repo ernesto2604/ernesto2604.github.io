@@ -29,7 +29,7 @@ export default function StackInteractor({ items, onSelect }: { items: StackItem[
 
   return (
     <div className="flex w-full flex-col items-center justify-between gap-16 lg:flex-row">
-      <ul className="z-10 flex w-full flex-col gap-12 lg:w-1/2">
+      <ul className="flex w-full flex-col gap-12 lg:w-1/2">
         {items.map((item, i) => {
           const on = i === active;
           return (
@@ -42,12 +42,14 @@ export default function StackInteractor({ items, onSelect }: { items: StackItem[
                 onClick={() => onSelect(i)}
                 className="flex cursor-pointer items-start gap-6 text-left"
               >
-                <span className={`mt-1 font-mono text-xl transition-all duration-500 ${on ? 'scale-110 text-accent' : 'text-muted'}`}>{item.num}</span>
-                <span className={`block transition-all duration-700 ${on ? 'translate-x-4 text-text' : 'text-muted'}`}>
-                  <span className={`block max-w-[12ch] text-3xl [paint-order:stroke_fill] transition-colors duration-700 ${on ? "[-webkit-text-stroke:2px_var(--text)]" : "text-[var(--bg-0)] [-webkit-text-stroke:2px_var(--text-muted)]"} leading-[0.9] font-[var(--font-weight-display)] tracking-[var(--tracking-display)] uppercase`}>
+                <span className={`mt-1 font-mono text-xl transition-all duration-500 ${on ? 'scale-110 text-accent' : 'ink-auto ink-muted'}`}>{item.num}</span>
+                {/* Negative of whatever is behind (ink on paper, light on the fog), so it reads at every point of the
+                    light-to-dark scroll; the amber number stays out of it. */}
+                <span className={`ink-auto block transition-all duration-700 ${on ? 'translate-x-4' : ''}`}>
+                  <span data-on={on || undefined} className="ink-name block max-w-[12ch] text-3xl leading-[0.9] font-[var(--font-weight-display)] tracking-[var(--tracking-display)] uppercase">
                     {item.name}
                   </span>
-                  {item.sublabel && <span className="mt-3 block font-mono text-xs tracking-wider uppercase">{item.sublabel}</span>}
+                  {item.sublabel && <span className="ink-muted mt-3 block font-mono text-xs tracking-wider uppercase">{item.sublabel}</span>}
                 </span>
               </button>
             </li>

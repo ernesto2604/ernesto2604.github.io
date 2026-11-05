@@ -11,17 +11,18 @@ export default function Stack() {
       <div className="relative mx-auto max-w-6xl">
         <h2 id="skills-title" className="flex items-center gap-2.5 text-sm font-medium uppercase tracking-[0.08em] text-muted">
           <Asterisk className="size-5 text-accent" aria-hidden="true" strokeWidth={2} />
-          {s.label}
+          {/* Negative text (global.css .ink-auto): reads over paper, fog and ink alike. */}
+          <span className="ink-auto ink-muted">{s.label}</span>
         </h2>
         <div>
           {s.groups.map((g) => (
             <div key={g.group} className="grid gap-x-12 gap-y-6 border-t border-line py-10 first:mt-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:py-14">
-              <h3 className="font-display text-3xl leading-[1.05]">{g.group}</h3>
+              <h3 className="ink-auto font-display text-3xl leading-[1.05]">{g.group}</h3>
               <ul className="flex flex-wrap gap-x-9 gap-y-5">
                 {g.items.map((it) => (
                   <li key={it.name} className="flex items-center gap-3 text-lg font-medium tracking-tight">
                     <TechIcon id={it.icon} />
-                    {it.name}
+                    <span className="ink-auto">{it.name}</span>
                   </li>
                 ))}
               </ul>

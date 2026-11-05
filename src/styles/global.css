@@ -812,3 +812,13 @@ html:not(.js) [data-blur-reveal], html:not(.js) [data-blur-reveal] * { opacity: 
   transition-duration: 0.5s;
   transition-timing-function: var(--ease-std);
 }
+
+/* Negative text (StackInteractor, Stack): difference-blended with whatever is behind, pixel by pixel, so it is ink
+   on paper, light on the dark fog and speckled across its edge. The colours are picked so that over paper the
+   result is exactly --text / --text-muted of the light set (paper minus ink, paper minus muted). Any ancestor that
+   makes a stacking context (z-index on a flex item, transform, filter, opacity < 1) would cut the blend off. */
+.ink-auto { mix-blend-mode: difference; color: rgb(226 226 224); }
+.ink-muted { color: rgb(161 164 165); }
+/* Outlined name: a black fill changes nothing under difference, so only the stroke shows; filled when on. */
+.ink-name { color: #000; -webkit-text-stroke: 2px rgb(161 164 165); paint-order: stroke fill; transition: color 0.7s, -webkit-text-stroke-color 0.7s; }
+.ink-name[data-on] { color: rgb(226 226 224); -webkit-text-stroke-color: rgb(226 226 224); }
