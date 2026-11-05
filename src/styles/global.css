@@ -521,10 +521,6 @@ html[data-pinned] .story-cap-retrieval:not(.is-active) .story-chips > * { opacit
 @keyframes curtain-cover { from { transform: translateY(100%); } to { transform: translateY(0); } }
 @keyframes curtain-reveal { from { transform: translateY(0); } to { transform: translateY(-100%); } }
 
-@media (max-height: 860px) {
-  html[data-pinned] .story-matched { display: none; }
-  html[data-pinned] .story-query { margin-bottom: 1rem; }
-}
 
 /* Welcome loader (public/welcome.js). Hidden unless boot.js set html[data-welcome], so no-JS and
    reduced-motion visitors never see it. Fixed overlay: no layout shift; the page below renders as usual. */
@@ -544,15 +540,72 @@ html[data-welcome] #welcome,
   animation: welcome-out var(--dur-4) var(--ease-std) forwards;
 }
 /* Failsafe: if the script never ends it, the overlay leaves on its own. */
-html[data-welcome] #welcome { animation: welcome-out var(--dur-4) var(--ease-std) 3s forwards; }
-@keyframes welcome-out { to { opacity: 0; visibility: hidden; } }
-.welcome-word {
+html[data-welcome] #welcome {
+  animation: welcome-out var(--dur-4) var(--ease-std) calc(var(--reel-ms) + var(--zoom-ms) + 2s) forwards;
+}
+/* The reel: one window a line tall, soft at top and bottom; every word stacked inside slides up through it,
+   speeding up a little, then slowing for a long while until it rests on Welcome (the last word). */
+.welcome-window {
+  display: block;
+  height: 1.3em;
+  overflow: hidden;
   font-size: var(--text-4xl);
   font-weight: var(--font-weight-display);
   letter-spacing: var(--tracking-display);
-  line-height: 1;
+  line-height: 1.3;
+  text-align: center;
+  mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
 }
-#welcome[data-done] .welcome-word { animation: welcome-word-out var(--dur-4) var(--ease-out) forwards; }
+.welcome-reel { display: block; }
+html[data-welcome] .welcome-reel {
+  will-change: transform;
+  animation: welcome-reel var(--reel-ms) cubic-bezier(0.3, 0, 0.3, 1) forwards;
+}
+@keyframes welcome-reel { to { transform: translateY(var(--reel-shift)); } }
+/* For the dive the window opens up and only Welcome is left in it. */
+#welcome[data-zoom] .welcome-window { overflow: visible; mask-image: none; }
+#welcome[data-zoom] .welcome-word:not(:last-child) { visibility: hidden; }
+/* The dive (welcome.js sets the origin on the "o"): the word grows until the counter's paper fills the screen
+   (about 65% in); the overlay then fades slowly, so the hero shows through it. */
+html[data-welcome] #welcome[data-zoom] {
+  /* Own keyframes name: reusing welcome-out would retime the page-load animation, already past its delay. */
+  animation: welcome-dive-out calc(var(--zoom-ms) * 0.33) var(--ease-std) calc(var(--zoom-ms) * 0.62) forwards;
+}
+@keyframes welcome-dive-out { to { opacity: 0; visibility: hidden; } }
+#welcome[data-zoom] .welcome-word:last-child {
+  will-change: transform;
+  animation: welcome-zoom var(--zoom-ms) linear forwards;
+}
+/* Generated: scale = 140^e with e a sine ease-in-out, so the zoom feels even (scale is perceived logarithmically);
+   the "o" eases to the centre over the first 55%, so its counter covers the screen evenly. */
+@keyframes welcome-zoom {
+  0% { transform: translate(calc(var(--dx, 0px) * 0.000), calc(var(--dy, 0px) * 0.000)) scale(1); }
+  5% { transform: translate(calc(var(--dx, 0px) * 0.023), calc(var(--dy, 0px) * 0.023)) scale(1.03); }
+  10% { transform: translate(calc(var(--dx, 0px) * 0.087), calc(var(--dy, 0px) * 0.087)) scale(1.13); }
+  15% { transform: translate(calc(var(--dx, 0px) * 0.183), calc(var(--dy, 0px) * 0.183)) scale(1.31); }
+  20% { transform: translate(calc(var(--dx, 0px) * 0.301), calc(var(--dy, 0px) * 0.301)) scale(1.6); }
+  25% { transform: translate(calc(var(--dx, 0px) * 0.432), calc(var(--dy, 0px) * 0.432)) scale(2.06); }
+  30% { transform: translate(calc(var(--dx, 0px) * 0.568), calc(var(--dy, 0px) * 0.568)) scale(2.77); }
+  35% { transform: translate(calc(var(--dx, 0px) * 0.699), calc(var(--dy, 0px) * 0.699)) scale(3.85); }
+  40% { transform: translate(calc(var(--dx, 0px) * 0.817), calc(var(--dy, 0px) * 0.817)) scale(5.51); }
+  45% { transform: translate(calc(var(--dx, 0px) * 0.913), calc(var(--dy, 0px) * 0.913)) scale(8.04); }
+  50% { transform: translate(calc(var(--dx, 0px) * 0.977), calc(var(--dy, 0px) * 0.977)) scale(11.83); }
+  55% { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(17.42); }
+  60% { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(25.39); }
+  65% { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(36.33); }
+  70% { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(50.56); }
+  75% { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(67.89); }
+  80% { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(87.34); }
+  85% { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(106.95); }
+  90% { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(124.05); }
+  95% { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(135.81); }
+  100% { transform: translate(var(--dx, 0px), var(--dy, 0px)) scale(140); }
+}
+/* After the dive the overlay is already gone: it must not replay the plain fade-out. */
+#welcome[data-done][data-zoom] { animation: none; opacity: 0; visibility: hidden; }
+@keyframes welcome-out { to { opacity: 0; visibility: hidden; } }
+.welcome-word { display: block; white-space: nowrap; }
+#welcome[data-done]:not([data-zoom]) .welcome-word { animation: welcome-word-out var(--dur-4) var(--ease-out) forwards; }
 @keyframes welcome-word-out { to { transform: translateY(-24px); } }
 
 /* Side menu (Nav.tsx). The button is just two lines in ink; the panel is dark. */

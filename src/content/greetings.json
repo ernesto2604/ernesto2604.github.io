@@ -1,15 +1,85 @@
 {
   "_note": "Welcome loader words. Latin-1 only (the Inter subset is latin); tests/unit/welcome.test.ts checks it. Spelling checked against each language's standard greeting (masculine/default form where the language inflects).",
   "words": [
-    { "lang": "fr", "word": "Bienvenue" },
-    { "lang": "de", "word": "Willkommen" },
-    { "lang": "it", "word": "Benvenuto" },
-    { "lang": "pt", "word": "Bem-vindo" },
-    { "lang": "nl", "word": "Welkom" },
-    { "lang": "sv", "word": "Välkommen" },
-    { "lang": "fi", "word": "Tervetuloa" },
-    { "lang": "ga", "word": "Fáilte" },
-    { "lang": "es", "word": "Bienvenido" },
-    { "lang": "en", "word": "Welcome" }
+    {
+      "lang": "fr",
+      "word": "Bienvenue"
+    },
+    {
+      "lang": "ca",
+      "word": "Benvingut"
+    },
+    {
+      "lang": "de",
+      "word": "Willkommen"
+    },
+    {
+      "lang": "da",
+      "word": "Velkommen"
+    },
+    {
+      "lang": "it",
+      "word": "Benvenuto"
+    },
+    {
+      "lang": "cs",
+      "word": "Vítejte"
+    },
+    {
+      "lang": "pt",
+      "word": "Bem-vindo"
+    },
+    {
+      "lang": "ro",
+      "word": "Bun venit"
+    },
+    {
+      "lang": "nl",
+      "word": "Welkom"
+    },
+    {
+      "lang": "is",
+      "word": "Velkomin"
+    },
+    {
+      "lang": "sv",
+      "word": "Välkommen"
+    },
+    {
+      "lang": "pl",
+      "word": "Witamy"
+    },
+    {
+      "lang": "fi",
+      "word": "Tervetuloa"
+    },
+    {
+      "lang": "hu",
+      "word": "Üdvözöljük"
+    },
+    {
+      "lang": "ga",
+      "word": "Fáilte"
+    },
+    {
+      "lang": "sw",
+      "word": "Karibu"
+    },
+    {
+      "lang": "gl",
+      "word": "Benvido"
+    },
+    {
+      "lang": "cy",
+      "word": "Croeso"
+    },
+    {
+      "lang": "es",
+      "word": "Bienvenido"
+    },
+    {
+      "lang": "en",
+      "word": "Welcome"
+    }
   ]
 }
