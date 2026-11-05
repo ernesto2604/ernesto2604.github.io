@@ -42,7 +42,13 @@ export default function StackInteractor({ items, onSelect }: { items: StackItem[
                 onClick={() => onSelect(i)}
                 className="flex cursor-pointer items-start gap-6 text-left"
               >
-                <span className={`mt-1 font-mono text-xl transition-all duration-500 ${on ? 'scale-110 text-accent' : 'ink-auto ink-muted'}`}>{item.num}</span>
+                {/* The negative number stays put; the amber copy over it only fades, since an amber in mid-transition
+                    under the difference blend flashes blue. Each scales itself: a transform on a shared parent would
+                    isolate the blend. */}
+                <span className="relative mt-1 font-mono text-xl">
+                  <span className={`ink-auto ink-muted inline-block transition-transform duration-500 ${on ? 'scale-110' : ''}`}>{item.num}</span>
+                  <span aria-hidden="true" className={`absolute inset-0 text-accent transition-[opacity,scale] duration-500 ${on ? 'scale-110 opacity-100' : 'opacity-0'}`}>{item.num}</span>
+                </span>
                 {/* Negative of whatever is behind (ink on paper, light on the fog), so it reads at every point of the
                     light-to-dark scroll; the amber number stays out of it. */}
                 <span className={`ink-auto block transition-all duration-700 ${on ? 'translate-x-4' : ''}`}>
