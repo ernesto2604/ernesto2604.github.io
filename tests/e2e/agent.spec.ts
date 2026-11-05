@@ -53,9 +53,11 @@ test.describe('agent', () => {
     // The live copy; its first text node is the typed question.
     const typed = page.locator('.hero-ask-typed > :last-child');
     const question = () => typed.evaluate((el) => el.firstChild?.textContent);
-    // Under load the first one may already be gone by now, so check the rotation in order from the second.
-    await expect.poll(question, { timeout: 15000 }).toBe('How does the Ring agent work?');
-    await expect.poll(question, { timeout: 15000 }).toBe("What's his stack?");
+    // Under load the loop may be anywhere by now: catch whichever question is fully typed, then wait for the next.
+    const items = ['What has he built?', 'How does the Ring agent work?', "What's his stack?", 'Is he available?'];
+    let first = '';
+    await expect.poll(async () => items.includes((first = (await question()) ?? '')), { timeout: 15000 }).toBe(true);
+    await expect.poll(question, { timeout: 15000 }).toBe(items[(items.indexOf(first) + 1) % items.length]);
   });
 
   test('after the question: the shortcut with a mouse, [Click] on touch', async ({ page }, info) => {

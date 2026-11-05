@@ -159,7 +159,9 @@ export default function Story() {
               <span className="sr-only">{`${t('hero.greeting')}, ${t('hero.role')}`}</span>
               <MorphingText texts={[t('hero.greeting'), t('hero.role')]} play={ready && !reducedMotion && (!pinned || phase === 'input')} cooldownTime={2.5} />
             </h1>
-            <p className="mt-5 max-w-[42ch] text-base leading-relaxed text-muted sm:mt-6">{t('hero.valueProp')}</p>
+            <p className="hero-tagline mt-5 sm:mt-6">
+              <ScrambleText text={t('hero.valueProp')} play={ready ? 1 : 0} every={11000} />
+            </p>
           </div>
           {/* The hologram is the way into the agent: clicking it (or Ctrl/Cmd+K) asks "me". */}
           {AGENT_READY ? (
@@ -171,6 +173,7 @@ export default function Story() {
                   then how to open it: the shortcut with a keyboard and mouse, a tap on touch screens. */}
               <span className="hero-ask-label">
                 <TypeLoop
+                  fit
                   items={askExamples}
                   play={ready && (!pinned || phase === 'input')}
                   className="hero-ask-typed"
@@ -190,6 +193,10 @@ export default function Story() {
           ) : (
             <Hologram className="hero-photo lg:order-2" active={(!pinned || phase === 'input') && ready} />
           )}
+          {/* Bottom centre of the first screen (of the pinned stage on wide screens). */}
+          <p aria-hidden="true" className="hero-scroll">
+            [<ScrambleText text={t('hero.scroll')} play={ready ? 1 : 0} />]
+          </p>
         </Caption>
         {/* 02 · Retrieval */}
         <Caption stage="retrieval" active={phase === 'retrieval'} className="pt-24 lg:pt-0">

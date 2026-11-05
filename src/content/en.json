@@ -40,6 +40,7 @@
     "ctaAgent": "Ask the agent",
     "askHologram": "Ask my hologram",
     "askCursor": "Ask",
+    "scroll": "Scroll to explore",
     "askTap": "Click",
     "askExamples": ["What has he built?", "How does the Ring agent work?", "What's his stack?", "Is he available?"],
     "kbdHint": "Ctrl K",

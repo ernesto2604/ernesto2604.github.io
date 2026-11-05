@@ -281,6 +281,8 @@
   .hero-ask-label {
     position: absolute;
     top: calc(93% + 0.75rem);
+    left: 50%;
+    transform: translateX(-50%); /* centred on the figure: the line grows from the middle as it types */
     display: inline-flex;
     align-items: baseline;
     gap: 0.75em;
@@ -289,6 +291,23 @@
     transition: color var(--dur-2) var(--ease-out);
   }
   .hero-ask:hover .hero-ask-label, .hero-ask:focus-visible .hero-ask-label { color: var(--text); }
+  /* The line under the title and the scroll cue share the [ask] tag's mono voice. */
+  .hero-tagline, .hero-scroll {
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .hero-tagline { font-size: var(--text-xs); line-height: 1.5; }
+  .hero-scroll {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: var(--text-2xs);
+    line-height: 1;
+    white-space: pre;
+  }
   .hero-ask-label kbd, .hero-ask-label .tap-hint { margin-left: 1.25em; font-family: inherit; }
   .tap-hint { display: none; }
   @media (pointer: coarse) { .tap-hint { display: inline; } }
@@ -385,6 +404,8 @@ html[data-pinned]:not([data-hydrated]) .story-cap:not(.story-cap-input) { opacit
 html[data-pinned]:not([data-hydrated]) .story-list-wrap { visibility: hidden; }
 html[data-pinned] .story-list-wrap { grid-column: 2; padding-top: 0; }
 html[data-pinned] .story-hero { min-height: 0; padding: 0; }
+/* Pinned, the scroll cue sits on the sticky stage (the viewport), not on the shorter caption. */
+html[data-pinned] .story-cap-input { position: static; }
 /* The hero spans both columns over the result list; the list appears once the query is scored. */
 html[data-pinned] .story-cap-input { grid-column: 1 / -1; }
 html[data-pinned] .story-hero .hero-photo { max-height: calc(100svh - 12rem); justify-self: end; width: 100%; }

@@ -5,11 +5,11 @@ const ERASE_MS = 22;
 const HOLD_MS = 2200;
 const GAP_MS = 350;
 
-type Props = { items: string[]; play: boolean; className?: string; suffix?: ReactNode; onItem?: (item: string) => void };
+type Props = { items: string[]; play: boolean; className?: string; suffix?: ReactNode; onItem?: (item: string) => void; fit?: boolean };
 
 // Types each item, holds it, erases it, then the next; a caret blinks after the text and suffix follows it.
 // Decorative (aria-hidden): the caller names the control. Paused or reduced motion: the first item, typed.
-export default function TypeLoop({ items, play, className = '', suffix, onItem }: Props) {
+export default function TypeLoop({ items, play, className = '', suffix, onItem, fit = false }: Props) {
   const [index, setIndex] = useState(0);
   const [length, setLength] = useState(items[0]?.length ?? 0);
   const [erasing, setErasing] = useState(false);
@@ -37,10 +37,11 @@ export default function TypeLoop({ items, play, className = '', suffix, onItem }
   useEffect(() => onItem?.(current), [current, onItem]);
 
   // The longest item (plus suffix), invisible in the same grid cell, keeps the box fixed while the text types.
+  // With `fit` only its height is kept: the box follows the text, so a centred line stays centred.
   const longest = items.reduce((a, b) => (b.length > a.length ? b : a), '');
   return (
     <span aria-hidden="true" className={`inline-grid ${className}`}>
-      <span className="invisible [grid-area:1/1]">
+      <span className={`invisible [grid-area:1/1] ${fit ? 'w-0 overflow-hidden' : ''}`}>
         {longest}
         <span className="type-caret" />
         {suffix}

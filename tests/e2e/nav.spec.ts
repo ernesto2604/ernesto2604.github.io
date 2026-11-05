@@ -126,3 +126,20 @@ test('"Read the case studies" lands on section 03 with its content on screen', a
   await expect(page.getByRole('heading', { level: 2, name: 'Three systems, from the inside' })).toBeInViewport({ timeout: 5000 });
   await expect(page.getByRole('button', { name: 'Open Ring TelemetryOps' })).toBeInViewport();
 });
+
+test('no page is wider than the screen (the typed line under the hologram once pushed it sideways)', async ({ page }) => {
+  for (const path of ['/', '/es/']) {
+    await page.goto(path);
+    await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+    await page.waitForFunction(() => !document.documentElement.hasAttribute('data-welcome'), null, { timeout: 15000 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
+  }
+});
+
+test('the hero closes with a scroll cue and the ask line is centred on the figure', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
+  await expect(page.locator('.hero-scroll [aria-hidden]')).toHaveText('Scroll to explore');
+  const mid = (sel: string) => page.locator(sel).evaluate((el) => { const r = el.getBoundingClientRect(); return r.left + r.width / 2; });
+  expect(Math.abs((await mid('.hero-ask-label')) - (await mid('.holo-canvas')))).toBeLessThan(2);
+});
