@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { ArrowUpRight, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 import BlurReveal from '../components/ui/BlurReveal';
 import ProfileCard from '../components/ui/ProfileCard';
 import StarBorder from '../components/ui/StarBorder';
@@ -66,27 +66,11 @@ function MessageForm() {
 
 function Contact() {
   const t = useT();
-  const row = 'flex min-h-14 items-center justify-between gap-4 rounded-card bg-surface px-5 transition-colors duration-200 hover:bg-surface-2';
-
   return (
     <div id="contact" className="scroll-mt-28">
       <h3 className="font-display text-3xl leading-none">{t('contact.title')}</h3>
       <p className="mt-4 max-w-[46ch] text-muted">{t('contact.lead')}</p>
       <MessageForm />
-      <ul className="mt-8 grid gap-2">
-        <li>
-          <a href={profile.linkedin} className={row}>
-            <span>{t('contact.linkedin')}</span>
-            <ArrowUpRight className="size-4 text-muted" aria-hidden="true" strokeWidth={1.75} />
-          </a>
-        </li>
-        <li>
-          <a href={profile.github} className={row}>
-            <span>{t('contact.github')}</span>
-            <ArrowUpRight className="size-4 text-muted" aria-hidden="true" strokeWidth={1.75} />
-          </a>
-        </li>
-      </ul>
     </div>
   );
 }
