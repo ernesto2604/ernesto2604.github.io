@@ -38,6 +38,8 @@ export default function Masthead() {
         <span />
         <span />
       </div>
+      {/* The tint, drawn by DarkFog's shader so it always matches the fog behind it (CSS tint above without WebGL). */}
+      <canvas className="masthead-fog" />
       <Guides />
       {/* Types itself in after the loader, like the hero lines. */}
       <p className="masthead-clock tabular-nums">
