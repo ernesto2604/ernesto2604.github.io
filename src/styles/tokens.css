@@ -31,7 +31,7 @@
   --glass-edge: rgb(13 16 21 / 0.08);
   --glass-shadow: rgb(13 16 21 / 0.10);
   --glass-blur: 8px;
-  --scrim: rgb(13 16 21 / 0.32);
+  --scrim: rgb(20 18 15 / 0.32); /* the site ink: over the dark part of the page it changes nothing */
 
   /* Hologram (Hologram.tsx): graphite lines straight on the paper.
      The model color itself lives in HOLO.color (src/lib/hologram.ts); keep --holo in sync. */
