@@ -104,17 +104,6 @@ test('deep link into the story sets the matching phase', async ({ page }, info) 
   await expect(page.locator('.story')).toHaveAttribute('data-phase', 'retrieval');
 });
 
-test('scrolling into a section seam swaps the next section in at the top', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile', 'section swaps are for the pinned desktop layout');
-  await page.goto('/');
-  await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
-  const seamTop = () => page.evaluate(() => Math.round(document.getElementById('generate')!.getBoundingClientRect().top));
-  await page.evaluate(() => scrollTo(0, document.getElementById('generate')!.getBoundingClientRect().top + scrollY - innerHeight - 40));
-  await page.mouse.move(600, 400);
-  await page.mouse.wheel(0, 240);
-  await expect.poll(seamTop, { timeout: 5000 }).toBe(0);
-});
-
 test('"Read the case studies" lands on section 03 with its content on screen', async ({ page }, info) => {
   test.skip(info.project.name === 'mobile', 'pinned desktop layout');
   await page.goto('/#retrieval');

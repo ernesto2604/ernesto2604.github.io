@@ -34,15 +34,10 @@ export function focusTarget(id: string) {
 }
 
 export function scrollToElement(el: HTMLElement, immediate = false) {
-  // Pinned story points and section seams are whole screens: land on them exactly, never just short of a seam
-  // (that would leave the previous section on screen and the next one waiting to swap in).
-  const offset = isPinned() && (el.hasAttribute('data-anchor') || el.hasAttribute('data-seam')) ? 0 : 88;
+  // Pinned story points are whole screens: land on them exactly.
+  const offset = isPinned() && el.hasAttribute('data-anchor') ? 0 : 88;
   scrollToY(el.getBoundingClientRect().top + window.scrollY - offset, immediate);
 }
-
-// While a link or the agent scrolls the page, crossing a seam must not trigger a section swap.
-let guided = 0;
-export const isGuided = () => performance.now() < guided;
 
 export function scrollToY(y: number, immediate = false) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -51,37 +46,8 @@ export function scrollToY(y: number, immediate = false) {
     else window.scrollTo({ top: y, behavior: 'auto' });
     return;
   }
-  // Lenis reports the end; the cap only covers native smooth scrolling (no callback) or an interrupted scroll.
-  guided = performance.now() + 6000;
-  if (lenis) lenis.scrollTo(y, { onComplete: () => (guided = 0) });
+  if (lenis) lenis.scrollTo(y);
   else window.scrollTo({ top: y, behavior: 'smooth' });
-}
-
-// Section seams ([data-seam]): crossing one never scrolls the next section into view. The page fades out,
-// jumps so the next section sits at the top (going up: the previous one ends at the bottom) and fades back in,
-// an in-place change instead of a scroll. Pinned (desktop) mode only.
-const SWAP_MS = 220;
-let swapping = false;
-
-export function swapAtSeam(down: boolean) {
-  if (swapping || !isPinned() || performance.now() < guided) return;
-  const vh = innerHeight;
-  for (const el of document.querySelectorAll<HTMLElement>('[data-seam]')) {
-    const top = el.getBoundingClientRect().top;
-    if (top <= 1 || top >= vh - 1) continue;
-    const y = window.scrollY + (down ? top : top - vh);
-    const html = document.documentElement;
-    swapping = true;
-    lenis?.stop();
-    html.setAttribute('data-swap', '');
-    window.setTimeout(() => {
-      lenis?.start();
-      scrollToY(y, true);
-      requestAnimationFrame(() => html.removeAttribute('data-swap'));
-      window.setTimeout(() => (swapping = false), SWAP_MS + 120);
-    }, SWAP_MS);
-    return;
-  }
 }
 
 // Freezes page scrolling while a modal panel is open. The page is padded by the scrollbar it hides, so nothing shifts.

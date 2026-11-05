@@ -753,10 +753,6 @@ html:has(.agent-dialog[open]) { overflow: hidden; }
 }
 
 
-/* Section swap (lib/scroll.ts swapAtSeam): the page fades out, jumps across a seam and fades back in place. */
-#main { transition: opacity var(--dur-3) var(--ease-std); }
-html[data-swap] #main { opacity: 0; transition-duration: var(--dur-2); }
-
 /* BlurReveal prerenders its letters hidden; without JS nothing would ever reveal them. */
 html:not(.js) [data-blur-reveal], html:not(.js) [data-blur-reveal] * { opacity: 1 !important; filter: none !important; transform: none !important; }
 

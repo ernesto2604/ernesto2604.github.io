@@ -94,7 +94,7 @@ export default function Output() {
   const t = useT();
   const o = useMessages().output;
   return (
-    <section id="output" data-stage="output" data-seam aria-labelledby="output-title" className="scroll-mt-24 px-5 pb-12 pt-24 sm:px-8 md:pb-16 md:pt-36">
+    <section id="output" data-stage="output" aria-labelledby="output-title" className="scroll-mt-24 px-5 pb-12 pt-24 sm:px-8 md:pb-16 md:pt-36">
       <div className="relative mx-auto grid max-w-6xl gap-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
         {/* Both columns push their last block to the bottom of the row, so Experience/Languages end level with the contact links. */}
         <div className="lg:flex lg:flex-col">
