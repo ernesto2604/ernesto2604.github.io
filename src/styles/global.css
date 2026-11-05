@@ -202,7 +202,7 @@
      burger's right edge (the 1.75rem burger is centred in the 3rem button at right-4 / sm:right-6). */
   .masthead-clock {
     position: absolute;
-    top: 2rem;
+    top: 1.5rem;
     left: 1.625rem;
     transform: translateY(-50%);
     font-family: var(--font-mono);
@@ -213,7 +213,7 @@
     color: var(--text-muted);
   }
   @media (min-width: 640px) {
-    .masthead-clock { top: 2.25rem; left: 2.125rem; }
+    .masthead-clock { left: 2.125rem; }
   }
 
   /* Huge stage numeral behind each section title (decorative). */
