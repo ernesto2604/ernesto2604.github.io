@@ -19,6 +19,7 @@ const useMorphingText = (texts: string[], play: boolean, morphTime: number, cool
   const cooldownRef = useRef(cooldownTime);
   const timeRef = useRef(0);
 
+  const boxRef = useRef<HTMLSpanElement>(null);
   const text1Ref = useRef<HTMLSpanElement>(null);
   const text2Ref = useRef<HTMLSpanElement>(null);
 
@@ -26,6 +27,7 @@ const useMorphingText = (texts: string[], play: boolean, morphTime: number, cool
     (fraction: number) => {
       const [current1, current2] = [text1Ref.current, text2Ref.current];
       if (!current1 || !current2) return;
+      if (boxRef.current) boxRef.current.style.filter = 'url(#morph-threshold) blur(0.6px)';
 
       current2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
       current2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
@@ -61,6 +63,8 @@ const useMorphingText = (texts: string[], play: boolean, morphTime: number, cool
   const doCooldown = useCallback(() => {
     morphRef.current = 0;
     const [current1, current2] = [text1Ref.current, text2Ref.current];
+    // At rest the threshold filter only hardens the anti-aliased edges, so it is off until the next melt.
+    if (boxRef.current) boxRef.current.style.filter = 'none';
     if (current1 && current2) {
       current2.style.filter = 'none';
       current2.style.opacity = '100%';
@@ -77,7 +81,8 @@ const useMorphingText = (texts: string[], play: boolean, morphTime: number, cool
     const animate = (now: number) => {
       animationFrameId = requestAnimationFrame(animate);
 
-      const dt = (now - timeRef.current) / 1000;
+      // Capped: after a stalled frame (busy machine, tab back from the background) it must not skip the hold.
+      const dt = Math.min(0.1, (now - timeRef.current) / 1000);
       timeRef.current = now;
 
       cooldownRef.current -= dt;
@@ -92,7 +97,7 @@ const useMorphingText = (texts: string[], play: boolean, morphTime: number, cool
     };
   }, [play, doMorph, doCooldown]);
 
-  return { text1Ref, text2Ref };
+  return { boxRef, text1Ref, text2Ref };
 };
 
 const SvgFilters = () => (
@@ -114,9 +119,9 @@ const SvgFilters = () => (
 
 // Decorative: the caller gives the accessible text (e.g. an sr-only copy in the heading).
 export default function MorphingText({ texts, className = '', play = true, morphTime = 1.5, cooldownTime = 0.5 }: MorphingTextProps) {
-  const { text1Ref, text2Ref } = useMorphingText(texts, play, morphTime, cooldownTime);
+  const { boxRef, text1Ref, text2Ref } = useMorphingText(texts, play, morphTime, cooldownTime);
   return (
-    <span aria-hidden="true" className={`relative grid [filter:url(#morph-threshold)_blur(0.6px)] ${className}`}>
+    <span ref={boxRef} aria-hidden="true" className={`relative grid ${className}`}>
       {/* Invisible copies in one grid cell: the box is as tall as the longest text at any width. */}
       {texts.map((text) => (
         <span key={text} className="invisible [grid-area:1/1]">
