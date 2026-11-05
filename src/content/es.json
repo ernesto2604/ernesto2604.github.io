@@ -90,7 +90,8 @@
     "viewDiagram": "Ver diagrama",
     "back": "Volver",
     "openCase": "Abrir {name}",
-    "more": "Más proyectos en GitHub"
+    "more": "Ver todos",
+    "moreHint": "los proyectos en GitHub"
   },
   "stack": {
     "label": "Mi stack",

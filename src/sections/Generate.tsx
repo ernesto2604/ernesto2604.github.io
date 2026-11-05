@@ -135,9 +135,11 @@ export default function Generate() {
             onSelect={(i) => open(featured[i])}
           />
         </div>
-        <a href={profile.github} className="relative mt-12 inline-flex min-h-11 items-center gap-2 font-medium text-accent underline-offset-4 hover:underline">
+        {/* Mono like the page's other labels; the full name ("See all projects on GitHub") is for screen readers. */}
+        <a href={profile.github} className="relative mt-12 inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] text-accent underline-offset-4 hover:underline">
           {t('generate.more')}
-          <ArrowUpRight className="size-4" aria-hidden="true" strokeWidth={1.75} />
+          <span className="sr-only"> {t('generate.moreHint')}</span>
+          <ArrowUpRight className="size-3.5" aria-hidden="true" strokeWidth={1.75} />
         </a>
       </div>
 
