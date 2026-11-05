@@ -835,3 +835,9 @@ html:not(.js) [data-blur-reveal], html:not(.js) [data-blur-reveal] * { opacity: 
   .marquee-track > ul { flex-wrap: wrap; flex-shrink: 1; }
   .marquee-track > ul + ul { display: none; }
 }
+
+/* Send button (Output.tsx): the paper plane bobs, turns and flies right; the label slides out of the pill. */
+.send-button:is(:hover, :focus-visible):not(:disabled) .send-plane { animation: send-fly 0.6s ease-in-out infinite alternate; }
+.send-button:is(:hover, :focus-visible):not(:disabled) svg { transform: translateX(1.2em) rotate(45deg) scale(1.1); }
+.send-button:is(:hover, :focus-visible):not(:disabled) .send-label { transform: translateX(5em); }
+@keyframes send-fly { from { transform: translateY(0.1em); } to { transform: translateY(-0.1em); } }

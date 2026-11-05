@@ -1,8 +1,6 @@
 import { useState, type FormEvent } from 'react';
-import { Send } from 'lucide-react';
 import BlurReveal from '../components/ui/BlurReveal';
 import ProfileCard from '../components/ui/ProfileCard';
-import StarBorder from '../components/ui/StarBorder';
 import profile from '../content/profile.json';
 import { useMessages, useT } from '../i18n';
 
@@ -51,11 +49,15 @@ function MessageForm() {
       <label htmlFor="msg-contact" className="sr-only">{t('contact.replyTo')}</label>
       <input id="msg-contact" name="contact" type="text" maxLength={200} placeholder={t('contact.replyTo')} className={`${field} h-12`} />
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        {/* A star of the accent colour laps the dark pill. */}
-        <StarBorder as="button" type="submit" disabled={state === 'sending'} theme="dark" color="#FFB547" radius={24} sparkle className="h-12 px-6 py-0">
-          <Send className="size-4" aria-hidden="true" strokeWidth={1.75} />
-          {state === 'sending' ? t('contact.sending') : t('contact.send')}
-        </StarBorder>
+        {/* On hover or focus the plane takes off: it bobs, turns and flies right while the label slides out. */}
+        <button type="submit" disabled={state === 'sending'} className="send-button flex h-12 cursor-pointer items-center overflow-hidden rounded-2xl bg-accent-fill py-2 pl-[0.9em] pr-5 text-lg font-medium text-accent-ink transition-all duration-200 active:scale-95 disabled:cursor-wait disabled:opacity-70">
+          <span className="send-plane flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" className="origin-center transition-transform duration-300">
+              <path fill="currentColor" d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" />
+            </svg>
+          </span>
+          <span className="send-label ml-1 transition-transform duration-300">{state === 'sending' ? t('contact.sending') : t('contact.send')}</span>
+        </button>
         <p role="status" className={`text-sm ${state === 'error' ? 'text-accent' : 'text-ok'}`}>
           {state === 'sent' ? t('contact.sent') : state === 'error' ? t('contact.sendError', { email: profile.email }) : ''}
         </p>
