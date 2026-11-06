@@ -133,6 +133,8 @@ export default function Output() {
                   <li key={e.title}>
                     <p className="font-medium">{e.title}</p>
                     <p className="text-muted">{e.org}</p>
+                    <p className="text-muted">{e.grade}</p>
+                    <p className="mt-1 text-sm text-muted">{e.dates}</p>
                   </li>
                 ))}
               </ul>

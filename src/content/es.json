@@ -373,12 +373,16 @@
     "educationTitle": "Formación",
     "education": [
       {
-        "title": "BSc (Hons), First Class Honours",
-        "org": "York St John University, Reino Unido"
+        "title": "BSc (Hons) en Ingeniería del Software",
+        "org": "York St John University · Reino Unido",
+        "grade": "First Class Honours · 74,50 %",
+        "dates": "jul. 2026"
       },
       {
         "title": "Técnico Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)",
-        "org": "España"
+        "org": "España",
+        "grade": "Nota: 8,5/10",
+        "dates": "jun. 2025"
       }
     ],
     "languagesTitle": "Idiomas",

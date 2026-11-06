@@ -373,12 +373,16 @@
     "educationTitle": "Education",
     "education": [
       {
-        "title": "BSc (Hons), First Class Honours",
-        "org": "York St John University, United Kingdom"
+        "title": "BSc (Hons) Software Engineering",
+        "org": "York St John University · United Kingdom",
+        "grade": "First Class Honours · 74.50%",
+        "dates": "Jul 2026"
       },
       {
-        "title": "Higher Technician in Multiplatform App Development (DAM)",
-        "org": "Spain"
+        "title": "Higher Technician in Multiplatform Application Development (DAM)",
+        "org": "Spain",
+        "grade": "Grade: 8.5/10",
+        "dates": "Jun 2025"
       }
     ],
     "languagesTitle": "Languages",
