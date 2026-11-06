@@ -125,7 +125,7 @@ Ernesto seguía notando lag, sobre todo en Safari. Para medirlo usé Playwright 
 
 | ID | Sev. | Archivo | Causa raíz | Arreglo | Riesgo visual | Estado |
 |---|---|---|---|---|---|---|
-| S1 | Crítico (Safari) | `src/components/ui/MorphingText.tsx` | Durante el "derretido" (1,5 s de cada 4 s), WebKit rasterizaba por software toda la caja del título con el filtro SVG de umbral + `blur()` en cada frame | `will-change` en cada hijo de la caja: cada uno tiene su propia capa y el blur va por GPU | Ninguno: capturas con la animación en vivo en WebKit y en estático a f = 0,3 / 0,5 / 0,7 en WebKit y Chrome. Diferencia media de 0,00 a 0,61/255 y el umbral (bordes duros, "gotas") se mantiene | ✅ |
+| S1 | Crítico (Safari) | `src/components/ui/MorphingText.tsx` | Durante el "derretido" (1,5 s de cada 4 s), WebKit rasterizaba por software toda la caja del título con el filtro SVG de umbral + `blur()` en cada frame | ~~`will-change` en cada hijo~~ (rompía el morph líquido en Safari real, ver 7c). Ahora: blur máximo de 10 px en lugar de 100 px, sin `will-change` | El morph se ve igual. Queda una micro-caída de fps al inicio de cada cambio en Safari | ✅ (corregido en 7c) |
 | S2 | Bajo (solo WebKit headless) | `src/styles/global.css:832-848` | Al entrar en `skills`, `html[data-dark]` transiciona 10 custom properties registradas (`@property`, que se heredan) durante 0,5 s. Toda la página se recalcula y repinta en cada frame. Son 3 frames de 37–50 ms, siempre justo después del cambio (correlación con `MutationObserver` + `getAnimations`). Quitar la niebla, el blend o el blur no lo cambia | Opción: que la paleta cambie de golpe (`transition-duration: 0s`) mientras la niebla tapa el papel | **Medio**: el color del texto deja de hacer el fundido de 0,5 s | **Pendiente: decide Ernesto** |
 | S3 | Bajo | `src/lib/hologram.ts` | El init de three.js (shaders) da un frame de 35–56 ms en WebKit, a los ~6,4 s, al acabar el loader | — | — | Se acepta |
 
@@ -152,6 +152,23 @@ Medido en el Safari real del equipo de Ernesto con `safaridriver` y [`bench-safa
   - Inyectar cualquier hoja tarde (incluso una regla vacía) alteraba el resultado.
   - Corridas con 0 frames o con un "frame" de 56 s: Safari para rAF cuando la ventana automatizada queda tapada o en segundo plano.
 - **Riesgo:** el buen rendimiento en Safari depende de una decisión interna de capas de WebKit. Si se toca la estructura del hero o de la sección de proyectos, hay que volver a medir con `bench-safari.mjs`.
+
+### 7c. Corrección de S1: el `will-change` rompía el morph líquido en Safari
+
+Ernesto vio que en Safari real (no en Chrome) el morph "AI Engineer" ↔ "I'm Ernesto" ya no se veía líquido, sino como un fundido borroso. En Safari, cualquier hijo con capa propia dentro de la caja del filtro escapa al filtro SVG de umbral. Probado a ojo en Safari real con copias del build que llevan cada variante incrustada en el HTML. Las capturas de WebDriver no sirven aquí: Safari las renderiza por software y todas las variantes salen "líquidas".
+
+| Variante (Safari 27.2 real) | Morph líquido | Hero con morph, fps / p95 ms / frames > 33 ms | Proyectos / skills |
+|---|---|---|---|
+| `will-change` en todos los hijos (S1) | No | 60 / 18 / 0 | 60 |
+| Solo en las copias `.invisible` | No | 60 / 18 / 0 | 60 |
+| Capa en la caja o en el `h1` | Sí | se laggea (a ojo) | — |
+| Sin `will-change` (original) | Sí | **10 / 230 / 20** | 60 |
+| Sin `will-change` + blur máximo 20 px | Sí | 47 / 50 / 30 | 50–60 |
+| **Sin `will-change` + blur máximo 10 px (aplicado)** | **Sí** | **50 / 33 / 9** | 58–60 |
+
+- **Aplicado:** sin `will-change` en el título y con `Math.min(8 / fraction - 8, 10)` en lugar de `100` en [`MorphingText.tsx`](../../src/components/ui/MorphingText.tsx). El umbral convierte el blur en bordes duros, así que con 10 px la fusión se ve igual. Queda una micro-caída de fps al inicio de cada cambio.
+- **Proyectos y skills ya no necesitan el `will-change`.** Sin él dan 60 fps porque el morph se pausa fuera de pantalla (IntersectionObserver). Esto deja obsoleto el hallazgo de 7b sobre las capas del título.
+- **Si hace falta 60 fps estables durante el cambio:** la única vía que conserva el efecto es WebGL, con blur y umbral en un shader.
 
 ## 8. Tests
 

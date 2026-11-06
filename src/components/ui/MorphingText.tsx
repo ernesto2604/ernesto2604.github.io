@@ -29,11 +29,14 @@ const useMorphingText = (texts: string[], play: boolean, morphTime: number, cool
       if (!current1 || !current2) return;
       if (boxRef.current) boxRef.current.style.filter = 'url(#morph-threshold) blur(0.6px)';
 
-      current2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+      // Blur capped at 10px (the original goes to 100px): Safari runs the threshold filter in software over the
+      // blurred area every frame, and the wide blur took the hero to 10 fps there; at 10px it holds ~50 fps and the
+      // threshold still turns it into the same melt. Measured in docs/audit.
+      current2.style.filter = `blur(${Math.min(8 / fraction - 8, 10)}px)`;
       current2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
 
       const invertedFraction = 1 - fraction;
-      current1.style.filter = `blur(${Math.min(8 / invertedFraction - 8, 100)}px)`;
+      current1.style.filter = `blur(${Math.min(8 / invertedFraction - 8, 10)}px)`;
       current1.style.opacity = `${Math.pow(invertedFraction, 0.4) * 100}%`;
 
       current1.textContent = texts[textIndexRef.current % texts.length];
@@ -130,16 +133,15 @@ export default function MorphingText({ texts, className = '', play = true, morph
   return (
     <span ref={boxRef} aria-hidden="true" className={`relative grid ${className}`}>
       {/* Invisible copies in one grid cell: the box is as tall as the longest text at any width.
-          Every child gets its own layer (will-change): Safari otherwise repaints the whole threshold box in software
-          each frame, and without these layers Safari 27 also drops the projects and skills sections to 7-14 fps
-          (300 ms frames) while the masked photo animates. Measured in docs/audit; the melt looks the same. */}
+          No will-change on anything inside the box: in Safari a child on its own layer escapes the threshold filter,
+          and the melt turns into a plain blurred cross-fade. */}
       {texts.map((text) => (
-        <span key={text} className="invisible [grid-area:1/1] [will-change:opacity]">
+        <span key={text} className="invisible [grid-area:1/1]">
           {text}
         </span>
       ))}
-      <span className="absolute inset-x-0 top-0 block w-full opacity-0 [will-change:filter,opacity]" ref={text1Ref} />
-      <span className="absolute inset-x-0 top-0 block w-full [will-change:filter,opacity]" ref={text2Ref}>
+      <span className="absolute inset-x-0 top-0 block w-full opacity-0" ref={text1Ref} />
+      <span className="absolute inset-x-0 top-0 block w-full" ref={text2Ref}>
         {texts[0]}
       </span>
       <SvgFilters />
