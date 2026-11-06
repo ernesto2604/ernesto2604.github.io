@@ -18,6 +18,23 @@ describe('contrastRatio', () => {
   });
 });
 
+// .ink-auto (global.css) is mix-blend-mode: difference, which axe cannot see, so its colour-contrast check skips
+// it (tests/e2e/a11y.spec.ts). The colour you see is |ground - colour| per channel: check that against each ground.
+describe('negative text (.ink-auto) meets WCAG AA over paper and over the dark fog', () => {
+  const hex = (rgb: number[]) => '#' + rgb.map((c) => c.toString(16).padStart(2, '0')).join('');
+  const rgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const blendCss = readFileSync(new URL('../../src/styles/global.css', import.meta.url), 'utf8');
+  const colour = (sel: string) => blendCss.match(new RegExp(String.raw`\.${sel} \{[^}]*?color: rgb\((\d+) (\d+) (\d+)\)`))!.slice(1).map(Number);
+  const grounds = { paper: token('paper'), fog: '#14120f' }; // the fog's solid colour (DarkFog.tsx)
+  it.each([['ink-auto'], ['ink-muted']])('%s', (sel) => {
+    const c = colour(sel);
+    for (const ground of Object.values(grounds)) {
+      const seen = hex(rgb(ground).map((g, i) => Math.abs(g - c[i])));
+      expect(contrastRatio(seen, ground)).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});
+
 describe('design tokens meet WCAG AA', () => {
   const pairs: [string, string, number][] = [
     ['text', 'bg-0', 4.5],

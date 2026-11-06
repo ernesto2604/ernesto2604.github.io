@@ -31,8 +31,12 @@ async function seriousViolations(page: Page) {
         frame();
       }),
   );
-  const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
-  return violations
+  const tags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
+  const { violations } = await new AxeBuilder({ page }).withTags(tags).disableRules(['color-contrast']).analyze();
+  // axe ignores mix-blend-mode, so it reads negative text (.ink-auto, difference blend) as pale on paper. Its real
+  // contrast is checked in tests/unit/contrast.test.ts; everything else gets the usual colour-contrast check.
+  const contrast = await new AxeBuilder({ page }).withRules(['color-contrast']).exclude('.ink-auto').analyze();
+  return [...violations, ...contrast.violations]
     .filter((v) => v.impact === 'critical' || v.impact === 'serious')
     .map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).slice(0, 3).join(' | ')}`);
 }

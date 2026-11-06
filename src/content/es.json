@@ -90,7 +90,7 @@
     "viewList": "Ver como lista",
     "viewDiagram": "Ver diagrama",
     "back": "Volver",
-    "openCase": "Abrir {name}",
+    "openCase": "Abrir",
     "more": "Ver todos",
     "moreHint": "los proyectos en GitHub"
   },

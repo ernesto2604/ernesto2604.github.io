@@ -96,7 +96,6 @@ export default function Generate() {
         name: t(`projects.${p.slug}.name`),
         sublabel: p.stack.slice(0, 3).join(' · '),
         image: photo(p.slug),
-        ariaLabel: t('generate.openCase', { name: t(`projects.${p.slug}.name`) }),
       })),
     [t],
   );
@@ -160,6 +159,7 @@ export default function Generate() {
         <div className="relative mt-20 md:mt-28">
           <StackInteractor
             paused={stage !== 'closed'}
+            openLabel={t('generate.openCase')}
             items={items}
             onSelect={(i) => open(featured[i])}
           />

@@ -14,8 +14,8 @@ test('Spanish document is served at /es/', async ({ page }) => {
 
 test('stored Spanish preference redirects / once and keeps the hash', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('locale', 'es'));
-  await page.goto('/#retrieval');
-  await expect(page).toHaveURL(/\/es\/#retrieval$/);
+  await page.goto('/#skills');
+  await expect(page).toHaveURL(/\/es\/#skills$/);
   await expect(page.locator('html')).toHaveAttribute('lang', 'es');
 });
 

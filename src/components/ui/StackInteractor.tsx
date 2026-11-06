@@ -1,14 +1,15 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 
-export type StackItem = { id: string; num: string; name: string; sublabel?: string; image: string; ariaLabel: string };
+export type StackItem = { id: string; num: string; name: string; sublabel?: string; image: string };
 
 // Each item gets one of these masks, in order; the photo grows in through it, breathes, then shrinks out, on a loop.
 const CLIPS = ['stack-clip-columns', 'stack-clip-tiles', 'stack-clip-grid'];
 
 // A numbered list beside a masked photo: hovering or focusing a name shows its photo, clicking it calls onSelect.
 // Reduced motion: the photo rests fully shown. The loop only runs while the photo is on screen and `paused` is off.
-export default function StackInteractor({ items, onSelect, paused = false }: { items: StackItem[]; onSelect: (index: number) => void; paused?: boolean }) {
+// `openLabel` is the verb screen readers hear before the name ("Open"), so each button is named "Open <name>".
+export default function StackInteractor({ items, onSelect, openLabel, paused = false }: { items: StackItem[]; onSelect: (index: number) => void; openLabel: string; paused?: boolean }) {
   const [active, setActive] = useState(0);
   const [inView, setInView] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -77,7 +78,6 @@ export default function StackInteractor({ items, onSelect, paused = false }: { i
             <li key={item.id} id={item.id} className="scroll-mt-48">
               <button
                 type="button"
-                aria-label={item.ariaLabel}
                 onMouseEnter={() => setActive(i)}
                 onFocus={() => setActive(i)}
                 onClick={() => onSelect(i)}
@@ -85,8 +85,10 @@ export default function StackInteractor({ items, onSelect, paused = false }: { i
               >
                 {/* The negative number stays put; the amber copy over it only fades, since an amber in mid-transition
                     under the difference blend flashes blue. Each scales itself: a transform on a shared parent would
-                    isolate the blend. */}
-                <span className="relative mt-1 font-mono text-xl">
+                    isolate the blend. Named by its content: the sr-only verb plus the visible name; the number and
+                    the stack line are decorative (aria-hidden), so the name contains the label you see (WCAG 2.5.3). */}
+                <span className="sr-only">{openLabel} </span>
+                <span aria-hidden="true" className="relative mt-1 font-mono text-xl">
                   <span className={`ink-auto ink-muted inline-block transition-transform duration-500 ${on ? 'scale-110' : ''}`}>{item.num}</span>
                   <span aria-hidden="true" className={`absolute inset-0 text-accent transition-[opacity,scale] duration-500 ${on ? 'scale-110 opacity-100' : 'opacity-0'}`}>{item.num}</span>
                 </span>
@@ -96,7 +98,7 @@ export default function StackInteractor({ items, onSelect, paused = false }: { i
                   <span data-on={on || undefined} className="ink-name block max-w-[12ch] text-3xl leading-[0.9] font-[var(--font-weight-display)] tracking-[var(--tracking-display)] uppercase">
                     {item.name}
                   </span>
-                  {item.sublabel && <span className="ink-muted mt-3 block font-mono text-xs tracking-wider uppercase">{item.sublabel}</span>}
+                  {item.sublabel && <span aria-hidden="true" className="ink-muted mt-3 block font-mono text-xs tracking-wider uppercase">{item.sublabel}</span>}
                 </span>
               </button>
             </li>

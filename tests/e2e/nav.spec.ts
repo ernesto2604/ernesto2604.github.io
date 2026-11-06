@@ -1,22 +1,22 @@
 import { expect, test } from './fixtures';
 
-test('deep link to a stage lands on that section after hydration', async ({ page }) => {
-  await page.goto('/es/#retrieval');
+test('deep link to a section lands on it after hydration', async ({ page }) => {
+  await page.goto('/es/#skills');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
-  await expect(page.locator('#retrieval')).toBeInViewport();
+  await expect(page.locator('#skills')).toBeInViewport();
 });
 
 test('language toggle keeps the hash and stores the choice', async ({ page }) => {
-  await page.goto('/#retrieval');
+  await page.goto('/#skills');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   await page.getByRole('button', { name: 'Open menu' }).click();
   await page.getByRole('link', { name: /Leer en español/ }).click();
-  await expect(page).toHaveURL(/\/es\/#retrieval$/);
+  await expect(page).toHaveURL(/\/es\/#skills$/);
   expect(await page.evaluate(() => localStorage.getItem('locale'))).toBe('es');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   await page.getByRole('button', { name: 'Abrir menú' }).click();
   await page.getByRole('link', { name: /Read in English/ }).click();
-  await expect(page).toHaveURL(/localhost:\d+\/#retrieval$/);
+  await expect(page).toHaveURL(/localhost:\d+\/#skills$/);
 });
 
 test('first Tab press reaches the menu button (no skip link)', async ({ page, browserName }) => {
@@ -36,12 +36,9 @@ test('without JavaScript the hero and projects are readable and JS-only buttons 
   await expect(title).toBeVisible();
   // Without JS the loop rests on its first text.
   await expect(title.getByText("I'm Ernesto", { exact: true }).last()).toBeVisible();
-  // The query now opens Retrieval; its scores below still answer it.
-  await expect(page.getByText('Who is Ernesto and what has he built?').first()).toBeVisible();
   // The menu cannot open without JS, so its links render as a plain block.
   await expect(page.locator('#site-menu').getByRole('link', { name: 'Work' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Ring TelemetryOps' })).toBeVisible();
-  await expect(page.locator('.story-row').first()).toContainText('1.000');
+  await expect(page.getByRole('button', { name: 'Open Ring TelemetryOps' })).toBeVisible();
   await expect(page.getByRole('button', { name: /Ask my hologram/ })).toHaveCount(0);
   await context.close();
 });
@@ -74,16 +71,6 @@ test('with reduced motion the hero title stays on my name', async ({ browser }) 
   await context.close();
 });
 
-test('keyboard reaches the re-score chips in the pinned story and focus reveals their phase', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile', 'pinned mode is desktop only');
-  await page.goto('/');
-  await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
-  const chip = page.getByRole('button', { name: 'All terms' });
-  await chip.focus();
-  await expect(chip).toBeFocused();
-  await expect(page.locator('.story-cap-retrieval')).toHaveClass(/is-active/, { timeout: 3000 });
-});
-
 test('a project folder opens its case behind a curtain, and Back returns to the page', async ({ page }) => {
   await page.goto('/#generate');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
@@ -94,25 +81,6 @@ test('a project folder opens its case behind a curtain, and Back returns to the 
   await back.click();
   await expect(page.locator('.case-dialog')).toBeHidden({ timeout: 4000 });
   await expect(page.getByRole('button', { name: 'Open Hybrid RAG API' })).toBeFocused();
-});
-
-test('deep link into the story sets the matching phase', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile', 'pinned mode is desktop only');
-  await page.goto('/es/#retrieval');
-  await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
-  await expect(page.locator('.story')).toHaveAttribute('data-phase', 'retrieval');
-});
-
-test('"Read the case studies" lands on section 03 with its content on screen', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile', 'pinned desktop layout');
-  await page.goto('/#retrieval');
-  await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
-  await page.waitForSelector('html.lenis', { state: 'attached' }); // smooth scrolling is loaded after hydration
-  await page.getByRole('link', { name: 'Read the case studies' }).click();
-  // Generous: under a parallel run the software-rendered hologram starves the smooth-scroll frames.
-  await expect.poll(() => page.evaluate(() => Math.round(document.getElementById('generate')!.getBoundingClientRect().top)), { timeout: 20000 }).toBe(0);
-  await expect(page.getByRole('heading', { level: 2, name: 'Three systems, from the inside' })).toBeInViewport({ timeout: 5000 });
-  await expect(page.getByRole('button', { name: 'Open Ring TelemetryOps' })).toBeInViewport();
 });
 
 test('no page is wider than the screen (the typed line under the hologram once pushed it sideways)', async ({ page }) => {
@@ -127,7 +95,8 @@ test('no page is wider than the screen (the typed line under the hologram once p
 test('the hero closes with a scroll cue and the ask line is centred on the figure', async ({ page }) => {
   await page.goto('/');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
-  await expect(page.locator('.hero-scroll [aria-hidden]')).toHaveText('Scroll to explore');
+  // The live copy (the first holds the width); typed in once the loader has gone.
+  await expect(page.locator('.hero-scroll [aria-hidden] > :last-child')).toHaveText('[Scroll to explore]', { timeout: 10000 });
   const mid = (sel: string) => page.locator(sel).evaluate((el) => { const r = el.getBoundingClientRect(); return r.left + r.width / 2; });
   expect(Math.abs((await mid('.hero-ask-label')) - (await mid('.holo-canvas')))).toBeLessThan(2);
 });

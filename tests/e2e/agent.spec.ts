@@ -47,30 +47,21 @@ test.describe('agent', () => {
     await expect(page.getByRole('dialog').getByRole('textbox')).toBeFocused();
   });
 
-  test('under the hologram, example questions type in a loop', async ({ page }) => {
+  test('under the hologram, the invitation types itself in once', async ({ page }) => {
     await page.goto('/');
     await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
-    // The live copy; its first text node is the typed question.
+    // The live copy; its first text node is the typed invitation.
     const typed = page.locator('.hero-ask-typed > :last-child');
-    const question = () => typed.evaluate((el) => el.firstChild?.textContent);
-    // Under load the loop may be anywhere by now: catch whichever question is fully typed, then wait for the next.
-    const items = ['What has he built?', 'How does the Ring agent work?', "What's his stack?", 'Is he available?'];
-    let first = '';
-    await expect.poll(async () => items.includes((first = (await question()) ?? '')), { timeout: 15000 }).toBe(true);
-    await expect.poll(question, { timeout: 15000 }).toBe(items[(items.indexOf(first) + 1) % items.length]);
+    await expect.poll(() => typed.evaluate((el) => el.firstChild?.textContent), { timeout: 15000 }).toBe('Ask my hologram');
   });
 
   test('after the question: the shortcut with a mouse, [Click] on touch', async ({ page }, info) => {
     await page.goto('/');
     await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
     const label = page.locator('.hero-ask-typed > :last-child');
-    if (info.project.name === 'mobile') {
-      await expect(label.getByText('[Click]')).toBeVisible();
-      await expect(label.locator('kbd')).toBeHidden();
-    } else {
-      await expect(label.locator('kbd')).toHaveText('[Ctrl + K]');
-      await expect(label.getByText('[Click]')).toBeHidden();
-    }
+    // Typed after the invitation, in its own .type-tail.
+    // ⌘K on a Mac, Ctrl + K elsewhere (useShortcutLabel).
+    await expect(label.locator('.type-tail')).toHaveText(info.project.name === 'mobile' ? '[Click]' : /^\[(⌘K|Ctrl \+ K)\]$/, { timeout: 15000 });
     await expect(label).not.toContainText('[Ask]');
   });
 
@@ -265,7 +256,8 @@ test.describe('agent', () => {
     await page.keyboard.type('what is the weather in paris');
     await page.keyboard.press('Enter');
     const dialog = page.getByRole('dialog');
-    await expect(dialog.getByText(/I can't answer that/)).toBeVisible({ timeout: 15000 });
+    // .first(): the answer, not its copy in the screen-reader live region.
+    await expect(dialog.getByText(/I can't answer that/).first()).toBeVisible({ timeout: 15000 });
     await expect(dialog.getByRole('button', { name: 'What has he built?' }).last()).toBeVisible();
   });
 
