@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { ArrowUpRight } from 'lucide-react';
 import BlurReveal from '../components/ui/BlurReveal';
 import ProfileCard from '../components/ui/ProfileCard';
 import profile from '../content/profile.json';
@@ -135,6 +136,23 @@ export default function Output() {
                     <p className="text-muted">{e.org}</p>
                     <p className="text-muted">{e.grade}</p>
                     <p className="mt-1 text-sm text-muted">{e.dates}</p>
+                  </li>
+                ))}
+              </ul>
+              <h3 className="mt-10 text-xl font-medium tracking-tight">{o.certificatesTitle}</h3>
+              <ul className="mt-6 space-y-5">
+                {o.certificates.map((c) => (
+                  <li key={c.title}>
+                    <p className="font-medium">{c.title}</p>
+                    <p className="text-muted">{c.org}</p>
+                    {/* Same mono link as "See all" under the projects. */}
+                    {c.url && (
+                      <a href={c.url} className="ink-auto mt-1 inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
+                        {o.credentialLink}
+                        <span className="sr-only">: {c.title}</span>
+                        <ArrowUpRight className="size-3.5" aria-hidden="true" strokeWidth={1.75} />
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>

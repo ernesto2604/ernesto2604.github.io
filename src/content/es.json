@@ -385,6 +385,15 @@
         "dates": "jun. 2025"
       }
     ],
+    "certificatesTitle": "Certificados",
+    "certificates": [
+      {
+        "title": "AI Agents Course",
+        "org": "Hugging Face · 2026",
+        "url": "https://huggingface.co/datasets/agents-course/final-certificates/resolve/main/certificates/ernesto2406/2026-10-25.png"
+      }
+    ],
+    "credentialLink": "Ver credencial",
     "languagesTitle": "Idiomas",
     "languages": [
       "Español — Nativo",
