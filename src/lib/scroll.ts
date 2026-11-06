@@ -36,7 +36,9 @@ export function focusTarget(id: string) {
 export function scrollToElement(el: HTMLElement, immediate = false) {
   // Pinned story points are whole screens: land on them exactly.
   const offset = isPinned() && el.hasAttribute('data-anchor') ? 0 : 88;
-  scrollToY(el.getBoundingClientRect().top + window.scrollY - offset, immediate);
+  // A section lands on its content, past its top padding, so its heading sits just under the top bar.
+  const pad = el.tagName === 'SECTION' ? parseFloat(getComputedStyle(el).paddingTop) : 0;
+  scrollToY(el.getBoundingClientRect().top + window.scrollY + pad - offset, immediate);
 }
 
 export function scrollToY(y: number, immediate = false) {
