@@ -462,21 +462,29 @@ html:not(.js) .no-js-hide { display: none !important; }
 }
 /* The case shows while it is being revealed, while open, and while the curtain covers it on the way back. */
 .case-dialog:is([data-stage="shown"], [data-stage="open"], [data-stage="out"]) .case-page { visibility: visible; }
+/* Mono, like the clock it replaces at the top left (its text centred on the clock's line); a paper pill so the case
+   can scroll under it. */
 .case-back {
   position: fixed;
-  top: 1.25rem;
+  top: 0.125rem;
   left: 1.25rem;
   z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   min-height: 2.75rem;
-  padding: 0 1rem;
+  padding: 0 0.875rem;
   border-radius: 999px;
-  background: var(--surface);
+  background: var(--bg-0);
   border: 1px solid var(--line);
-  font-weight: 500;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
+.case-page { scrollbar-width: none; }
+.case-page::-webkit-scrollbar { display: none; }
+.case-guides { position: fixed; inset: 0; pointer-events: none; container-type: inline-size; }
 .case-back:hover { background: var(--surface-2); }
 .case-curtain {
   position: fixed;

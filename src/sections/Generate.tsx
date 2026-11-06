@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowUpRight, Play } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Asterisk, Play } from 'lucide-react';
+import { Guides } from '../components/Background';
 import Diagram from '../components/Diagram';
 import BlurReveal from '../components/ui/BlurReveal';
 import StackInteractor from '../components/ui/StackInteractor';
@@ -14,44 +15,59 @@ type CaseCopy = { tagline: string; decisions: string[] };
 type Stage = 'closed' | 'in' | 'shown' | 'open' | 'out' | 'gone';
 const STEP_MS = 520;
 
-function CaseDetail({ project }: { project: Project }) {
+// The case in the page's voice: section-style title over its ghost number, mono labels and links, and the key
+// decisions as numbered rows on hairlines like the Skills groups.
+const LABEL = 'flex items-center gap-2.5 text-sm font-medium uppercase tracking-[0.08em] text-muted';
+const MONO_LINK = 'inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline';
+
+function CaseDetail({ project, num }: { project: Project; num: string }) {
   const t = useT();
   const copy = (useMessages().cases as Record<string, CaseCopy>)[project.slug];
   return (
-    <div className="mx-auto max-w-5xl px-5 pb-24 pt-28 sm:px-8">
-      <h2 id="case-title" className="font-display text-4xl leading-[1.02]">{t(`projects.${project.slug}.name`)}</h2>
-      <p className="mt-5 max-w-[60ch] text-lg leading-relaxed">{copy.tagline}</p>
-      <div className="mt-6 flex flex-wrap gap-x-6">
-        <a href={project.data.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1.5 font-medium text-accent underline-offset-4 hover:underline">
+    <div className="relative mx-auto max-w-6xl px-5 pb-24 pt-32 sm:px-8 md:pt-40">
+      <header className="relative">
+        <span aria-hidden="true" className="ghost-numeral" data-n={num} />
+        <h2 id="case-title" className="relative max-w-4xl text-3xl leading-[1.05] font-[var(--font-weight-display)] tracking-[var(--tracking-display)]">
+          <BlurReveal as="span" inView>{t(`projects.${project.slug}.name`)}</BlurReveal>
+        </h2>
+        <BlurReveal as="p" inView delay={0.3} className="hero-tagline relative mt-5 max-w-[60ch] sm:mt-6">
+          {copy.tagline}
+        </BlurReveal>
+      </header>
+      <div className="mt-8 flex flex-wrap gap-x-8">
+        <a href={project.data.url} target="_blank" rel="noopener noreferrer" className={`${MONO_LINK} text-text`}>
           {t('generate.repo')}
           <span className="sr-only"> {t('a11y.newTab')}</span>
-          <ArrowUpRight className="size-4" aria-hidden="true" strokeWidth={1.75} />
+          <ArrowUpRight className="size-3.5" aria-hidden="true" strokeWidth={1.75} />
         </a>
         {project.links.video && (
-          <a href={project.links.video} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1.5 font-medium text-muted hover:text-text">
-            <Play className="size-4" aria-hidden="true" strokeWidth={1.75} />
+          <a href={project.links.video} target="_blank" rel="noopener noreferrer" className={`${MONO_LINK} text-muted hover:text-text`}>
+            <Play className="size-3.5" aria-hidden="true" strokeWidth={1.75} />
             {t('generate.demo')}
             <span className="sr-only"> {t('a11y.newTab')}</span>
           </a>
         )}
       </div>
-      <p className="mt-2 text-sm text-muted">
+      <p className="mt-2 font-mono text-xs uppercase tracking-wider text-muted">
         <span className="sr-only">{t('generate.stack')}: </span>
         {project.stack.join(' · ')}
       </p>
-      <p className="mt-10 max-w-[68ch] leading-relaxed text-muted">{t(`projects.${project.slug}.summary`)}</p>
-      <div className="mt-12 rounded-panel bg-surface p-6 sm:p-8">
+      <p className="mt-12 max-w-[62ch] text-lg leading-relaxed">{t(`projects.${project.slug}.summary`)}</p>
+      <div className="mt-16 rounded-panel bg-surface p-6 sm:p-8">
         <Diagram slug={project.slug} />
       </div>
-      <h3 className="mt-12 text-sm text-muted">{t('generate.decisions')}</h3>
-      <ul className="mt-4 grid gap-4 sm:grid-cols-3">
-        {copy.decisions.map((d) => (
-          <li key={d} className="flex gap-3 rounded-card bg-surface px-5 py-4 font-medium leading-snug">
-            <span className="mt-[0.5em] size-1.5 shrink-0 rounded-full bg-accent-fill" aria-hidden="true" />
+      <h3 className={`mt-20 ${LABEL}`}>
+        <Asterisk className="size-5 text-accent" aria-hidden="true" strokeWidth={2} />
+        {t('generate.decisions')}
+      </h3>
+      <ol className="mt-8 grid gap-x-12 sm:grid-cols-3">
+        {copy.decisions.map((d, i) => (
+          <li key={d} className="flex gap-4 border-t border-line py-6 font-medium leading-snug">
+            <span className="font-mono text-xs text-muted" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
             {d}
           </li>
         ))}
-      </ul>
+      </ol>
     </div>
   );
 }
@@ -154,7 +170,11 @@ export default function Generate() {
             <ArrowLeft className="size-4" aria-hidden="true" strokeWidth={1.75} />
             {t('generate.back')}
           </button>
-          {current && <CaseDetail project={current} />}
+          {/* The page's column guides, fixed behind the case as they are behind the page. */}
+          <div aria-hidden="true" className="case-guides">
+            <Guides />
+          </div>
+          {current && <CaseDetail project={current} num={String(featured.findIndex((p) => p.slug === current.slug) + 1).padStart(2, '0')} />}
         </div>
       </dialog>
     </section>

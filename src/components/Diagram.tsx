@@ -34,8 +34,8 @@ export default function Diagram({ slug }: { slug: string }) {
   return (
     <figure className="m-0">
       <div className="mb-3 flex items-center justify-between gap-4">
-        <span className="text-sm text-muted">{t('generate.diagram')}</span>
-        <button type="button" aria-pressed={asList} onClick={() => setAsList((v) => !v)} className="no-js-hide inline-flex min-h-9 items-center gap-2 rounded-full border border-line px-3.5 text-sm font-medium transition-colors duration-200 hover:border-line-strong hover:bg-surface-2">
+        <span className="font-mono text-xs uppercase tracking-[0.06em] text-muted">{t('generate.diagram')}</span>
+        <button type="button" aria-pressed={asList} onClick={() => setAsList((v) => !v)} className="no-js-hide inline-flex min-h-9 items-center gap-2 rounded-full border border-line px-3.5 font-mono text-xs uppercase tracking-[0.06em] transition-colors duration-200 hover:border-line-strong hover:bg-surface-2">
           {asList ? <Workflow className="size-4" aria-hidden="true" strokeWidth={1.75} /> : <List className="size-4" aria-hidden="true" strokeWidth={1.75} />}
           {asList ? t('generate.viewDiagram') : t('generate.viewList')}
         </button>
