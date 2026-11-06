@@ -55,7 +55,7 @@ function MessageForm() {
 
   const field = 'w-full rounded-card border border-line bg-surface px-4 text-base transition-colors duration-200 placeholder:text-muted hover:border-line-strong focus:border-line-strong';
   return (
-    <form action={FORM_URL} method="POST" onSubmit={submit} className="mt-8 grid gap-3">
+    <form action={FORM_URL} method="POST" onSubmit={submit} className="mt-6 grid gap-3">
       <input type="hidden" name="_subject" value={SUBJECT} />
       <input type="hidden" name="_template" value="table" />
       <input type="text" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
@@ -86,24 +86,28 @@ function Contact() {
   const t = useT();
   return (
     <div id="contact" className="scroll-mt-28">
-      <h3 className="font-display text-3xl leading-none">{t('contact.title')}</h3>
-      <p className="mt-4 max-w-[46ch] text-muted">{t('contact.lead')}</p>
+      <h3 className={H3}>{t('contact.title')}</h3>
+      <p className="mt-6 max-w-[46ch] text-muted">{t('contact.lead')}</p>
       <MessageForm />
     </div>
   );
 }
 
+// Column headings in the lower row share one style, so Experience, Education and Let's talk read as one line.
+const H3 = 'text-xl font-medium tracking-tight';
+
+// Two rows on wide screens: title and intro beside the card, then Experience | Education | Contact with their
+// headings on one line. The lower grid uses the same 4rem gutter as the outer one, so all three columns are even.
 export default function Output() {
   const t = useT();
   const o = useMessages().output;
   return (
     <section id="output" data-stage="output" aria-labelledby="output-title" className="scroll-mt-24 px-5 pb-12 pt-24 sm:px-8 md:pb-16 md:pt-36">
-      <div className="relative mx-auto grid max-w-6xl gap-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16">
-        {/* Both columns push their last block to the bottom of the row, so Experience/Languages end level with the contact links. */}
-        <div className="lg:flex lg:flex-col">
+      <div className="relative mx-auto grid max-w-6xl gap-x-16 gap-y-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+        <div>
           <header className="relative">
             <span aria-hidden="true" className="ghost-numeral" data-n="03" />
-            <h2 id="output-title" className="relative font-display text-3xl leading-[1.05]">
+            <h2 id="output-title" className="relative max-w-3xl text-3xl leading-[1.05] font-[var(--font-weight-display)] tracking-[var(--tracking-display)]">
               <BlurReveal as="span" inView>{o.title}</BlurReveal>
             </h2>
           </header>
@@ -112,78 +116,75 @@ export default function Output() {
               <p key={i} className={i ? 'text-muted' : ''}>{p}</p>
             ))}
           </div>
+        </div>
 
-          <div className="mt-16 grid gap-12 sm:grid-cols-2 lg:mt-auto lg:pt-16">
-            <div>
-              <h3 className="text-xl font-medium tracking-tight">{o.experienceTitle}</h3>
-              {o.experience.map((e) => (
-                <div key={e.role} className="mt-6">
-                  <p className="font-medium">{e.role}</p>
-                  <p className="text-muted">{e.org}</p>
-                  <p className="mt-1 text-sm text-muted">{e.dates}</p>
-                  <ul className="mt-3 list-disc space-y-1.5 pl-5 text-muted marker:text-accent">
-                    {e.points.map((p) => <li key={p}>{p}</li>)}
-                  </ul>
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-col">
-              <h3 className="text-xl font-medium tracking-tight">{o.educationTitle}</h3>
-              <ul className="mt-6 space-y-5">
-                {o.education.map((e) => (
-                  <li key={e.title}>
-                    <p className="font-medium">{e.title}</p>
-                    <p className="text-muted">{e.org}</p>
-                    <p className="text-muted">{e.grade}</p>
-                    <p className="mt-1 text-sm text-muted">{e.dates}</p>
-                  </li>
-                ))}
-              </ul>
-              <h3 className="mt-10 text-xl font-medium tracking-tight">{o.certificatesTitle}</h3>
-              <ul className="mt-6 space-y-5">
-                {o.certificates.map((c) => (
-                  <li key={c.title}>
-                    <p className="font-medium">{c.title}</p>
-                    <p className="text-muted">{c.org}</p>
-                    {/* Same mono link as "See all" under the projects. */}
-                    {c.url && (
-                      <a href={c.url} target="_blank" rel="noopener noreferrer" className="ink-auto mt-1 inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
-                        {o.credentialLink}
-                        <span className="sr-only">: {c.title} {t('a11y.newTab')}</span>
-                        <ArrowUpRight className="size-3.5" aria-hidden="true" strokeWidth={1.75} />
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ul>
-              {/* Pushed to the column's end so it finishes level with Experience and the contact links. */}
-              <div className="mt-10 sm:mt-auto sm:pt-10">
-                <h3 className="text-xl font-medium tracking-tight">{o.languagesTitle}</h3>
-                <ul className="mt-4 space-y-1.5 text-muted">
-                  {o.languages.map((l) => <li key={l}>{l}</li>)}
+        {/* Left edge on the column line, like every other block. */}
+        <ProfileCard
+          className="mx-auto lg:mx-0"
+          theme="light"
+          backdropColor="#F6E2C0"
+          avatarUrl={`${profile.photo}-640.webp`}
+          name={profile.name}
+          title={t('hero.role')}
+          handle=""
+          status={t('contact.status')}
+          statusColor="#1E7547"
+          contactText={t('contact.cardButton')}
+          contactHref={`mailto:${profile.email}`}
+        />
+
+        <div className="grid gap-x-16 gap-y-12 sm:grid-cols-2">
+          <div>
+            <h3 className={H3}>{o.experienceTitle}</h3>
+            {o.experience.map((e) => (
+              <div key={e.role} className="mt-6">
+                <p className="font-medium">{e.role}</p>
+                <p className="text-muted">{e.org}</p>
+                <p className="mt-1 text-sm text-muted">{e.dates}</p>
+                <ul className="mt-3 list-disc space-y-1.5 pl-5 text-muted marker:text-accent">
+                  {e.points.map((p) => <li key={p}>{p}</li>)}
                 </ul>
               </div>
-            </div>
+            ))}
+          </div>
+          <div>
+            <h3 className={H3}>{o.educationTitle}</h3>
+            <ul className="mt-6 space-y-5">
+              {o.education.map((e) => (
+                <li key={e.title}>
+                  <p className="font-medium">{e.title}</p>
+                  <p className="text-muted">{e.org}</p>
+                  <p className="text-muted">{e.grade}</p>
+                  <p className="mt-1 text-sm text-muted">{e.dates}</p>
+                </li>
+              ))}
+            </ul>
+            <h3 className={`mt-10 ${H3}`}>{o.certificatesTitle}</h3>
+            <ul className="mt-6 space-y-5">
+              {o.certificates.map((c) => (
+                <li key={c.title}>
+                  <p className="font-medium">{c.title}</p>
+                  <p className="text-muted">{c.org}</p>
+                  {/* Same mono link as "See all" under the projects. */}
+                  {c.url && (
+                    <a href={c.url} target="_blank" rel="noopener noreferrer" className="ink-auto mt-1 inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
+                      {o.credentialLink}
+                      <span className="sr-only">: {c.title} {t('a11y.newTab')}</span>
+                      <ArrowUpRight className="size-3.5" aria-hidden="true" strokeWidth={1.75} />
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+            <h3 className={`mt-10 ${H3}`}>{o.languagesTitle}</h3>
+            <ul className="mt-6 space-y-1.5 text-muted">
+              {o.languages.map((l) => <li key={l}>{l}</li>)}
+            </ul>
           </div>
         </div>
 
-        <aside aria-label={t('contact.title')} className="flex flex-col gap-12">
-          <ProfileCard
-            className="mx-auto"
-            theme="light"
-            backdropColor="#F6E2C0"
-            avatarUrl={`${profile.photo}-640.webp`}
-            name={profile.name}
-            title={t('hero.role')}
-            handle=""
-            status={t('contact.status')}
-            statusColor="#1E7547"
-            contactText={t('contact.cardButton')}
-            contactHref={`mailto:${profile.email}`}
-          />
-          <div className="lg:mt-auto">
-            <Contact />
-          </div>
+        <aside aria-label={t('contact.title')}>
+          <Contact />
         </aside>
       </div>
     </section>
