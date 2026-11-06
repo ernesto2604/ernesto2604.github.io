@@ -11,10 +11,10 @@ test('the message form posts the text with the fixed subject and confirms', asyn
   await page.goto('/es/#contact');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   await page.getByRole('textbox', { name: 'Tu mensaje' }).fill('Hola, ¿hablamos de una vacante?');
-  await page.getByRole('textbox', { name: /Tus datos de contacto/ }).fill('reclutadora@example.com');
+  await page.getByRole('textbox', { name: /Tu email/ }).fill('reclutadora@example.com');
   await page.getByRole('button', { name: 'Enviar', exact: true }).click();
   await expect(page.getByRole('status').filter({ hasText: 'Enviado' })).toBeVisible();
-  expect(sent).toMatchObject({ message: 'Hola, ¿hablamos de una vacante?', contact: 'reclutadora@example.com', _subject: 'Mensaje del Portfolio' });
+  expect(sent).toMatchObject({ message: 'Hola, ¿hablamos de una vacante?', email: 'reclutadora@example.com', _subject: 'Mensaje del Portfolio' });
   await expect(page.getByRole('textbox', { name: 'Tu mensaje' })).toHaveValue('');
 });
 
@@ -24,7 +24,7 @@ test('a send that fails on both services says so and points to the email', async
   await page.goto('/#contact');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   await page.getByRole('textbox', { name: 'Your message' }).fill('Hello');
-  await page.getByRole('textbox', { name: /Your contact details/ }).fill('recruiter@example.com');
+  await page.getByRole('textbox', { name: /Your email/ }).fill('recruiter@example.com');
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   await expect(page.getByRole('status').filter({ hasText: 'ercoal04@gmail.com' })).toBeVisible();
 });
@@ -40,8 +40,8 @@ test('when FormSubmit fails the message goes through Web3Forms', async ({ page }
   await page.goto('/#contact');
   await page.waitForSelector('html[data-hydrated]', { state: 'attached' });
   await page.getByRole('textbox', { name: 'Your message' }).fill('Hello');
-  await page.getByRole('textbox', { name: /Your contact details/ }).fill('recruiter@example.com');
+  await page.getByRole('textbox', { name: /Your email/ }).fill('recruiter@example.com');
   await page.getByRole('button', { name: 'Send', exact: true }).click();
   await expect(page.getByRole('status').filter({ hasText: 'Sent' })).toBeVisible();
-  expect(sent).toMatchObject({ access_key: profile.web3formsKey, message: 'Hello', contact: 'recruiter@example.com' });
+  expect(sent).toMatchObject({ access_key: profile.web3formsKey, message: 'Hello', email: 'recruiter@example.com' });
 });
