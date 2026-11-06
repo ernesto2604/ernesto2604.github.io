@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, Asterisk, Play } from 'lucide-react';
 import { Guides } from '../components/Background';
 import Diagram from '../components/Diagram';
@@ -8,6 +8,10 @@ import profile from '../content/profile.json';
 import { useMessages, useT } from '../i18n';
 import { featured, type Project } from '../lib/projects';
 import { setScrollLock } from '../lib/scroll';
+
+// Hashed by Vite (src/assets/projects, built by scripts/projects-img.mjs), so hosts can cache them for good.
+const PHOTOS = import.meta.glob<string>('../assets/projects/*.webp', { eager: true, query: '?url', import: 'default' });
+const photo = (slug: string) => PHOTOS[`../assets/projects/${slug}.webp`];
 
 type CaseCopy = { tagline: string; decisions: string[] };
 // Curtain change between the page and a case: cover (in) → reveal the case (shown) → open;
@@ -84,6 +88,19 @@ export default function Generate() {
   const later = (ms: number, fn: () => void) => timers.current.push(window.setTimeout(fn, ms));
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
+  const items = useMemo(
+    () =>
+      featured.map((p, i) => ({
+        id: p.slug,
+        num: String(i + 1).padStart(2, '0'),
+        name: t(`projects.${p.slug}.name`),
+        sublabel: p.stack.slice(0, 3).join(' · '),
+        image: photo(p.slug),
+        ariaLabel: t('generate.openCase', { name: t(`projects.${p.slug}.name`) }),
+      })),
+    [t],
+  );
+
   const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const open = (p: Project) => {
@@ -142,14 +159,8 @@ export default function Generate() {
         {/* Hovering a project shows its photo through an animated mask; opening it plays the curtain into the case. */}
         <div className="relative mt-20 md:mt-28">
           <StackInteractor
-            items={featured.map((p, i) => ({
-              id: p.slug,
-              num: String(i + 1).padStart(2, '0'),
-              name: t(`projects.${p.slug}.name`),
-              sublabel: p.stack.slice(0, 3).join(' · '),
-              image: `/projects/${p.slug}.jpg`,
-              ariaLabel: t('generate.openCase', { name: t(`projects.${p.slug}.name`) }),
-            }))}
+            paused={stage !== 'closed'}
+            items={items}
             onSelect={(i) => open(featured[i])}
           />
         </div>

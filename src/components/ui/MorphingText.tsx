@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 // Adapted from the shadcn "morphing-text" component: the threshold filter melts one text into the next.
 // Changes: no cn/tailwind-merge (not in this project), sizing comes from the caller, it holds texts[0]
@@ -119,17 +119,27 @@ const SvgFilters = () => (
 
 // Decorative: the caller gives the accessible text (e.g. an sr-only copy in the heading).
 export default function MorphingText({ texts, className = '', play = true, morphTime = 1.5, cooldownTime = 0.5 }: MorphingTextProps) {
-  const { boxRef, text1Ref, text2Ref } = useMorphingText(texts, play, morphTime, cooldownTime);
+  // Off screen the melt would still restyle and repaint its blur filters every frame, so it waits.
+  const [visible, setVisible] = useState(false);
+  const { boxRef, text1Ref, text2Ref } = useMorphingText(texts, play && visible, morphTime, cooldownTime);
+  useEffect(() => {
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting));
+    io.observe(boxRef.current!);
+    return () => io.disconnect();
+  }, [boxRef]);
   return (
     <span ref={boxRef} aria-hidden="true" className={`relative grid ${className}`}>
-      {/* Invisible copies in one grid cell: the box is as tall as the longest text at any width. */}
+      {/* Invisible copies in one grid cell: the box is as tall as the longest text at any width.
+          Every child gets its own layer (will-change): Safari otherwise repaints the whole threshold box in software
+          each frame, and without these layers Safari 27 also drops the projects and skills sections to 7-14 fps
+          (300 ms frames) while the masked photo animates. Measured in docs/audit; the melt looks the same. */}
       {texts.map((text) => (
-        <span key={text} className="invisible [grid-area:1/1]">
+        <span key={text} className="invisible [grid-area:1/1] [will-change:opacity]">
           {text}
         </span>
       ))}
-      <span className="absolute inset-x-0 top-0 block w-full opacity-0" ref={text1Ref} />
-      <span className="absolute inset-x-0 top-0 block w-full" ref={text2Ref}>
+      <span className="absolute inset-x-0 top-0 block w-full opacity-0 [will-change:filter,opacity]" ref={text1Ref} />
+      <span className="absolute inset-x-0 top-0 block w-full [will-change:filter,opacity]" ref={text2Ref}>
         {texts[0]}
       </span>
       <SvgFilters />
