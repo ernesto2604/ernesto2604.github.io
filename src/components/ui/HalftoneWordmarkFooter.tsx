@@ -49,6 +49,8 @@ export interface HalftoneWordmarkFooterProps {
   topLabel?: string
   /** Where back-to-top points. Defaults to "#main". */
   topHref?: string
+  /** Screen-reader note on off-site links, which open in a new tab. */
+  newTabLabel?: string
   /** Starting colours. Defaults to "night". */
   preset?: HalftonePreset
   /** Colour overrides, merged over the preset. */
@@ -191,6 +193,7 @@ export default function HalftoneWordmarkFooter({
   columns = DEFAULT_COLUMNS,
   topLabel = "Back to top ↑",
   topHref = "#main",
+  newTabLabel,
   preset = "night",
   palette,
   dotGap = 6,
@@ -491,7 +494,15 @@ export default function HalftoneWordmarkFooter({
             <ul>
               {col.links.map((l) => (
                 <li key={l.label}>
-                  <a href={l.href || "#"}>{l.label}</a>
+                  {/* Off-site links open in a new tab; newTabLabel tells screen readers so. */}
+                  {l.href?.startsWith("http") ? (
+                    <a href={l.href} target="_blank" rel="noopener noreferrer">
+                      {l.label}
+                      {newTabLabel && <span className="sr-only"> {newTabLabel}</span>}
+                    </a>
+                  ) : (
+                    <a href={l.href || "#"}>{l.label}</a>
+                  )}
                 </li>
               ))}
             </ul>

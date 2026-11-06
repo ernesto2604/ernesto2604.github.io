@@ -147,9 +147,9 @@ export default function Output() {
                     <p className="text-muted">{c.org}</p>
                     {/* Same mono link as "See all" under the projects. */}
                     {c.url && (
-                      <a href={c.url} className="ink-auto mt-1 inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
+                      <a href={c.url} target="_blank" rel="noopener noreferrer" className="ink-auto mt-1 inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
                         {o.credentialLink}
-                        <span className="sr-only">: {c.title}</span>
+                        <span className="sr-only">: {c.title} {t('a11y.newTab')}</span>
                         <ArrowUpRight className="size-3.5" aria-hidden="true" strokeWidth={1.75} />
                       </a>
                     )}

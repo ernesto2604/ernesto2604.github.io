@@ -35,6 +35,7 @@ export default function Footer() {
       ]}
       topLabel={t('footer.top')}
       topHref="#main"
+      newTabLabel={t('a11y.newTab')}
       palette={PALETTE}
       grain={0}
       fontFamily='"Inter", ui-sans-serif, system-ui, sans-serif'

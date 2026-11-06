@@ -22,14 +22,16 @@ function CaseDetail({ project }: { project: Project }) {
       <h2 id="case-title" className="font-display text-4xl leading-[1.02]">{t(`projects.${project.slug}.name`)}</h2>
       <p className="mt-5 max-w-[60ch] text-lg leading-relaxed">{copy.tagline}</p>
       <div className="mt-6 flex flex-wrap gap-x-6">
-        <a href={project.data.url} className="inline-flex min-h-11 items-center gap-1.5 font-medium text-accent underline-offset-4 hover:underline">
+        <a href={project.data.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1.5 font-medium text-accent underline-offset-4 hover:underline">
           {t('generate.repo')}
+          <span className="sr-only"> {t('a11y.newTab')}</span>
           <ArrowUpRight className="size-4" aria-hidden="true" strokeWidth={1.75} />
         </a>
         {project.links.video && (
-          <a href={project.links.video} className="inline-flex min-h-11 items-center gap-1.5 font-medium text-muted hover:text-text">
+          <a href={project.links.video} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-1.5 font-medium text-muted hover:text-text">
             <Play className="size-4" aria-hidden="true" strokeWidth={1.75} />
             {t('generate.demo')}
+            <span className="sr-only"> {t('a11y.newTab')}</span>
           </a>
         )}
       </div>
@@ -137,9 +139,9 @@ export default function Generate() {
         </div>
         {/* Mono like the page's other labels; the full name ("See all projects on GitHub") is for screen readers.
             Negative text, not amber: the dark set's amber flips in while the link is still over paper. */}
-        <a href={profile.github} className="ink-auto relative mt-12 inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
+        <a href={profile.github} target="_blank" rel="noopener noreferrer" className="ink-auto relative mt-12 inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
           {t('generate.more')}
-          <span className="sr-only"> {t('generate.moreHint')}</span>
+          <span className="sr-only"> {t('generate.moreHint')} {t('a11y.newTab')}</span>
           <ArrowUpRight className="size-3.5" aria-hidden="true" strokeWidth={1.75} />
         </a>
       </div>

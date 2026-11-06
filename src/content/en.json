@@ -6,7 +6,8 @@
     "jobTitle": "AI Engineer · Forward Deployed Engineer"
   },
   "a11y": {
-    "primaryNav": "Primary"
+    "primaryNav": "Primary",
+    "newTab": "(opens in a new tab)"
   },
   "lang": {
     "switchTo": "Leer en español",

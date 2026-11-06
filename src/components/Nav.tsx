@@ -241,8 +241,8 @@ export default function Nav() {
               [`mailto:${profile.email}`, t('contact.email')],
             ].map(([href, label]) => (
               <li key={href}>
-                <a href={href} className="menu-social">
-                  <span className="sr-only">{label}</span>
+                <a href={href} className="menu-social" {...(href.startsWith('http') && { target: '_blank', rel: 'noopener noreferrer' })}>
+                  <span className="sr-only">{label}{href.startsWith('http') && ` ${t('a11y.newTab')}`}</span>
                   <TypeLoop once items={[label]} play={open} />
                   <ArrowUpRight className="size-3.5" aria-hidden="true" strokeWidth={1.75} />
                 </a>
