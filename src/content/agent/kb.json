@@ -295,8 +295,8 @@
         "get_profile"
       ],
       "answer": {
-        "en": "He was an AI Software Developer intern at CEU's IT Innovation Department from February to June 2025. He built an AI tutor that linked institutional data in Snowflake with OpenAI models on Azure, and optimised SQL joins so data retrieval went from days to near-instant.",
-        "es": "Hizo prácticas como desarrollador de software de IA en el departamento de Innovación IT del CEU de febrero a junio de 2025. Desarrolló un tutor con IA que conectaba datos institucionales en Snowflake con modelos de OpenAI en Azure, y optimizó joins de SQL para que la obtención de datos pasara de días a ser casi instantánea."
+        "en": "He was an AI Software Developer intern at CEU's IT Innovation Department from February to June 2025. He built an AI tutor that linked institutional data in Snowflake with OpenAI models on Azure, tested with about 20 real users, and optimised SQL joins so data retrieval went from about 12 hours to 2 seconds.",
+        "es": "Hizo prácticas como desarrollador de software de IA en el departamento de Innovación IT del CEU de febrero a junio de 2025. Desarrolló un tutor con IA que conectaba datos institucionales en Snowflake con modelos de OpenAI en Azure, probado con unos 20 usuarios reales, y optimizó joins de SQL para que la obtención de datos pasara de unas 12 horas a 2 segundos."
       },
       "actions": [
         {

@@ -364,9 +364,9 @@
         "org": "CEU, IT Innovation Department",
         "dates": "Feb 2025 – Jun 2025",
         "points": [
-          "Built an AI personal tutor that links institutional data in Snowflake with OpenAI APIs on Azure.",
-          "Optimised SQL joins, taking data retrieval from days to near-instant.",
-          "Used structured XML prompting to make outputs more deterministic."
+          "Developed an AI-powered personal tutor integrating institutional data from Snowflake with OpenAI models on Azure, tested with approximately 20 real users.",
+          "Optimised SQL joins, reducing data retrieval time from approximately 12 hours to 2 seconds, making previously impractical data retrieval feasible.",
+          "Implemented structured XML prompting to improve LLM response consistency and output structure through manual testing."
         ]
       }
     ],
