@@ -348,6 +348,8 @@
     transition: color var(--dur-2) var(--ease-std);
   }
   .hero-socials a:hover, .hero-socials a:focus-visible { color: var(--text); }
+  /* The arrow waits for its label to finish typing (hero and menu); without JS both show as is. */
+  html.js :is(.hero-socials a, .menu-social):has([data-type-once]:is(:not([data-started]), [data-typing])) svg { visibility: hidden; }
   .hero-ask-label .type-tail { margin-left: 1.25em; }
   /* Once typed, the key blinks so the invitation reads as "do this" (reduced motion: the global rule stops it). */
   .hero-ask-label [data-started]:not([data-typing]) .type-tail { animation: caret-blink 1.06s steps(1) infinite; }
