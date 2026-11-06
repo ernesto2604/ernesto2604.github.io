@@ -324,10 +324,11 @@
     line-height: 1;
     white-space: pre;
   }
-  /* Centred on the scroll cue's line (its middle sits 1.5rem + 0.5em up); each link is a 44px target. */
+  /* Centred on the scroll cue's line (its middle sits 1.5rem + 0.5em up); each link is a 44px target. Out of the
+     content column to the window's edge: the last arrow ends on the burger's right edge, mirroring the clock. */
   .hero-socials {
     position: absolute;
-    right: 0;
+    right: calc((100% - 100vw) / 2 + 2.125rem);
     bottom: calc(0.125rem + 0.5em);
     display: none;
     gap: 1.75em;
