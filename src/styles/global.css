@@ -324,6 +324,29 @@
     line-height: 1;
     white-space: pre;
   }
+  /* Centred on the scroll cue's line (its middle sits 1.5rem + 0.5em up); each link is a 44px target. */
+  .hero-socials {
+    position: absolute;
+    right: 0;
+    bottom: calc(0.125rem + 0.5em);
+    display: none;
+    gap: 1.75em;
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  @media (min-width: 1024px) { .hero-socials { display: flex; } }
+  .hero-socials a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.4em;
+    white-space: pre;
+    color: var(--text-muted);
+    transition: color var(--dur-2) var(--ease-std);
+  }
+  .hero-socials a:hover, .hero-socials a:focus-visible { color: var(--text); }
   .hero-ask-label .type-tail { margin-left: 1.25em; }
   /* Once typed, the key blinks so the invitation reads as "do this" (reduced motion: the global rule stops it). */
   .hero-ask-label [data-started]:not([data-typing]) .type-tail { animation: caret-blink 1.06s steps(1) infinite; }

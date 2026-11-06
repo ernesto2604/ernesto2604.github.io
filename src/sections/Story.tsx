@@ -1,4 +1,5 @@
 import { useState, type PointerEvent as ReactPointerEvent } from 'react';
+import { ArrowUpRight } from 'lucide-react';
 import Hologram from '../components/Hologram';
 import MorphingText from '../components/ui/MorphingText';
 import ScrambleText from '../components/ui/ScrambleText';
@@ -6,6 +7,7 @@ import TypeLoop from '../components/ui/TypeLoop';
 import { useShortcutLabel, openAgent, AGENT_READY } from '../components/Nav';
 import { useMedia, useReducedMotion } from '../hooks/useMedia';
 import { useWelcomeDone } from '../hooks/useWelcomeDone';
+import profile from '../content/profile.json';
 import { useT } from '../i18n';
 
 export default function Story() {
@@ -64,6 +66,25 @@ export default function Story() {
           <p aria-hidden="true" className="hero-scroll">
             <TypeLoop fit once items={[`[${t('hero.scroll')}]`]} play={ready} />
           </p>
+          {/* Bottom right, in the scroll cue's mono voice and on its line; from lg up, where both fit side by side (they are in the menu too). */}
+          <ul className="hero-socials">
+            {[
+              [profile.linkedin, t('contact.linkedin')],
+              [profile.github, t('contact.github')],
+              [`mailto:${profile.email}`, t('contact.email')],
+            ].map(([href, label]) => {
+              const external = href.startsWith('http');
+              return (
+                <li key={href}>
+                  <a href={href} {...(external && { target: '_blank', rel: 'noopener noreferrer' })}>
+                    <span className="sr-only">{label}{external && ` ${t('a11y.newTab')}`}</span>
+                    <TypeLoop once items={[label]} play={ready} />
+                    <ArrowUpRight className="size-3" aria-hidden="true" strokeWidth={1.75} />
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </div>
     </div>
