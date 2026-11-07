@@ -55,17 +55,17 @@
   "projects": {
     "ring-telemetryops": {
       "name": "Ring TelemetryOps",
-      "summary": "Agente de diagnóstico para timbres con vídeo Ring, creado para el Amazon Developer Hackathon 2026. OpenCV mide el stream, una comprobación determinista fija la gravedad y Claude Haiku 4.5 en Amazon Bedrock razona sobre las pruebas. Si Bedrock no está disponible, un fallback local mantiene el mismo formato de informe.",
+      "summary": "Agente de diagnóstico para timbres con vídeo Ring, creado para el Amazon Developer Hackathon 2026 (categoría Ring). Un Digital Twin del timbre permite inyectar fallos (lente sucia, filtro IR atascado, parpadeo de 50/60 Hz, corte de corriente) y el agente los diagnostica a partir de mediciones de OpenCV, una comprobación determinista y Claude Haiku 4.5 en Amazon Bedrock. Si Bedrock no está disponible, un fallback local mantiene el mismo formato de informe, y un modo de solo lectura funciona con la Partner API de Ring. Respaldado por 869 tests de pytest y 195 de Node, según el README.",
       "fact": "869 tests de pytest + 195 de Node, según el README"
     },
     "hybrid-rag-api": {
       "name": "Hybrid RAG API",
-      "summary": "Un motor de RAG híbrido escrito desde cero, sin LangChain ni LlamaIndex. Combina búsqueda densa (pgvector, HNSW) y léxica (GIN en PostgreSQL) con Reciprocal Rank Fusion, y el prompt exige citar documento y página en cada afirmación.",
+      "summary": "Un motor de RAG híbrido escrito desde cero, sin LangChain ni LlamaIndex. Combina búsqueda densa (pgvector, HNSW) y léxica (GIN en PostgreSQL) con Reciprocal Rank Fusion, y el prompt exige citar documento y página en cada afirmación. Una pregunta puede acotarse a un documento o lanzarse sobre todos, con memoria multi-turno.",
       "fact": "RRF con k = 60 sobre HNSW y GIN"
     },
     "wakemap": {
       "name": "WakeMap",
-      "summary": "Prototipo en Flutter de mi trabajo de fin de grado: alarmas por ubicación con geofencing, alarmas creadas por voz y una guía de viaje con IA. Un proxy en Node.js/Express mantiene la clave de Gemini en el servidor.",
+      "summary": "Prototipo en Flutter de mi trabajo de fin de grado: alarmas por ubicación que suenan al llegar a un destino con la app abierta, alarmas creadas por voz y una guía de viaje con IA. Un proxy en Node.js/Express desplegado en Render mantiene la clave de Gemini en el servidor. El repositorio incluye compilaciones para Android e iOS.",
       "fact": "Builds para Android e iOS, Gemini detrás de un proxy"
     },
     "ai-surveillance-hub": {
@@ -84,9 +84,12 @@
     "lead": "Tres proyectos, distintos retos de ingeniería.",
     "decisions": "Decisiones clave",
     "stack": "Tecnologías",
+    "overview": "Resumen",
+    "next": "Siguiente proyecto",
     "diagram": "Arquitectura",
     "repo": "Código en GitHub",
     "demo": "Ver la demo",
+    "notes": "Registro de fricciones",
     "viewList": "Ver como lista",
     "viewDiagram": "Ver diagrama",
     "back": "Volver",
@@ -250,10 +253,13 @@
   "cases": {
     "ring-telemetryops": {
       "tagline": "Mide primero, razona después: OpenCV evalúa el stream y Claude en Bedrock solo entra cuando algo falla.",
+      "stats": [
+        { "value": "11", "label": "hallazgos registrados sobre la Partner API de Ring" }
+      ],
       "decisions": [
         "El modelo nunca decide la gravedad",
-        "Recuperación estructurada, no embeddings",
-        "Pagar por razonar solo cuando hace falta"
+        "Recuperación por señales medidas, no por similitud",
+        "Un Digital Twin, porque la API de Ring no expone señal Wi-Fi ni voltaje"
       ],
       "diagramTitle": "Pipeline de diagnóstico de Ring TelemetryOps",
       "diagramDesc": "OpenCV mide el stream de la cámara, una comprobación determinista lo clasifica y solo las anomalías llegan a la recuperación en la base de conocimiento y a Claude en Bedrock; un fallback local mantiene el mismo contrato de informe.",
@@ -275,17 +281,22 @@
         "unavailable": "no disponible"
       },
       "steps": [
-        "OpenCV analiza un fotograma del stream de la cámara (o del simulador Digital Twin): fotogramas por segundo, bitrate, brillo, nitidez y bandas.",
+        "Un heartbeat revisa cada métrica cada 15 s en el Digital Twin (crítico al instante, degradado tras tres seguidas); un timbrazo, movimiento o live view activan un análisis de inmediato.",
+  "OpenCV analiza un fotograma del stream de la cámara (o del simulador Digital Twin): fotogramas por segundo, bitrate, brillo, nitidez y bandas.",
         "Una comprobación determinista clasifica cada métrica según umbrales guardados en un único JSON.",
         "Si todo es normal, devuelve un informe sano sin llamar al modelo.",
         "Las anomalías activan la ordenación de 15 procedimientos de diagnóstico según las señales medidas.",
         "Claude Haiku 4.5 en Amazon Bedrock razona sobre el fotograma, las métricas y los procedimientos.",
         "La respuesta se valida contra un contrato de informe con un reintento de corrección.",
+  "La gravedad y el dominio de la causa salen del pre-check: si el modelo discrepa, se sustituye por el valor determinista.",
         "Si Bedrock no está disponible, un fallback local genera el mismo formato de informe, marcado como tal."
       ]
     },
     "hybrid-rag-api": {
       "tagline": "Respuestas sobre PDFs en las que cada afirmación cita documento y página, construido desde cero sin LangChain.",
+      "stats": [
+        { "value": "k = 60", "label": "RRF sobre HNSW y GIN" }
+      ],
       "decisions": [
         "RRF en lugar de una suma ponderada",
         "HNSW antes que IVFFlat",
@@ -312,8 +323,8 @@
       },
       "steps": [
         "Se sube un PDF a través de FastAPI y se divide por páginas y en fragmentos solapados.",
-        "Los fragmentos se convierten en embeddings con gemini-embedding-001 por lotes, con backoff exponencial ante límites de uso.",
-        "Texto y vectores se guardan en PostgreSQL 16 con un índice HNSW y un índice de texto GIN.",
+        "Los fragmentos se convierten en embeddings con gemini-embedding-001 en lotes concurrentes de hasta 100, con backoff exponencial ante HTTP 429 y 503.",
+        "Texto y vectores de 768 dimensiones se guardan en PostgreSQL 16 con un índice HNSW y un índice de texto GIN (configuración en español).",
         "Cada pregunta lanza a la vez la búsqueda densa y la léxica.",
         "Reciprocal Rank Fusion (k = 60) combina ambos rankings.",
         "Los mejores fragmentos y el historial van a Gemini con temperatura 0.",
@@ -321,7 +332,7 @@
       ]
     },
     "wakemap": {
-      "tagline": "Alarmas por ubicación que te avisan antes de tu parada y una guía de viaje con IA. El prototipo de mi trabajo de fin de grado.",
+      "tagline": "Alarmas por ubicación que suenan al llegar a tu parada con la app abierta y una guía de viaje con IA. El prototipo de mi trabajo de fin de grado.",
       "decisions": [
         "La clave se queda en el servidor",
         "Una salida estructurada en la que la app puede confiar",
@@ -331,7 +342,7 @@
       "diagramDesc": "La app en Flutter gestiona alarmas, voz y mapas en el dispositivo y llama a un proxy en Node.js para usar Gemini; los mapas y rutas vienen de OpenStreetMap, Nominatim y OSRM.",
       "nodes": {
         "app": "App en Flutter",
-        "commuter": "Trayecto: alarmas con geofencing",
+        "commuter": "Trayecto: alarmas por ubicación",
         "traveller": "Viajero: guía con IA",
         "voice": "Voz a texto",
         "proxy": "Proxy Node.js/Express",
@@ -343,7 +354,7 @@
       "edges": {},
       "steps": [
         "La app en Flutter tiene dos modos: alarmas de trayecto y guía de viaje.",
-        "Las alarmas de trayecto usan geofencing con un radio de 100 a 1.000 m y lanzan notificaciones locales.",
+        "Con la app abierta, las alarmas de trayecto comparan la posición del dispositivo con un radio de 100 a 1.000 m y lanzan una notificación local.",
         "Las alarmas dictadas se transcriben en el dispositivo y se envían al proxy en Node.js.",
         "El proxy, que guarda la clave de la API, pide a Gemini un JSON estructurado.",
         "Los planes de viaje vuelven con paradas, coordenadas, duración y presupuesto.",
@@ -355,8 +366,8 @@
     "title": "Un poco sobre mí",
     "about": [
       "Soy Ernesto, ingeniero de software centrado en IA. Construyo sistemas inteligentes, desde la recuperación y los agentes hasta la infraestructura backend que los sostiene.",
-      "Me gradué en York St John University con First Class Honours en Ingeniería del Software. Durante mis prácticas en el CEU trabajé en un tutor con IA que integraba datos institucionales con modelos de OpenAI.",
-      "Vivo en Madrid · Incorporación inmediata · Abierto a cambiar de ciudad."
+      "Busco un puesto de ingeniería de IA donde llevar sistemas de recuperación y agentes a producción, en un equipo que cuide la fiabilidad.",
+      "Vivo en Madrid · Abierto a cambiar de ciudad."
     ],
     "experienceTitle": "Experiencia",
     "experience": [
@@ -366,8 +377,7 @@
         "dates": "feb. 2025 – jun. 2025",
         "points": [
           "Desarrollé un tutor personal con IA que integra datos institucionales de Snowflake con modelos de OpenAI en Azure, probado con unos 20 usuarios reales.",
-          "Optimicé joins de SQL y reduje el tiempo de obtención de datos de unas 12 horas a 2 segundos, lo que hizo viable una consulta que antes no era práctica.",
-          "Implementé prompts estructurados en XML para mejorar la consistencia y la estructura de las respuestas del LLM, validado con pruebas manuales."
+          "Optimicé joins de SQL y reduje el tiempo de obtención de datos de unas 12 horas a 2 segundos, lo que hizo viable una consulta que antes no era práctica."
         ]
       }
     ],
@@ -375,14 +385,13 @@
     "education": [
       {
         "title": "BSc (Hons) en Ingeniería del Software",
-        "org": "York St John University · Reino Unido",
+        "org": "York St John University",
         "grade": "First Class Honours · 74,50 %",
         "dates": "jul. 2026"
       },
       {
         "title": "Técnico Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)",
-        "org": "Universidad CEU Cardenal Herrera · España",
-        "grade": "Nota: 8,5/10",
+        "org": "Universidad CEU Cardenal Herrera",
         "dates": "jun. 2025"
       }
     ],
@@ -394,6 +403,12 @@
         "url": "https://huggingface.co/datasets/agents-course/final-certificates/resolve/main/certificates/ernesto2406/2026-10-25.png"
       }
     ],
+    "cvLink": "Ver CV",
+    "cvTitle": "Currículum Vitae",
+    "cvGet": "Descargar",
+    "cvFile": "/cv/Ernesto_Contreras_CV.pdf",
+    "cvDownload": "/cv/Ernesto_Contreras_CV.pdf",
+    "cvMissing": "Mi CV no está disponible ahora mismo. Escríbeme un mensaje abajo y te lo envío.",
     "credentialLink": "Ver credencial",
     "languagesTitle": "Idiomas",
     "languages": [
@@ -421,6 +436,9 @@
     "sending": "Enviando…",
     "sent": "Enviado. Gracias, te responderé pronto.",
     "sendError": "No se pudo enviar. Escríbeme a {email}.",
+    "copy": "Copiar correo",
+    "copied": "Copiado",
+    "another": "Enviar otro mensaje",
     "status": "Disponible ya",
     "cardButton": "Contactar"
   },

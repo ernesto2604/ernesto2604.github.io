@@ -189,8 +189,8 @@
         "show_architecture"
       ],
       "answer": {
-        "en": "WakeMap is a Flutter prototype from his dissertation: geofenced alarms with a 100 to 1,000 m radius, voice-created alarms that Gemini turns into JSON, and an AI travel guide drawn on OpenStreetMap with OSRM routes. A Node.js proxy keeps the API key off the device.",
-        "es": "WakeMap es un prototipo en Flutter de su trabajo de fin de grado: alarmas con geofencing de 100 a 1.000 m de radio, alarmas dictadas que Gemini convierte en JSON y una guía de viaje con IA dibujada sobre OpenStreetMap con rutas de OSRM. Un proxy en Node.js mantiene la clave de la API fuera del dispositivo."
+        "en": "WakeMap is a Flutter prototype from his dissertation: location alarms with a 100 to 1,000 m radius that fire while the app is open, voice-created alarms that Gemini turns into JSON, and an AI travel guide drawn on OpenStreetMap with OSRM routes. A Node.js proxy keeps the API key off the device.",
+        "es": "WakeMap es un prototipo en Flutter de su trabajo de fin de grado: alarmas por ubicación de 100 a 1.000 m de radio que suenan con la app abierta, alarmas dictadas que Gemini convierte en JSON y una guía de viaje con IA dibujada sobre OpenStreetMap con rutas de OSRM. Un proxy en Node.js mantiene la clave de la API fuera del dispositivo."
       },
       "actions": [
         {

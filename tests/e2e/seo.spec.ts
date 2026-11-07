@@ -3,13 +3,13 @@ import { expect, test } from './fixtures';
 test('English document is served at /', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  await expect(page).toHaveTitle('Ernesto Contreras');
+  await expect(page).toHaveTitle('Ernesto Contreras - AI Engineer');
 });
 
 test('Spanish document is served at /es/', async ({ page }) => {
   await page.goto('/es/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'es');
-  await expect(page).toHaveTitle('Ernesto Contreras');
+  await expect(page).toHaveTitle('Ernesto Contreras - AI Engineer');
 });
 
 test('stored Spanish preference redirects / once and keeps the hash', async ({ page }) => {

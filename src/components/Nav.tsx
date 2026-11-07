@@ -12,6 +12,11 @@ export const AGENT_READY = true;
 
 export const openAgent = () => window.dispatchEvent(new CustomEvent('agent:open'));
 
+// A project case or the CV can be open under the menu: the page stays locked until that overlay closes itself.
+const unlock = () => {
+  if (!document.querySelector('.case-dialog[open]')) setScrollLock(false);
+};
+
 export function useShortcutLabel() {
   const [label, setLabel] = useState('Ctrl K');
   useEffect(() => {
@@ -21,7 +26,7 @@ export function useShortcutLabel() {
 }
 
 // Two lines: they tilt on hover and cross into an X when the menu is open (styles in global.css).
-const Burger = () => (
+export const Burger = () => (
   <span className="burger" aria-hidden="true">
     <span />
     <span />
@@ -108,7 +113,7 @@ export default function Nav() {
   // modal while it slides out, so a chosen section takes focus once it has closed.
   const close = (focusId?: string) => {
     const d = dialogRef.current!;
-    setScrollLock(false);
+    unlock();
     if (d.open)
       playClose(d, () => {
         d.close();
@@ -134,12 +139,12 @@ export default function Nav() {
     const onClose = () => {
       // Focus goes back to the button natively; a link chosen in the panel then moves it to its target.
       setOpen(false);
-      setScrollLock(false);
+      unlock();
     };
     // Escape slides the panel out instead of closing it at once.
     const onCancel = (e: Event) => {
       e.preventDefault();
-      setScrollLock(false);
+      unlock();
       playClose(d, () => d.close());
     };
     // The agent opens over everything, so the menu steps aside first (its button or Ctrl/Cmd+K).
@@ -150,11 +155,13 @@ export default function Nav() {
     d.addEventListener('close', onClose);
     d.addEventListener('cancel', onCancel);
     addEventListener('agent:open', onAgent);
+    addEventListener('menu:open', show);
     addEventListener('keydown', onKey, true);
     return () => {
       d.removeEventListener('close', onClose);
       d.removeEventListener('cancel', onCancel);
       removeEventListener('agent:open', onAgent);
+      removeEventListener('menu:open', show);
       removeEventListener('keydown', onKey, true);
     };
   }, []);
@@ -215,7 +222,10 @@ export default function Nav() {
               <li key={key} className="overflow-hidden">
                 <a
                   href={href}
-                  onClick={() => close(href.slice(1))}
+                  onClick={() => {
+                    window.dispatchEvent(new CustomEvent('overlay:close', { detail: href.slice(1) }));
+                    close(href.slice(1));
+                  }}
                   onMouseEnter={() => setPointed(key)}
                   onFocus={() => setPointed(key)}
                   onBlur={() => setPointed(null)}

@@ -1,8 +1,8 @@
 // From React Bits (ProfileCard-TS-TW, via the shadcn registry @react-bits), adapted: the contact button is a link (contactHref) instead of a callback,
-// and uses Lucide's Mail icon instead of pulling in Hugeicons.
+// (amber, with a down arrow: it scrolls to the form), the status text (ink, no dot) blinks, and uses Lucide's Mail icon instead of pulling in Hugeicons.
 
 import { memo, useEffect, useRef, type CSSProperties } from 'react';
-import { Mail } from 'lucide-react';
+import { ArrowDown, Mail } from 'lucide-react';
 
 type Palette = 'dark' | 'light';
 
@@ -206,9 +206,9 @@ const AVATAR_IMAGE = 'block h-full w-full object-cover object-top';
 const META = 'flex min-w-0 flex-1 flex-col gap-[3px]';
 const HANDLE =
   'overflow-hidden text-ellipsis whitespace-nowrap text-[14px] font-semibold leading-[1.25] text-[var(--pc-ink)]';
-const STATUS =
-  "flex items-center gap-1.5 whitespace-nowrap text-[12.5px] leading-[1.25] text-[var(--pc-muted)] before:h-1.5 before:w-1.5 before:flex-none before:rounded-full before:bg-[var(--pc-status)] before:content-['']";
+const STATUS = 'pc-blink whitespace-nowrap text-[14px] font-semibold leading-[1.25] text-[var(--pc-ink)]';
 const CONTACT =
+  'group flex h-9 flex-none cursor-pointer items-center gap-1.5 rounded-[calc(var(--pc-radius)*0.75)] border-none bg-accent-fill px-3.5 font-[inherit] text-[13px] font-semibold text-accent-ink [box-shadow:var(--pc-tile-shadow)] transition-[filter,transform] duration-200 hover:[filter:var(--pc-hover)] active:scale-[0.96] active:duration-0 active:[filter:var(--pc-press)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pc-ink)]';
   'flex h-9 flex-none cursor-pointer items-center gap-1.5 rounded-[calc(var(--pc-radius)*0.75)] border-none px-3.5 font-[inherit] text-[13px] font-semibold text-[var(--pc-ink)] [background:var(--pc-tile)] [box-shadow:inset_0_0_0_1px_var(--pc-tile-edge),inset_0_1px_0_var(--pc-tile-highlight),var(--pc-tile-shadow)] transition-[filter,transform] duration-200 hover:[filter:var(--pc-hover)] active:scale-[0.96] active:duration-0 active:[filter:var(--pc-press)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pc-ink)]';
 const GLARE = `${LAYER} mix-blend-overlay`;
 const RIM = `${LAYER} [box-shadow:inset_0_0_0_1px_var(--pc-frame-edge),inset_0_1px_0_var(--pc-frame-highlight)]`;
@@ -516,6 +516,7 @@ const ProfileCard = ({
               <a className={CONTACT} href={contactHref} aria-label={name ? `${contactText} ${name}` : contactText}>
                 <Mail size={16} strokeWidth={1.8} aria-hidden="true" />
                 {contactText}
+                <ArrowDown size={14} strokeWidth={2} aria-hidden="true" className="-mr-0.5 transition-transform duration-200 group-hover:translate-y-0.5" />
               </a>
             )}
           </div>

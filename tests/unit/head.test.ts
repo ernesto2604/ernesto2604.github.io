@@ -6,7 +6,7 @@ const ld = (html: string) => JSON.parse(html.match(/<script type="application\/l
 describe('buildHead', () => {
   it('sets English title, description and canonical on /', () => {
     const html = buildHead('en');
-    expect(html).toContain('<title>Ernesto Contreras</title>');
+    expect(html).toContain('<title>Ernesto Contreras - AI Engineer</title>');
     expect(html).toContain('<meta property="og:title" content="Ernesto Contreras · AI Engineer &amp; Forward Deployed Engineer">');
     expect(html).toMatch(/<meta name="description" content="Ernesto Contreras builds AI systems/);
     expect(html).toContain('<link rel="canonical" href="https://ernesto2406.pages.dev/">');
@@ -41,9 +41,9 @@ describe('buildHead', () => {
   });
 
   // The visible hero only says "AI Engineer"; FDE must stay in machine-readable metadata.
-  it.each(['en', 'es'] as const)('keeps Forward Deployed Engineer in og:title and JSON-LD for %s (the tab title is the name)', (locale) => {
+  it.each(['en', 'es'] as const)('keeps Forward Deployed Engineer in og:title and JSON-LD for %s (the tab title is the name and the visible role)', (locale) => {
     const html = buildHead(locale);
-    expect(html).toContain('<title>Ernesto Contreras</title>');
+    expect(html).toContain('<title>Ernesto Contreras - AI Engineer</title>');
     expect(html).toMatch(/<meta property="og:title" content="[^"]*Forward Deployed Engineer"/);
     expect(ld(html).jobTitle).toContain('Forward Deployed Engineer');
   });

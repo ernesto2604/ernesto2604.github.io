@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-10-23T21:53:34.593Z",
+  "fetchedAt": "2026-11-06T23:10:26.592Z",
   "repos": [
     {
       "name": "ring-telemetryops",
@@ -22,7 +22,7 @@
       "url": "https://github.com/ernesto2604/hybrid-rag-api",
       "homepage": "",
       "languages": {
-        "Python": 45158,
+        "Python": 48242,
         "HTML": 19709
       },
       "topics": [
@@ -34,25 +34,25 @@
         "rag"
       ],
       "stars": 0,
-      "updatedAt": "2026-09-24T17:59:31Z"
+      "updatedAt": "2026-11-06T23:03:34Z"
     },
     {
-      "name": "lastVersionWakeMap",
+      "name": "wakeMap_submission",
       "description": "",
-      "url": "https://github.com/ernesto2604/lastVersionWakeMap",
+      "url": "https://github.com/ernesto2604/wakeMap_submission",
       "homepage": "",
       "languages": {
-        "Dart": 340275,
-        "JavaScript": 19502,
+        "Dart": 325519,
+        "JavaScript": 19706,
         "Ruby": 2472,
-        "HTML": 1892,
+        "HTML": 1037,
         "Swift": 900,
         "Kotlin": 122,
         "Objective-C": 38
       },
       "topics": [],
       "stars": 0,
-      "updatedAt": "2026-05-21T18:15:31Z"
+      "updatedAt": "2026-05-23T23:57:57Z"
     },
     {
       "name": "AI_surveillance_hub",

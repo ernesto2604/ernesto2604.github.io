@@ -1,7 +1,9 @@
 import { useState, type FormEvent } from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Check, Copy } from 'lucide-react';
 import BlurReveal from '../components/ui/BlurReveal';
 import ProfileCard from '../components/ui/ProfileCard';
+import Row from '../components/ui/Row';
+import CvDialog from '../components/CvDialog';
 import profile from '../content/profile.json';
 import { useMessages, useT } from '../i18n';
 
@@ -53,6 +55,20 @@ function MessageForm() {
     }
   };
 
+  if (state === 'sent') {
+    return (
+      <div role="status" className="mt-6">
+        <p className="flex items-center gap-3 text-xl font-medium tracking-tight">
+          <Check className="size-6 text-accent" aria-hidden="true" strokeWidth={2} />
+          {t('contact.sent')}
+        </p>
+        <button type="button" onClick={() => setState('idle')} className="ink-auto mt-4 min-h-11 cursor-pointer font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
+          {t('contact.another')}
+        </button>
+      </div>
+    );
+  }
+
   const field = 'w-full rounded-card border border-line bg-surface px-4 text-base transition-colors duration-200 placeholder:text-muted hover:border-line-strong focus:border-line-strong';
   return (
     <form action={FORM_URL} method="POST" onSubmit={submit} className="mt-6 grid gap-3">
@@ -63,8 +79,8 @@ function MessageForm() {
       <textarea id="msg" name="message" required maxLength={MAX} rows={4} placeholder={t('contact.messagePlaceholder')} className={`${field} resize-y py-3 leading-relaxed`} />
       {/* Named "email" so both services set it as Reply-To: replying to the notification answers the sender. */}
       <label htmlFor="msg-contact" className="mt-2 text-sm text-muted">{t('contact.replyTo')}</label>
-      <input id="msg-contact" name="email" type="email" autoComplete="email" required maxLength={200} placeholder={t('contact.emailPlaceholder')} className={`${field} h-12`} />
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <input id="msg-contact" name="email" type="email" autoComplete="email" required maxLength={200} placeholder={t('contact.emailPlaceholder')} className={`${field} h-12 flex-1`} />
         {/* On hover or focus the plane takes off: it bobs, turns and flies right while the label slides out. */}
         <button type="submit" disabled={state === 'sending'} className="send-button flex h-12 cursor-pointer items-center overflow-hidden rounded-2xl bg-accent-fill py-2 pl-[0.9em] pr-5 text-lg font-medium text-accent-ink transition-all duration-200 active:scale-95 disabled:cursor-wait disabled:opacity-70">
           <span className="send-plane flex items-center">
@@ -74,20 +90,45 @@ function MessageForm() {
           </span>
           <span className="send-label ml-1 transition-[translate,transform,opacity] duration-300">{state === 'sending' ? t('contact.sending') : t('contact.send')}</span>
         </button>
-        <p role="status" className={`text-sm ${state === 'error' ? 'text-accent' : 'text-ok'}`}>
-          {state === 'sent' ? t('contact.sent') : state === 'error' ? t('contact.sendError', { email: profile.email }) : ''}
-        </p>
       </div>
+      {state === 'error' && <p role="alert" className="text-sm text-accent">{t('contact.sendError', { email: profile.email })}</p>}
     </form>
+  );
+}
+
+// The address in plain text, with a one-click copy for people who would rather paste it into their own mail.
+function CopyEmail() {
+  const t = useT();
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(profile.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* The address is selectable text, so the visitor can still copy it by hand. */
+    }
+  };
+  return (
+    <div className="mt-6 flex items-center gap-3">
+      <span className="select-all font-mono text-sm">{profile.email}</span>
+      <button type="button" onClick={copy} className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-1.5 text-muted hover:text-text" aria-label={t('contact.copy')}>
+        {copied ? <Check className="size-4" aria-hidden="true" strokeWidth={2} /> : <Copy className="size-4" aria-hidden="true" strokeWidth={1.75} />}
+        <span role="status" className="font-mono text-xs uppercase tracking-[0.06em]">{copied ? t('contact.copied') : ''}</span>
+      </button>
+    </div>
   );
 }
 
 function Contact() {
   const t = useT();
   return (
-    <div id="contact" className="scroll-mt-28">
-      <h3 className={H3}>{t('contact.title')}</h3>
-      <p className="mt-6 max-w-[46ch] text-muted">{t('contact.lead')}</p>
+    <div id="contact" className="grid scroll-mt-28 gap-x-16 lg:grid-cols-[minmax(0,3fr)_minmax(0,9fr)]">
+      <div>
+        <h3 className={H3}>{t('contact.title')}</h3>
+        <p className="mt-6 max-w-[46ch] text-muted">{t('contact.lead')}</p>
+        <CopyEmail />
+      </div>
       <MessageForm />
     </div>
   );
@@ -96,8 +137,8 @@ function Contact() {
 // Column headings in the lower row share one style, so Experience, Education and Let's talk read as one line.
 const H3 = 'text-xl font-medium tracking-tight';
 
-// Two rows on wide screens: title and intro beside the card, then Experience | Education | Contact with their
-// headings on one line. The lower grid uses the same 4rem gutter as the outer one, so all three columns are even.
+// Two rows on wide screens: title and intro beside the card, then Experience rows, then Education | Certificates | Languages,
+// then Contact. All share the same 4rem gutter.
 export default function Output() {
   const t = useT();
   const o = useMessages().output;
@@ -115,6 +156,7 @@ export default function Output() {
             {o.about.map((p, i) => (
               <p key={i} className={i ? 'text-muted' : ''}>{p}</p>
             ))}
+            <CvDialog />
           </div>
         </div>
 
@@ -130,60 +172,65 @@ export default function Output() {
           status={t('contact.status')}
           statusColor="#1E7547"
           contactText={t('contact.cardButton')}
-          contactHref={`mailto:${profile.email}`}
+          contactHref="#contact"
         />
 
-        <div className="grid gap-x-16 gap-y-12 sm:grid-cols-2">
-          <div>
-            <h3 className={H3}>{o.experienceTitle}</h3>
+        {/* CV table: mono label on the left, content on one shared axis, hairline between rows. */}
+        <div className="border-b border-line lg:col-span-full">
+          <Row title={o.experienceTitle}>
             {o.experience.map((e) => (
-              <div key={e.role} className="mt-6">
+              <div key={e.role}>
                 <p className="font-medium">{e.role}</p>
-                <p className="text-muted">{e.org}</p>
-                <p className="mt-1 text-sm text-muted">{e.dates}</p>
+                <p className="text-muted">{e.org} · {e.dates}</p>
                 <ul className="mt-3 list-disc space-y-1.5 pl-5 text-muted marker:text-accent">
                   {e.points.map((p) => <li key={p}>{p}</li>)}
                 </ul>
               </div>
             ))}
-          </div>
-          <div>
-            <h3 className={H3}>{o.educationTitle}</h3>
-            <ul className="mt-6 space-y-5">
+          </Row>
+          <Row title={o.educationTitle}>
+            <ul className="grid gap-x-16 gap-y-6 sm:grid-cols-2">
               {o.education.map((e) => (
                 <li key={e.title}>
                   <p className="font-medium">{e.title}</p>
                   <p className="text-muted">{e.org}</p>
-                  <p className="text-muted">{e.grade}</p>
+                  {e.grade && <p className="text-muted">{e.grade}</p>}
                   <p className="mt-1 text-sm text-muted">{e.dates}</p>
                 </li>
               ))}
             </ul>
-            <h3 className={`mt-10 ${H3}`}>{o.certificatesTitle}</h3>
-            <ul className="mt-6 space-y-5">
-              {o.certificates.map((c) => (
-                <li key={c.title}>
-                  <p className="font-medium">{c.title}</p>
-                  <p className="text-muted">{c.org}</p>
-                  {/* Same mono link as "See all" under the projects. */}
-                  {c.url && (
-                    <a href={c.url} target="_blank" rel="noopener noreferrer" className="ink-auto mt-1 inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
-                      {o.credentialLink}
-                      <span className="sr-only">: {c.title} {t('a11y.newTab')}</span>
-                      <ArrowUpRight className="size-3.5" aria-hidden="true" strokeWidth={1.75} />
-                    </a>
-                  )}
-                </li>
-              ))}
+          </Row>
+          <Row title={o.certificatesTitle}>
+            {o.certificates.map((c) => (
+              <div key={c.title}>
+                <p><span className="font-medium">{c.title}</span> <span className="text-muted">· {c.org}</span></p>
+                {/* Same mono link as "See all" under the projects. */}
+                {c.url && (
+                  <a href={c.url} target="_blank" rel="noopener noreferrer" className="ink-auto mt-1 inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
+                    {o.credentialLink}
+                    <span className="sr-only">: {c.title} {t('a11y.newTab')}</span>
+                    <ArrowUpRight className="size-3.5" aria-hidden="true" strokeWidth={1.75} />
+                  </a>
+                )}
+              </div>
+            ))}
+          </Row>
+          <Row title={o.languagesTitle}>
+            <ul className="grid gap-x-16 gap-y-6 sm:grid-cols-2">
+              {o.languages.map((l) => {
+                const [name, level] = l.split(' — ');
+                return (
+                  <li key={l}>
+                    <p className="font-medium">{name}</p>
+                    <p className="text-muted">{level}</p>
+                  </li>
+                );
+              })}
             </ul>
-            <h3 className={`mt-10 ${H3}`}>{o.languagesTitle}</h3>
-            <ul className="mt-6 space-y-1.5 text-muted">
-              {o.languages.map((l) => <li key={l}>{l}</li>)}
-            </ul>
-          </div>
+          </Row>
         </div>
 
-        <aside aria-label={t('contact.title')}>
+        <aside aria-label={t('contact.title')} className="lg:col-span-full">
           <Contact />
         </aside>
       </div>

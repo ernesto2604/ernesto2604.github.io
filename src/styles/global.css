@@ -429,13 +429,15 @@ html:not(.js) .no-js-hide { display: none !important; }
   stroke-dasharray: 1;
   stroke-dashoffset: clamp(0, calc(1 - (var(--p) * var(--n) - var(--s))), 1);
 }
-.diagram .d-text { font-family: var(--font-sans); font-size: 15px; font-weight: 500; }
+.diagram .d-text { font-family: var(--font-sans); font-size: 15px; font-weight: 600; }
 .diagram .d-label {
-  font-family: var(--font-sans);
-  font-size: 13.5px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   fill: var(--text-muted);
   paint-order: stroke;
-  stroke: var(--surface);
+  stroke: var(--bg-0);
   stroke-width: 4px;
 }
 /* Generate (Generate.tsx): opening a project plays a two-colour curtain into the case page. */
@@ -462,21 +464,18 @@ html:not(.js) .no-js-hide { display: none !important; }
 }
 /* The case shows while it is being revealed, while open, and while the curtain covers it on the way back. */
 .case-dialog:is([data-stage="shown"], [data-stage="open"], [data-stage="out"]) .case-page { visibility: visible; }
-/* Mono, like the clock it replaces at the top left (its text centred on the clock's line); a paper pill so the case
-   can scroll under it. */
+/* Mono, like the clock it replaces at the top left (its text centred on the clock's line). */
 .case-back {
   position: fixed;
   top: 0.125rem;
-  left: 1.25rem;
+  /* On the top bar, at the clock's edge: apart from the case content, not on its left edge. */
+  left: 0.75rem;
   z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   min-height: 2.75rem;
-  padding: 0 0.875rem;
-  border-radius: 999px;
-  background: var(--bg-0);
-  border: 1px solid var(--line);
+  padding: 0;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
   letter-spacing: 0.06em;
@@ -484,8 +483,29 @@ html:not(.js) .no-js-hide { display: none !important; }
 }
 .case-page { scrollbar-width: none; }
 .case-page::-webkit-scrollbar { display: none; }
+/* The masthead's progressive blur over the case (same layers: .masthead-blur), tinted with the case's own paper. */
+.case-mast { position: fixed; inset: 0 0 auto 0; height: 6rem; z-index: 1; pointer-events: none; --mast: var(--bg-0); }
+.case-mast > span:nth-child(4) { display: block !important; }
 .case-guides { position: fixed; inset: 0; pointer-events: none; container-type: inline-size; }
-.case-back:hover { background: var(--surface-2); }
+.case-menu {
+  position: fixed;
+  top: 0;
+  right: 1rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  color: var(--text);
+}
+@media (min-width: 640px) {
+  .case-menu { right: 1.5rem; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .case-menu:hover .burger > span:first-child { transform: translateY(-5px) rotate(12deg); }
+  .case-menu:hover .burger > span:last-child { transform: translateY(5px) rotate(-12deg); }
+}
+.case-back:hover { text-decoration: underline; text-underline-offset: 4px; }
 .case-curtain {
   position: fixed;
   inset: 0;
@@ -875,3 +895,9 @@ html:not(.js) [data-blur-reveal], html:not(.js) [data-blur-reveal] * { opacity: 
 .send-button:is(:hover, :focus-visible):not(:disabled) svg { transform: translateX(1.2em) rotate(45deg) scale(1.1); }
 .send-button:is(:hover, :focus-visible):not(:disabled) .send-label { transform: translateX(5em); opacity: 0; }
 @keyframes send-fly { from { transform: translateY(0.1em); } to { transform: translateY(-0.1em); } }
+
+/* ProfileCard status ("Available now"): blinks to draw the eye to the card's button. */
+@media (prefers-reduced-motion: no-preference) {
+  .pc-blink { animation: pc-blink 1.6s ease-in-out infinite; }
+}
+@keyframes pc-blink { 50% { opacity: 0.35; } }

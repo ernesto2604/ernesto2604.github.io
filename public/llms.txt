@@ -13,7 +13,7 @@ The site is static and bilingual. Every project fact on it comes from the linked
 
 - [Ring TelemetryOps](https://github.com/ernesto2604/ring-telemetryops): diagnostic agent for Ring video doorbells (OpenCV metrics, deterministic pre-check, Claude Haiku 4.5 on Amazon Bedrock, local fallback). Amazon Developer Hackathon 2026.
 - [Hybrid RAG API](https://github.com/ernesto2604/hybrid-rag-api): RAG engine written from scratch with FastAPI, PostgreSQL 16, pgvector (HNSW), GIN full-text search and Reciprocal Rank Fusion; page-level citations.
-- [WakeMap](https://github.com/ernesto2604/lastVersionWakeMap): Flutter prototype with geofenced alarms, voice-created alarms and an AI travel guide through a Node.js/Express proxy to Gemini.
+- [WakeMap](https://github.com/ernesto2604/wakeMap_submission): Flutter prototype with location alarms that fire while the app is open, voice-created alarms and an AI travel guide through a Node.js/Express proxy to Gemini.
 
 ## Contact
 

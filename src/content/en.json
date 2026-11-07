@@ -55,17 +55,17 @@
   "projects": {
     "ring-telemetryops": {
       "name": "Ring TelemetryOps",
-      "summary": "Diagnostic agent for Ring video doorbells, built for the Amazon Developer Hackathon 2026. OpenCV measures the stream, a deterministic pre-check sets the severity, and Claude Haiku 4.5 on Amazon Bedrock reasons over the evidence. A local fallback keeps the same report contract when Bedrock is unavailable.",
+      "summary": "Diagnostic agent for Ring video doorbells, built for the Amazon Developer Hackathon 2026. A Digital Twin of the doorbell lets you inject faults (dirty lens, stuck IR filter, 50/60 Hz flicker, a power cut) and the agent diagnoses them from OpenCV measurements, a deterministic pre-check and Claude Haiku 4.5 on Amazon Bedrock. A local fallback keeps the same report contract when Bedrock is unavailable, and a read-only mode runs against Ring's Partner API. Backed by 869 pytest and 195 Node tests, per the README.",
       "fact": "869 pytest + 195 Node tests, per the README"
     },
     "hybrid-rag-api": {
       "name": "Hybrid RAG API",
-      "summary": "A hybrid RAG engine written from scratch, without LangChain or LlamaIndex. Dense search (pgvector, HNSW) and lexical search (PostgreSQL GIN) are fused with Reciprocal Rank Fusion, and the prompt requires a document-and-page citation for every claim.",
+      "summary": "A hybrid RAG engine written from scratch, without LangChain or LlamaIndex. Dense search (pgvector, HNSW) and lexical search (PostgreSQL GIN) are fused with Reciprocal Rank Fusion, and the prompt requires a document-and-page citation for every claim. A question can be scoped to one document or run across all of them, with multi-turn memory.",
       "fact": "RRF with k = 60 over HNSW and GIN"
     },
     "wakemap": {
       "name": "WakeMap",
-      "summary": "Flutter prototype from my dissertation: location-based alarms with geofencing, voice-created alarms and an AI travel guide. A Node.js/Express proxy keeps the Gemini key on the server.",
+      "summary": "Flutter prototype from my dissertation: location-based alarms that fire when you reach a destination with the app open, voice-created alarms and an AI travel guide. A Node.js/Express proxy deployed on Render keeps the Gemini key on the server. The repository includes pre-built Android and iOS builds.",
       "fact": "Android and iOS builds, Gemini behind a server proxy"
     },
     "ai-surveillance-hub": {
@@ -84,9 +84,12 @@
     "lead": "Three projects, different engineering challenges.",
     "decisions": "Key decisions",
     "stack": "Stack",
+    "overview": "Overview",
+    "next": "Next project",
     "diagram": "Architecture",
     "repo": "Source on GitHub",
     "demo": "Watch the demo",
+    "notes": "Friction log",
     "viewList": "View as list",
     "viewDiagram": "View diagram",
     "back": "Back",
@@ -250,10 +253,13 @@
   "cases": {
     "ring-telemetryops": {
       "tagline": "Measure first, reason second: OpenCV grades the stream, and Claude on Bedrock only steps in when something is wrong.",
+      "stats": [
+        { "value": "11", "label": "findings logged on Ring's Partner API" }
+      ],
       "decisions": [
         "The model never decides severity",
-        "Structured retrieval, not embeddings",
-        "Pay for reasoning only when needed"
+        "Retrieval by measured signals, not by similarity",
+        "A Digital Twin, because Ring's API exposes no Wi-Fi signal or voltage"
       ],
       "diagramTitle": "Ring TelemetryOps diagnostic pipeline",
       "diagramDesc": "A camera stream is measured by OpenCV, graded by a deterministic pre-check, and only anomalies reach knowledge-base retrieval and Claude on Bedrock; a local fallback keeps the same report contract.",
@@ -275,17 +281,22 @@
         "unavailable": "unavailable"
       },
       "steps": [
-        "A frame from the camera stream (or the Digital Twin simulator) is analysed by OpenCV: frame rate, bitrate, brightness, sharpness and banding.",
+        "A heartbeat checks every metric each 15 s in the Digital Twin (critical at once, degraded after three in a row); a doorbell ring, motion or live view triggers an analysis straight away.",
+  "A frame from the camera stream (or the Digital Twin simulator) is analysed by OpenCV: frame rate, bitrate, brightness, sharpness and banding.",
         "A deterministic pre-check grades each metric against thresholds kept in one JSON file.",
         "Nominal results return a healthy report without calling the model.",
         "Anomalies trigger ranking of 15 troubleshooting procedures by the measured signals.",
         "Claude Haiku 4.5 on Amazon Bedrock reasons over the keyframe, metrics and procedures.",
         "The answer is validated against a report contract with one corrective retry.",
+  "Severity and root-cause domain come from the pre-check: if the model disagrees, the deterministic value replaces it.",
         "If Bedrock is unavailable, a local fallback produces the same report schema, labelled as such."
       ]
     },
     "hybrid-rag-api": {
       "tagline": "Answers over PDFs where every claim cites its document and page, built from scratch without LangChain.",
+      "stats": [
+        { "value": "k = 60", "label": "RRF over HNSW and GIN" }
+      ],
       "decisions": [
         "RRF instead of a weighted sum",
         "HNSW over IVFFlat",
@@ -312,8 +323,8 @@
       },
       "steps": [
         "A PDF is uploaded through FastAPI and split by page, then into overlapping chunks.",
-        "Chunks are embedded with gemini-embedding-001 in batches, with exponential backoff on rate limits.",
-        "Text and vectors are stored in PostgreSQL 16 with an HNSW index and a GIN full-text index.",
+        "Chunks are embedded with gemini-embedding-001 in concurrent batches of up to 100, with exponential backoff on HTTP 429 and 503.",
+        "Text and 768-dimensional vectors are stored in PostgreSQL 16 with an HNSW index and a GIN full-text index (Spanish configuration).",
         "A question runs dense and lexical search concurrently.",
         "Reciprocal Rank Fusion (k = 60) merges both rankings.",
         "The top chunks and the conversation history go to Gemini at temperature 0.",
@@ -321,7 +332,7 @@
       ]
     },
     "wakemap": {
-      "tagline": "Location alarms that wake you before your stop, plus an AI travel guide. My dissertation prototype.",
+      "tagline": "Location alarms that fire when you reach your stop with the app open, plus an AI travel guide. My dissertation prototype.",
       "decisions": [
         "The key stays on the server",
         "Structured output the app can trust",
@@ -331,7 +342,7 @@
       "diagramDesc": "The Flutter app handles alarms, voice input and maps on the device and calls a Node.js proxy for Gemini; maps and routes come from OpenStreetMap, Nominatim and OSRM.",
       "nodes": {
         "app": "Flutter app",
-        "commuter": "Commuter: geofenced alarms",
+        "commuter": "Commuter: location alarms",
         "traveller": "Traveller: AI guide",
         "voice": "Speech to text",
         "proxy": "Node.js/Express proxy",
@@ -343,7 +354,7 @@
       "edges": {},
       "steps": [
         "The Flutter app runs two modes: commuter alarms and a traveller guide.",
-        "Commuter alarms use geofencing with a 100 to 1,000 m radius and fire local notifications.",
+        "While the app is open, commuter alarms compare the device's position with a 100 to 1,000 m radius and fire a local notification.",
         "Spoken alarms are transcribed on the device and sent to the Node.js proxy.",
         "The proxy, which holds the API key, asks Gemini for structured JSON.",
         "Traveller plans come back with stops, coordinates, duration and budget.",
@@ -355,8 +366,8 @@
     "title": "A little about me",
     "about": [
       "I'm Ernesto, a Software Engineer focused on AI. I build intelligent systems, from retrieval and agents to the backend infrastructure behind them.",
-      "I graduated from York St John University with First Class Honours in Software Engineering. During my internship at CEU, I worked on an AI tutor integrating institutional data with OpenAI models.",
-      "Based in Madrid · Available now · Open to relocation."
+      "I'm looking for an AI engineering role where I can take retrieval and agent systems to production, in a team that cares about reliability.",
+      "Based in Madrid · Open to relocation."
     ],
     "experienceTitle": "Experience",
     "experience": [
@@ -366,8 +377,7 @@
         "dates": "Feb 2025 – Jun 2025",
         "points": [
           "Developed an AI-powered personal tutor integrating institutional data from Snowflake with OpenAI models on Azure, tested with approximately 20 real users.",
-          "Optimised SQL joins, reducing data retrieval time from approximately 12 hours to 2 seconds, making previously impractical data retrieval feasible.",
-          "Implemented structured XML prompting to improve LLM response consistency and output structure through manual testing."
+          "Optimised SQL joins, reducing data retrieval time from approximately 12 hours to 2 seconds, making previously impractical data retrieval feasible."
         ]
       }
     ],
@@ -375,14 +385,13 @@
     "education": [
       {
         "title": "BSc (Hons) Software Engineering",
-        "org": "York St John University · United Kingdom",
+        "org": "York St John University",
         "grade": "First Class Honours · 74.50%",
         "dates": "Jul 2026"
       },
       {
         "title": "Higher Technician in Multiplatform Application Development (DAM)",
-        "org": "Universidad CEU Cardenal Herrera · Spain",
-        "grade": "Grade: 8.5/10",
+        "org": "Universidad CEU Cardenal Herrera",
         "dates": "Jun 2025"
       }
     ],
@@ -394,6 +403,12 @@
         "url": "https://huggingface.co/datasets/agents-course/final-certificates/resolve/main/certificates/ernesto2406/2026-10-25.png"
       }
     ],
+    "cvLink": "View CV",
+    "cvTitle": "Curriculum Vitae",
+    "cvGet": "Get it",
+    "cvFile": "/cv/Ernesto_Contreras_Resume.pdf",
+    "cvDownload": "/cv/Ernesto_Contreras_Resume.pdf",
+    "cvMissing": "My CV is not available right now. Send me a message below and I will share it.",
     "credentialLink": "View credential",
     "languagesTitle": "Languages",
     "languages": [
@@ -421,6 +436,9 @@
     "sending": "Sending…",
     "sent": "Sent. Thanks, I will get back to you soon.",
     "sendError": "It could not be sent. Write to me at {email}.",
+    "copy": "Copy email",
+    "copied": "Copied",
+    "another": "Send another message",
     "status": "Available now",
     "cardButton": "Contact"
   },

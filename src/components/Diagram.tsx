@@ -33,9 +33,8 @@ export default function Diagram({ slug }: { slug: string }) {
   const id = `dg-${slug}`;
   return (
     <figure className="m-0">
-      <div className="mb-3 flex items-center justify-between gap-4">
-        <span className="font-mono text-xs uppercase tracking-[0.06em] text-muted">{t('generate.diagram')}</span>
-        <button type="button" aria-pressed={asList} onClick={() => setAsList((v) => !v)} className="no-js-hide inline-flex min-h-9 items-center gap-2 rounded-full border border-line px-3.5 font-mono text-xs uppercase tracking-[0.06em] transition-colors duration-200 hover:border-line-strong hover:bg-surface-2">
+      <div className="mb-3 flex justify-end">
+        <button type="button" aria-pressed={asList} onClick={() => setAsList((v) => !v)} className="no-js-hide inline-flex min-h-11 cursor-pointer items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
           {asList ? <Workflow className="size-4" aria-hidden="true" strokeWidth={1.75} /> : <List className="size-4" aria-hidden="true" strokeWidth={1.75} />}
           {asList ? t('generate.viewDiagram') : t('generate.viewList')}
         </button>
@@ -79,11 +78,11 @@ export default function Diagram({ slug }: { slug: string }) {
         {spec.nodes.map((node) => {
           const h = node.h ?? NODE_H;
           const lines = wrap(c.nodes[node.id], node.w).slice(0, 2);
-          const fill = node.tone === 'model' ? 'var(--accent-fill)' : node.tone === 'key' ? 'var(--surface-2)' : 'var(--surface)';
+          const fill = node.tone === 'model' ? 'var(--accent-fill)' : 'var(--surface)';
           const ink = node.tone === 'model' ? 'var(--accent-ink)' : 'var(--text)';
           return (
             <g key={node.id} className="d-node" style={{ ['--s' as string]: node.s }}>
-              <rect x={node.x} y={node.y} width={node.w} height={h} rx={10} fill={fill} stroke={node.tone === 'key' ? 'var(--accent)' : 'var(--line-strong)'} strokeWidth={node.tone === 'key' ? 1.5 : 1} />
+              <rect x={node.x} y={node.y} width={node.w} height={h} rx={6} fill={fill} stroke={node.tone === 'key' ? 'var(--text)' : node.tone === 'model' ? 'var(--accent-fill)' : 'var(--line-strong)'} strokeWidth={node.tone === 'key' ? 1.6 : 1.2} />
               <text x={node.x + node.w / 2} y={node.y + h / 2 - (lines.length - 1) * 9} textAnchor="middle" dominantBaseline="middle" fill={ink} className="d-text">
                 {lines.map((line, i) => (
                   <tspan key={i} x={node.x + node.w / 2} dy={i ? 18 : 0}>

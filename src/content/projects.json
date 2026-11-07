@@ -12,7 +12,9 @@
         "Amazon Bedrock",
         "Claude Haiku 4.5",
         "pytest",
-        "Node test runner"
+        "Node test runner",
+      "Ring Partner API",
+      "WebRTC (WHEP)"
       ],
       "tags": [
         "agent",
@@ -38,7 +40,8 @@
         "vision por computador"
       ],
       "links": {
-        "video": ""
+        "video": "",
+      "notes": "https://github.com/ernesto2604/ring-telemetryops/blob/main/FRICTION_LOG.md"
       }
     },
     {
@@ -50,9 +53,11 @@
         "FastAPI",
         "PostgreSQL 16",
         "pgvector",
-        "Gemini embeddings",
-        "Docker Compose",
-        "pytest"
+        "SQLAlchemy",
+        "asyncpg",
+        "pypdf",
+        "Gemini API",
+        "Docker Compose"
       ],
       "tags": [
         "rag",
@@ -79,16 +84,21 @@
     },
     {
       "slug": "wakemap",
-      "repo": "lastVersionWakeMap",
+      "repo": "wakeMap_submission",
       "rank": 3,
       "stack": [
         "Flutter",
         "Dart",
+        "flutter_map",
+        "geolocator",
+        "speech_to_text",
         "Node.js",
         "Express",
         "Gemini API",
         "OpenStreetMap",
-        "OSRM"
+        "Nominatim",
+        "OSRM",
+        "Render"
       ],
       "tags": [
         "mobile",
