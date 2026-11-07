@@ -2,7 +2,7 @@
 
 Personal portfolio of Ernesto Contreras, AI Engineer and Forward Deployed Engineer.
 
-The page is built as the AI pipeline it describes. Scrolling moves a question through four stages: **Input**, **Retrieval**, **Generate** and **Output**. A scripted agent (Ctrl/Cmd + K) answers questions about the projects. It shows the lookups it really makes in local data and then streams a pre-written answer. It runs entirely in the browser: no LLM, no backend, no tracking.
+The page is built as the AI pipeline it describes. Scrolling moves a question through four stages: **Input**, **Retrieval**, **Generate** and **Output**. An agent (Ctrl/Cmd + K) answers questions about Ernesto. A Cloudflare Pages Function (`functions/api/agent.ts`) sends the question to an LLM on Groq, grounded only on facts built from the site's own content (`src/agent/context.ts`). When that function is missing or fails (dev server, GitHub Pages mirror, rate limit), a local BM25 matcher in the browser answers with pre-written replies. No tracking.
 
 - English at `/`, Spanish at `/es/`. Both pages are prerendered to static HTML.
 - Hosted on GitHub Pages and built by GitHub Actions.
@@ -122,6 +122,7 @@ Cloudflare Pages builds and deploys from Git on every push to `main`; other bran
    - **Build output directory:** `dist`
    - Node version comes from `.node-version` (22).
 4. Optional: add a `GITHUB_TOKEN` environment variable (a read-only token) to raise the GitHub API rate limit.
+5. For the LLM agent: create a free API key at https://console.groq.com/keys and add it under **Settings → Variables and Secrets** as the secret `GROQ_API_KEY` (Production and Preview), then redeploy. Optional `GROQ_MODEL` overrides the default `openai/gpt-oss-120b`; on rate limits or a retired model the function falls back to `openai/gpt-oss-20b`. Without the key the agent uses the local matcher.
 
 The build asks the GitHub API for repository metadata. If that fails, it falls back to the committed snapshot, so the build never breaks on rate limits.
 

@@ -190,6 +190,8 @@ test.describe('agent', () => {
       await page.keyboard.type(q);
       await page.keyboard.press('Enter');
       await expect(field).toHaveValue('');
+      // The field is read-only until the answer (LLM or local fallback) is in.
+      await expect(field).not.toHaveAttribute('readonly');
     }
     const card = page.locator('.agent-card');
     const before = await page.evaluate(() => scrollY);

@@ -26,6 +26,8 @@ const cases: [string, string][] = [
   ['how can I contact him', 'contact'],
   ['email', 'contact'],
   ['can I download the cv', 'cv'],
+  ['is he good at frontend', 'stack'],
+  ['his github', 'contact'],
   ['how does this agent work', 'agent'],
   ['is this a real llm?', 'agent'],
   ['hello', 'greeting'],

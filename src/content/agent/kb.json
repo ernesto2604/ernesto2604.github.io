@@ -251,7 +251,11 @@
         "lenguajes",
         "herramientas",
         "programacion",
-        "programación"
+        "programación",
+        "frontend",
+        "front end",
+        "backend",
+        "back end"
       ],
       "tools": [
         "get_profile"
@@ -421,7 +425,8 @@
         "contactar",
         "correo",
         "escribir",
-        "hablar"
+        "hablar",
+        "github"
       ],
       "tools": [
         "get_contact"
@@ -452,13 +457,13 @@
         "get_contact"
       ],
       "answer": {
-        "en": "The CV is not published on the site. Ask for it by email or with the contact form and he will send it.",
-        "es": "El CV no está publicado en la web. Pídelo por email o desde el formulario de contacto y te lo enviará."
+        "en": "Yes. The CV is in the About section: open \"View CV\" to read or download it.",
+        "es": "Sí. El CV está en la sección Sobre mí: abre «Ver CV» para leerlo o descargarlo."
       },
       "actions": [
         {
           "type": "scrollTo",
-          "target": "#contact"
+          "target": "#output"
         }
       ]
     },
@@ -485,8 +490,8 @@
       ],
       "tools": [],
       "answer": {
-        "en": "I'm a scripted assistant, not an LLM. Your question is normalised and scored against a small bilingual knowledge base with the same BM25 scorer that ranks the repositories on this page, with typo tolerance. The tool calls you see are the real lookups I make in local data. Everything runs in your browser and nothing is sent anywhere.",
-        "es": "Soy un asistente con guion, no un LLM. Tu pregunta se normaliza y se compara con una pequeña base de conocimiento bilingüe usando el mismo buscador BM25 que ordena los repositorios de esta página, con tolerancia a erratas. Las llamadas a herramientas que ves son las consultas reales que hago a datos locales. Todo se ejecuta en tu navegador y no se envía nada a ningún sitio."
+        "en": "I answer with an LLM (GPT-OSS on Groq) that may only use facts taken from this site, so I won't make things up or talk about anything else. The tool calls you see are real lookups in the site's data. If the LLM is unreachable, a local BM25 matcher in your browser answers with pre-written replies instead. Nothing is stored.",
+        "es": "Respondo con un LLM (GPT-OSS en Groq) que solo puede usar datos sacados de esta web, así que no me invento nada ni hablo de otros temas. Las llamadas a herramientas que ves son consultas reales a los datos de la web. Si el LLM no está disponible, responde un buscador BM25 local en tu navegador con respuestas preparadas. No se guarda nada."
       }
     },
     {
@@ -498,19 +503,19 @@
         "vite",
         "react",
         "hosted",
-        "github pages",
         "source code",
         "web",
         "pagina",
         "página",
         "hecha",
         "codigo",
-        "código"
+        "código",
+        "cloudflare"
       ],
       "tools": [],
       "answer": {
-        "en": "Vite, React and TypeScript, prerendered to static HTML in English and Spanish and hosted on GitHub Pages. Repository data comes from the GitHub API at build time. No backend, no cookies, no trackers.",
-        "es": "Vite, React y TypeScript, prerenderizada a HTML estático en inglés y español y alojada en GitHub Pages. Los datos de los repositorios salen de la API de GitHub al compilar. Sin backend, sin cookies y sin rastreadores."
+        "en": "Vite, React and TypeScript, prerendered to static HTML in English and Spanish and hosted on Cloudflare Pages, with one small function for this assistant. Repository data comes from the GitHub API at build time. No cookies, no trackers.",
+        "es": "Vite, React y TypeScript, prerenderizada a HTML estático en inglés y español y alojada en Cloudflare Pages, con una pequeña función para este asistente. Los datos de los repositorios salen de la API de GitHub al compilar. Sin cookies y sin rastreadores."
       }
     },
     {
@@ -520,7 +525,7 @@
         "hello",
         "hey",
         "hiya",
-        "good morning",
+        "morning",
         "hola",
         "buenas",
         "buenos dias",

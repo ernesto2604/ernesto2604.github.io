@@ -5,6 +5,7 @@ import TypeLoop from '../components/ui/TypeLoop';
 import { localePath, useLocale, useMessages, useT } from '../i18n';
 import { focusTarget, resolveAnchor, scrollToElement } from '../lib/scroll';
 import { fallbackText, matchIntent, type Action } from './match';
+import { askLlm } from './llm';
 import { planTools, type ToolCall } from './tools';
 
 type Turn = {
@@ -65,26 +66,42 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
     if (!q || busy) return;
     setBusy(true);
     setInput('');
+    // The LLM answers when /api/agent is reachable; the local matcher still runs for the tool trace, the action
+    // buttons and as the answer when the LLM is not available.
+    const history = turns.filter((x) => x.done).slice(-3).map((x) => ({ q: x.question, a: x.answer }));
+    const llm = askLlm(q, locale, history);
     const match = matchIntent(q);
-    const calls = planTools(match, q);
-    const answer = match.intent ? match.intent.answer[locale] : fallbackText[locale];
+    const local = planTools(match, q);
+    const llmCall: ToolCall = { name: 'ask_llm', args: { grounding: 'site facts' }, result: '', ms: 0 };
     const id = Date.now();
     const run = session.current;
     const stale = () => run !== session.current;
     setTurns((ts) => [
       ...ts,
-      { id, question: q, calls, callsDone: 0, answer, shown: 0, actions: match.intent?.actions ?? [], suggestions: match.intent ? [] : match.suggestions[locale], done: false },
+      { id, question: q, calls: [...local, llmCall], callsDone: 0, answer: '', shown: 0, actions: match.intent?.actions ?? [], suggestions: [], done: false },
     ]);
 
-    if (reduced) {
-      update(id, { callsDone: calls.length, shown: answer.length, done: true });
-    } else {
+    if (!reduced) {
       setStage('think');
-      for (let i = 0; i < calls.length; i++) {
-        await sleep(calls[i].ms);
+      for (let i = 0; i < local.length; i++) {
+        await sleep(local[i].ms);
         if (stale()) return;
         update(id, { callsDone: i + 1 });
       }
+    }
+    const reply = await llm;
+    if (stale()) return;
+    const answer = reply?.answer ?? (match.intent ? match.intent.answer[locale] : fallbackText[locale]);
+    update(id, {
+      calls: [...local, { ...llmCall, result: reply ? reply.model : 'unavailable → local answer' }],
+      callsDone: local.length + 1,
+      answer,
+      suggestions: reply || match.intent ? [] : match.suggestions[locale],
+    });
+
+    if (reduced) {
+      update(id, { shown: answer.length, done: true });
+    } else {
       setStage('bar');
       // Stream word by word.
       const words = answer.split(/(?<=\s)/);
