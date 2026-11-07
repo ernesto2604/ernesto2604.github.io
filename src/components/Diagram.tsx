@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { List, Workflow } from 'lucide-react';
 import { useMessages, useT } from '../i18n';
+import { useMedia } from '../hooks/useMedia';
 import { DIAGRAMS, NODE_H, wrap } from './diagrams';
 
 // Accessible architecture diagram: role="img" with title/desc, and a toggle that swaps it for the same flow as a list.
@@ -13,7 +14,10 @@ export default function Diagram({ slug }: { slug: string }) {
   const ref = useRef<SVGSVGElement>(null);
   // Server HTML shows the finished drawing; on the client it resets and draws when seen.
   const [drawn, setDrawn] = useState(true);
-  const [asList, setAsList] = useState(false);
+  // The 720-wide drawing shrinks to ~6px text on a phone, so phones start on the list; a tap overrides.
+  const narrow = useMedia('(max-width: 639px)');
+  const [pick, setPick] = useState<boolean | null>(null);
+  const asList = pick ?? narrow;
 
   useEffect(() => {
     const el = ref.current!;
@@ -34,7 +38,7 @@ export default function Diagram({ slug }: { slug: string }) {
   return (
     <figure className="m-0">
       <div className="mb-3 flex justify-end">
-        <button type="button" aria-pressed={asList} onClick={() => setAsList((v) => !v)} className="no-js-hide inline-flex min-h-11 cursor-pointer items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
+        <button type="button" aria-pressed={asList} onClick={() => setPick(!asList)} className="no-js-hide inline-flex min-h-11 cursor-pointer items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline">
           {asList ? <Workflow className="size-4" aria-hidden="true" strokeWidth={1.75} /> : <List className="size-4" aria-hidden="true" strokeWidth={1.75} />}
           {asList ? t('generate.viewDiagram') : t('generate.viewList')}
         </button>
