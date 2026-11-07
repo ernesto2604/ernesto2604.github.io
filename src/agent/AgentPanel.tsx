@@ -78,7 +78,7 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
     const stale = () => run !== session.current;
     setTurns((ts) => [
       ...ts,
-      { id, question: q, calls: [...local, llmCall], callsDone: 0, answer: '', shown: 0, actions: match.intent?.actions ?? [], suggestions: [], done: false },
+      { id, question: q, calls: [...local, llmCall], callsDone: 0, answer: '', shown: 0, actions: match.actions, suggestions: [], done: false },
     ]);
 
     if (!reduced) {
@@ -118,7 +118,7 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
     inputRef.current?.focus();
   }
 
-  function runAction(a: Action, turn: Turn) {
+  function runAction(a: Action) {
     if (a.type === 'switchLocale') {
       try {
         localStorage.setItem('locale', a.target);
@@ -134,12 +134,6 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
     if (!el) return;
     scrollToElement(el);
     focusTarget(id);
-    const highlight = turn.actions.find((x) => x.type === 'highlight');
-    if (highlight) {
-      const target = document.querySelector(highlight.target);
-      target?.classList.add('flash');
-      setTimeout(() => target?.classList.remove('flash'), 2600);
-    }
   }
 
   const onSubmit = (e: FormEvent) => {
@@ -237,12 +231,10 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
                       {turn.answer.slice(0, turn.shown)}
                     </p>
                   )}
-                  {turn.done && (turn.actions.some((a) => a.type !== 'highlight') || turn.suggestions.length > 0) && (
+                  {turn.done && (turn.actions.length > 0 || turn.suggestions.length > 0) && (
                     <div className="mt-3 flex flex-wrap gap-x-4">
-                      {turn.actions
-                        .filter((a) => a.type !== 'highlight')
-                        .map((a) => (
-                          <button key={a.type + a.target} type="button" onClick={() => runAction(a, turn)} className="agent-link text-text">
+                      {turn.actions.map((a) => (
+                          <button key={a.type + a.target} type="button" onClick={() => runAction(a)} className="agent-link text-text">
                             <span aria-hidden="true">[</span>
                             {actionLabel(a)}
                             <span aria-hidden="true">&nbsp;→]</span>

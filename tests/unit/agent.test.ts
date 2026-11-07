@@ -67,6 +67,14 @@ describe('matchIntent', () => {
     expect(m.suggestions.es.length).toBeGreaterThan(0);
   });
 
+  it('offers the section of every matched intent, then the contact form', () => {
+    const go = (q: string) => matchIntent(q).actions.filter((a) => a.type === 'scrollTo').map((a) => a.target);
+    expect(go('What has ernesto done?')).toEqual(['#generate', '#contact']);
+    expect(go('Who is ernesto, and how i can contact him?')).toEqual(['#generate', '#contact']);
+    expect(go('how can I contact him')).toEqual(['#contact']);
+    expect(go('hello')).toEqual([]);
+  });
+
   it('handles very long input', () => {
     expect(() => matchIntent('tell me about ring '.repeat(100))).not.toThrow();
     expect(matchIntent('x'.repeat(5000)).intent).toBeNull();

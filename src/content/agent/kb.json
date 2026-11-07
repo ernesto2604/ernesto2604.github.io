@@ -46,7 +46,7 @@
       "actions": [
         {
           "type": "scrollTo",
-          "target": "#output"
+          "target": "#generate"
         }
       ]
     },
@@ -261,16 +261,12 @@
         "get_profile"
       ],
       "answer": {
-        "en": "Python, FastAPI and PostgreSQL with pgvector for backends and retrieval; Amazon Bedrock (Claude), Gemini and the OpenAI API for models; OpenCV and YOLOv8 for vision; Docker, AWS and Azure for delivery; TypeScript, React and Flutter on the front end. The full list is highlighted in the About section.",
-        "es": "Python, FastAPI y PostgreSQL con pgvector para backend y recuperación; Amazon Bedrock (Claude), Gemini y la API de OpenAI para modelos; OpenCV y YOLOv8 para visión; Docker, AWS y Azure para desplegar; TypeScript, React y Flutter en el frontend. La lista completa está resaltada en la sección Sobre mí."
+        "en": "Python, FastAPI and PostgreSQL with pgvector for backends and retrieval; Amazon Bedrock (Claude), Gemini and the OpenAI API for models; OpenCV and YOLOv8 for vision; Docker, AWS and Azure for delivery; TypeScript, React and Flutter on the front end. The full list is in the Skills section.",
+        "es": "Python, FastAPI y PostgreSQL con pgvector para backend y recuperación; Amazon Bedrock (Claude), Gemini y la API de OpenAI para modelos; OpenCV y YOLOv8 para visión; Docker, AWS y Azure para desplegar; TypeScript, React y Flutter en el frontend. La lista completa está en la sección de habilidades."
       },
       "actions": [
         {
           "type": "scrollTo",
-          "target": "#skills"
-        },
-        {
-          "type": "highlight",
           "target": "#skills"
         }
       ]

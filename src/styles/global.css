@@ -838,13 +838,6 @@ html:has(.agent-dialog[open]) { overflow: hidden; }
 .agent-chrome summary::-webkit-details-marker { display: none; }
 .agent-how { max-width: 52ch; font-size: var(--text-xs); line-height: 1.6; color: var(--text-muted); }
 
-/* Agent "highlight" action. */
-.flash { animation: flash 2.4s var(--ease-out); }
-@keyframes flash {
-  0%, 30% { background-color: var(--accent-soft); box-shadow: 0 0 0 2px var(--accent); }
-  100% { background-color: transparent; box-shadow: 0 0 0 2px transparent; }
-}
-
 
 /* BlurReveal prerenders its letters hidden; without JS nothing would ever reveal them. */
 html:not(.js) [data-blur-reveal], html:not(.js) [data-blur-reveal] * { opacity: 1 !important; filter: none !important; transform: none !important; }

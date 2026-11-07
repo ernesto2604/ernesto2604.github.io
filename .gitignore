@@ -15,3 +15,4 @@ assets-src
 tsconfig.tsbuildinfo
 .env
 .dev.vars
+.wrangler
