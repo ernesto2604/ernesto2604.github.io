@@ -2,7 +2,7 @@
 
 Personal portfolio of Ernesto Contreras, AI Engineer and Forward Deployed Engineer.
 
-The page is built as the AI pipeline it describes. Scrolling moves a question through four stages: **Input**, **Retrieval**, **Generate** and **Output**. An agent (Ctrl/Cmd + K) answers questions about Ernesto. A Cloudflare Pages Function (`functions/api/agent.ts`) sends the question to an LLM on Groq, grounded only on facts built from the site's own content (`src/agent/context.ts`). When that function is missing or fails (dev server, GitHub Pages mirror, rate limit), a local BM25 matcher in the browser answers with pre-written replies. No tracking.
+The page is built as the AI pipeline it describes. Scrolling moves a question through four stages: **Input**, **Retrieval**, **Generate** and **Output**. An agent (Ctrl/Cmd + K) answers questions about Ernesto. A Cloudflare Pages Function (`functions/api/agent.ts`) sends the question to an LLM on Groq, grounded only on facts built from the site's own content (`src/agent/context.ts`). The GitHub Pages mirror calls the same function on pages.dev (CORS allows only that origin), so the key never leaves Cloudflare. When the function is missing or fails (dev server, rate limit), a local BM25 matcher in the browser answers with pre-written replies. No tracking.
 
 - English at `/`, Spanish at `/es/`. Both pages are prerendered to static HTML.
 - Hosted on GitHub Pages and built by GitHub Actions.

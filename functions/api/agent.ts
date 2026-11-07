@@ -1,6 +1,7 @@
 // Cloudflare Pages Function: POST /api/agent → { answer, model }.
 // Answers with a Groq-hosted LLM grounded on the site's own content. Any failure returns a non-2xx status and the
-// browser falls back to the local matcher, so the agent keeps working without this function (dev server, GitHub Pages).
+// browser falls back to the local matcher, so the agent keeps working without this function (dev server, rate limits).
+// The GitHub Pages mirror calls it cross-origin, so the key stays on Cloudflare.
 import { systemPrompt } from '../../src/agent/context';
 
 type Env = { GROQ_API_KEY?: string; GROQ_MODEL?: string };
@@ -11,17 +12,40 @@ const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MODELS = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
 const MAX_QUESTION = 300;
 const MAX_HISTORY = 3;
+// Other sites allowed to spend the key's quota, besides this one.
+const MIRRORS = ['https://ernesto2604.github.io'];
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
 
 const str = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
+const cors = (origin: string) => ({
+  'access-control-allow-origin': origin,
+  'access-control-allow-methods': 'POST, OPTIONS',
+  'access-control-allow-headers': 'content-type',
+  'access-control-max-age': '86400',
+  vary: 'origin',
+});
+
+// Preflight for the mirror's JSON POST.
+export function onRequestOptions({ request }: { request: Request }): Response {
+  const origin = request.headers.get('origin') ?? '';
+  return MIRRORS.includes(origin) ? new Response(null, { status: 204, headers: cors(origin) }) : new Response(null, { status: 403 });
+}
+
 export async function onRequestPost({ request, env }: { request: Request; env: Env }): Promise<Response> {
-  if (!env.GROQ_API_KEY) return json({ error: 'not configured' }, 503);
-  // Only the site itself may spend the key's quota.
   const origin = request.headers.get('origin');
-  if (origin && new URL(origin).host !== new URL(request.url).host) return json({ error: 'forbidden' }, 403);
+  const mirror = !!origin && MIRRORS.includes(origin);
+  // Only this site and its mirror may spend the key's quota.
+  if (origin && !mirror && new URL(origin).host !== new URL(request.url).host) return json({ error: 'forbidden' }, 403);
+  const res = await answer(request, env);
+  if (mirror) for (const [k, v] of Object.entries(cors(origin))) res.headers.set(k, v);
+  return res;
+}
+
+async function answer(request: Request, env: Env): Promise<Response> {
+  if (!env.GROQ_API_KEY) return json({ error: 'not configured' }, 503);
 
   let body: { question?: unknown; locale?: unknown; history?: unknown };
   try {

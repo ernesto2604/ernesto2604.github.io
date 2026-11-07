@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { onRequestPost } from '../../functions/api/agent';
+import { onRequestOptions, onRequestPost } from '../../functions/api/agent';
 import { buildFacts, systemPrompt } from '../../src/agent/context';
 
 const env = { GROQ_API_KEY: 'test-key' };
@@ -26,6 +26,18 @@ describe('POST /api/agent', () => {
   it('rejects other origins and empty questions', async () => {
     expect((await onRequestPost({ request: post({ question: 'hi' }, { origin: 'https://evil.example' }), env })).status).toBe(403);
     expect((await onRequestPost({ request: post({ question: '   ' }), env })).status).toBe(400);
+  });
+
+  it('lets the GitHub Pages mirror call it cross-origin', async () => {
+    const mirror = 'https://ernesto2604.github.io';
+    const preflight = onRequestOptions({ request: new Request('https://ernesto2406.pages.dev/api/agent', { method: 'OPTIONS', headers: { origin: mirror } }) });
+    expect(preflight.status).toBe(204);
+    expect(preflight.headers.get('access-control-allow-origin')).toBe(mirror);
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(groq(200)));
+    const res = await onRequestPost({ request: post({ question: 'hi' }, { origin: mirror }), env });
+    expect(res.status).toBe(200);
+    expect(res.headers.get('access-control-allow-origin')).toBe(mirror);
+    expect(onRequestOptions({ request: new Request('https://ernesto2406.pages.dev/api/agent', { method: 'OPTIONS', headers: { origin: 'https://evil.example' } }) }).status).toBe(403);
   });
 
   it('answers with the grounded prompt, history and question', async () => {
