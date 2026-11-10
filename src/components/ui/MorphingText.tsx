@@ -140,7 +140,11 @@ export default function MorphingText({ texts, className = '', play = true, morph
           {text}
         </span>
       ))}
-      <span className="absolute inset-x-0 top-0 block w-full opacity-0" ref={text1Ref} />
+      {/* Painted from the start, nearly transparent: Chrome skips opacity:0 nodes for LCP and would count this one at
+          the first melt (~9 s after load, past the loader), as a new, larger LCP. */}
+      <span className="absolute inset-x-0 top-0 block w-full" style={{ opacity: 0.01 }} ref={text1Ref}>
+        {texts[1]}
+      </span>
       <span className="absolute inset-x-0 top-0 block w-full" ref={text2Ref}>
         {texts[0]}
       </span>
