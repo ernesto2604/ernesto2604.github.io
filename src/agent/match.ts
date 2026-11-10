@@ -2,7 +2,7 @@ import kb from '../content/agent/kb.json';
 import type { Locale } from '../i18n';
 import { createIndex, search, type Hit } from '../lib/search';
 
-export type Action = { type: 'scrollTo' | 'switchLocale'; target: string };
+export type Action = { type: 'scrollTo' | 'switchLocale' | 'compose'; target: string };
 export type Intent = {
   id: string;
   project?: string;
@@ -24,6 +24,8 @@ const index = createIndex(intents.map((i) => ({ id: i.id, fields: [{ text: i.tri
 // Minimum absolute BM25 score for an answer; below it the agent admits it does not know.
 export const MIN_SCORE = 0.9;
 const CONTACT: Action = { type: 'scrollTo', target: '#contact' };
+// Starts writing a message to Ernesto right in the chat.
+const COMPOSE: Action = { type: 'compose', target: 'message' };
 const MAX_QUERY = 300;
 
 export function matchIntent(query: string): Match {
@@ -31,13 +33,16 @@ export function matchIntent(query: string): Match {
   const top = hits[0];
   const intent = top && top.raw >= MIN_SCORE ? intents.find((i) => i.id === top.id)! : null;
   // Buttons of every intent the question matched, best first ("who is he and how do I contact him" gets both).
-  // Any answer that points to a section also offers the contact form, the next step for a visitor.
+  // Any answer that points to a section also offers the contact form and a message from the chat, the next step for a visitor.
   const actions: Action[] = [];
   const add = (a: Action) => !actions.some((x) => x.type === a.type && x.target === a.target) && actions.push(a);
   for (const h of hits.filter((x) => x.raw >= MIN_SCORE)) {
     for (const a of intents.find((i) => i.id === h.id)!.actions ?? []) add(a);
   }
-  if (actions.some((a) => a.type === 'scrollTo')) add(CONTACT);
+  if (actions.some((a) => a.type === 'scrollTo')) {
+    add(CONTACT);
+    add(COMPOSE);
+  }
   return { intent, score: top?.raw ?? 0, hits, actions, suggestions: kb.suggestions };
 }
 

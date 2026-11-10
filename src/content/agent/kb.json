@@ -415,12 +415,10 @@
         "mail",
         "reach",
         "linkedin",
-        "message",
         "talk",
         "contacto",
         "contactar",
         "correo",
-        "escribir",
         "hablar",
         "github"
       ],
@@ -437,6 +435,33 @@
           "target": "#contact"
         }
       ]
+    },
+    {
+      "id": "message",
+      "weight": 1.2,
+      "triggers": [
+        "message",
+        "send message",
+        "leave message",
+        "write him",
+        "mensaje",
+        "mandar mensaje",
+        "enviar mensaje",
+        "dejar mensaje",
+        "escribir",
+        "escribirle",
+        "mandarle",
+        "enviarle",
+        "dejarle"
+      ],
+      "tools": [
+        "get_contact"
+      ],
+      "answer": {
+        "en": "Tell me the message you want to send Ernesto:",
+        "es": "Dime qué mensaje quieres poner para Ernesto:"
+      },
+      "actions": []
     },
     {
       "id": "cv",

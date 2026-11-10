@@ -6,29 +6,9 @@ import Row from '../components/ui/Row';
 import CvDialog from '../components/CvDialog';
 import profile from '../content/profile.json';
 import { useMessages, useT } from '../i18n';
-
-// Messages go through FormSubmit (free, no account): it emails them to the address in the URL with a fixed
-// subject. The first one from each site triggers a one-time activation email that has to be confirmed. If it fails
-// (it has gone down before), Web3Forms is the backup: same email, keyed by profile.web3formsKey, which is public by
-// design. Without JS the form posts to FormSubmit and its thank-you page.
-const FORM_URL = `https://formsubmit.co/${profile.email}`;
-const BACKUP_URL = 'https://api.web3forms.com/submit';
-const SUBJECT = 'Mensaje del Portfolio';
-const MAX = 2000;
+import { FORM_URL, MAX_MESSAGE, SUBJECT, sendMessage } from '../lib/contact';
 
 type SendState = 'idle' | 'sending' | 'sent' | 'error';
-
-// Throws unless the service says it sent; the timeout stops a hung service from holding up the backup.
-async function post(url: string, fields: Record<string, unknown>) {
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify(fields),
-    signal: AbortSignal.timeout(10000),
-  });
-  const body = (await res.json().catch(() => ({}))) as { success?: string | boolean };
-  if (!res.ok || String(body.success) !== 'true') throw new Error('send failed');
-}
 
 function MessageForm() {
   const t = useT();
@@ -42,12 +22,7 @@ function MessageForm() {
     setState('sending');
     try {
       const fields = Object.fromEntries(data);
-      try {
-        await post(FORM_URL.replace('formsubmit.co/', 'formsubmit.co/ajax/'), fields);
-      } catch (err) {
-        if (!profile.web3formsKey) throw err;
-        await post(BACKUP_URL, { access_key: profile.web3formsKey, subject: SUBJECT, from_name: 'Portfolio', message: fields.message, email: fields.email });
-      }
+      await sendMessage({ ...fields, message: fields.message, email: fields.email });
       form.reset();
       setState('sent');
     } catch {
@@ -76,7 +51,7 @@ function MessageForm() {
       <input type="hidden" name="_template" value="table" />
       <input type="text" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
       <label htmlFor="msg" className="text-sm text-muted">{t('contact.formTitle')}</label>
-      <textarea id="msg" name="message" required maxLength={MAX} rows={4} placeholder={t('contact.messagePlaceholder')} className={`${field} resize-y py-3 leading-relaxed`} />
+      <textarea id="msg" name="message" required maxLength={MAX_MESSAGE} rows={4} placeholder={t('contact.messagePlaceholder')} className={`${field} resize-y py-3 leading-relaxed`} />
       {/* Named "email" so both services set it as Reply-To: replying to the notification answers the sender. */}
       <label htmlFor="msg-contact" className="mt-2 text-sm text-muted">{t('contact.replyTo')}</label>
       <div className="flex flex-col gap-3 sm:flex-row">

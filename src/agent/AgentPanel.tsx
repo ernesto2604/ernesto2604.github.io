@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { Check, LoaderCircle } from 'lucide-react';
+import profile from '../content/profile.json';
 import DotOrb from '../components/ui/DotOrb';
 import TypeLoop from '../components/ui/TypeLoop';
 import { localePath, useLocale, useMessages, useT } from '../i18n';
+import { MAX_MESSAGE, SUBJECT, isEmail, sendMessage } from '../lib/contact';
 import { focusTarget, resolveAnchor, scrollToElement } from '../lib/scroll';
 import { fallbackText, matchIntent, type Action } from './match';
 import { askLlm } from './llm';
@@ -18,11 +20,14 @@ type Turn = {
   actions: Action[];
   suggestions: string[];
   done: boolean;
+  pending?: boolean; // a message being sent: the answer shimmers until it is replaced
 };
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 type Stage = 'orb' | 'bar' | 'think';
+// Writing a message to Ernesto: the next input is the message, then the sender's email.
+type Compose = null | 'message' | 'email';
 
 export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.RefObject<HTMLDialogElement | null>; opened: number }) {
   const t = useT();
@@ -38,6 +43,8 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
   const [stage, setStage] = useState<Stage>('orb');
   // Bumped on close: a question still streaming checks it and stops.
   const session = useRef(0);
+  const [compose, setCompose] = useState<Compose>(null);
+  const draft = useRef('');
 
   // First open: the panel mounts after the lazy chunk loads, so it focuses its own input.
   useEffect(() => inputRef.current?.focus(), []);
@@ -49,6 +56,7 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
     setTurns([]);
     setInput('');
     setBusy(false);
+    setCompose(null);
     setStage(opened > 0 && reduced ? 'bar' : 'orb');
     if (opened <= 0 || reduced) return;
     const timer = setTimeout(() => setStage('bar'), 380);
@@ -61,16 +69,70 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
 
   const update = (id: number, patch: Partial<Turn>) => setTurns((ts) => ts.map((x) => (x.id === id ? { ...x, ...patch } : x)));
 
+  // A finished turn with no tool calls, for the message steps.
+  const say = (question: string, answer: string) => {
+    const id = Date.now() + Math.random();
+    setTurns((ts) => [...ts, { id, question, calls: [], callsDone: 0, answer, shown: answer.length, actions: [], suggestions: [], done: true }]);
+    return id;
+  };
+
+  const startCompose = (question: string) => {
+    say(question, t('agent.compose.askMessage'));
+    setCompose('message');
+    inputRef.current?.focus();
+  };
+
+  async function composeStep(text: string) {
+    if (compose === 'message') {
+      draft.current = text.slice(0, MAX_MESSAGE);
+      say(text, t('agent.compose.askEmail'));
+      setCompose('email');
+      return;
+    }
+    if (!isEmail(text)) {
+      say(text, t('agent.compose.badEmail'));
+      return;
+    }
+    setBusy(true);
+    const id = say(text, t('agent.compose.sending'));
+    update(id, { pending: true });
+    const run = session.current;
+    let answer: string;
+    try {
+      await sendMessage({ _subject: SUBJECT, _template: 'table', message: draft.current, email: text.trim() });
+      answer = t('agent.compose.sent', { email: text.trim() });
+    } catch {
+      answer = t('agent.compose.error', { email: profile.email });
+    }
+    if (run !== session.current) return;
+    update(id, { answer, shown: answer.length, pending: false });
+    draft.current = '';
+    setCompose(null);
+    setBusy(false);
+    inputRef.current?.focus();
+  }
+
+  const cancelCompose = () => {
+    say('', t('agent.compose.cancelled'));
+    draft.current = '';
+    setCompose(null);
+    inputRef.current?.focus();
+  };
+
   async function ask(question: string) {
     const q = question.trim();
     if (!q || busy) return;
-    setBusy(true);
     setInput('');
+    if (compose) return composeStep(q);
+    const match = matchIntent(q);
+    // "I want to send him a message": straight to writing it, no LLM.
+    if (match.intent?.id === 'message') return startCompose(q);
+    setBusy(true);
     // The LLM answers when /api/agent is reachable; the local matcher still runs for the tool trace, the action
     // buttons and as the answer when the LLM is not available.
-    const history = turns.filter((x) => x.done).slice(-3).map((x) => ({ q: x.question, a: x.answer }));
+    // Message steps (no tool calls) stay out: the sender's message and email are not sent to the LLM.
+    const history = turns.filter((x) => x.done && x.calls.length).slice(-3).map((x) => ({ q: x.question, a: x.answer }));
     const llm = askLlm(q, locale, history);
-    const match = matchIntent(q);
     const local = planTools(match, q);
     const llmCall: ToolCall = { name: 'ask_llm', args: { grounding: 'site facts' }, result: '', ms: 0 };
     const id = Date.now();
@@ -119,6 +181,7 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
   }
 
   function runAction(a: Action) {
+    if (a.type === 'compose') return startCompose('');
     if (a.type === 'switchLocale') {
       try {
         localStorage.setItem('locale', a.target);
@@ -142,7 +205,7 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
   };
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     // Tab on an empty field takes the example question on screen; a second Tab moves on as usual.
-    if (e.key === 'Tab' && !e.shiftKey && !input && suggestion) {
+    if (e.key === 'Tab' && !e.shiftKey && !input && suggestion && !compose) {
       e.preventDefault();
       setInput(suggestion);
       return;
@@ -155,7 +218,7 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
   };
 
   const last = turns.at(-1);
-  const actionLabel = (a: Action) => t(`agent.targets.${a.type === 'switchLocale' ? a.target : a.target.slice(1)}`);
+  const actionLabel = (a: Action) => t(`agent.targets.${a.type === 'scrollTo' ? a.target.slice(1) : a.target}`);
 
   return (
     <div className="agent-stack" data-stage={stage}>
@@ -173,13 +236,19 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
             onKeyDown={onKeyDown}
             readOnly={busy}
             autoComplete="off"
-            maxLength={300}
+            maxLength={compose === 'message' ? MAX_MESSAGE : 300}
+            inputMode={compose === 'email' ? 'email' : undefined}
             aria-describedby="agent-hint"
             className="agent-input"
           />
           {/* Example questions type themselves while the field is empty; Tab takes the one on screen. */}
           <p id="agent-hint" className="sr-only">{t('agent.placeholder')}</p>
-          {!input && (
+          {!input && compose && (
+            <span aria-hidden="true" className="agent-hint flex">
+              {t(compose === 'message' ? 'agent.compose.messageHint' : 'agent.compose.emailHint')}
+            </span>
+          )}
+          {!input && !compose && (
             <TypeLoop
               items={examples}
               play={opened > 0 && stage === 'bar'}
@@ -201,10 +270,12 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
           <ol className="grid gap-6">
             {turns.map((turn) => (
               <li key={turn.id} className="grid gap-3">
-                <p className="font-medium">
-                  <span className="sr-only">{t('agent.you')}: </span>
-                  {turn.question}
-                </p>
+                {turn.question && (
+                  <p className="font-medium">
+                    <span className="sr-only">{t('agent.you')}: </span>
+                    {turn.question}
+                  </p>
+                )}
                 <div>
                   <ol className="grid gap-1" aria-label={t('agent.working')}>
                     {turn.calls.map((c, i) => {
@@ -228,7 +299,7 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
                   {turn.shown > 0 && (
                     <p className="mt-3 leading-relaxed" aria-hidden={!turn.done}>
                       <span className="sr-only">{t('agent.assistant')}: </span>
-                      {turn.answer.slice(0, turn.shown)}
+                      <span className={turn.pending ? 'text-shimmer' : undefined}>{turn.answer.slice(0, turn.shown)}</span>
                     </p>
                   )}
                   {turn.done && (turn.actions.length > 0 || turn.suggestions.length > 0) && (
@@ -268,6 +339,13 @@ export default function AgentPanel({ dialogRef, opened }: { dialogRef: React.Ref
           </summary>
           <p className="agent-how">{t('agent.how')}</p>
         </details>
+        {compose && !busy && (
+          <button type="button" onClick={cancelCompose} className="agent-link">
+            <span aria-hidden="true">[</span>
+            {t('agent.compose.cancel')}
+            <span aria-hidden="true">]</span>
+          </button>
+        )}
         <button type="button" onClick={() => dialogRef.current?.close()} className="agent-link">
           <span className="sr-only">{t('agent.close')}</span>
           <span aria-hidden="true" className="kbd-hint">[Esc]</span>

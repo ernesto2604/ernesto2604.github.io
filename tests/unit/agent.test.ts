@@ -1,3 +1,4 @@
+import { isEmail } from '../../src/lib/contact';
 import { describe, expect, it } from 'vitest';
 import { matchIntent } from '../../src/agent/match';
 import { planTools } from '../../src/agent/tools';
@@ -44,6 +45,8 @@ const cases: [string, string][] = [
   ['está disponible', 'availability'],
   ['dónde vive', 'location'],
   ['cómo le contacto', 'contact'],
+  ['quiero mandarle un mensaje', 'message'],
+  ['send him a message', 'message'],
   ['descargar currículum', 'cv'],
   ['cómo funciona este agente', 'agent'],
   ['hola', 'greeting'],
@@ -73,6 +76,11 @@ describe('matchIntent', () => {
     expect(go('Who is ernesto, and how i can contact him?')).toEqual(['#generate', '#contact']);
     expect(go('how can I contact him')).toEqual(['#contact']);
     expect(go('hello')).toEqual([]);
+  });
+
+  it('offers writing a message from the chat next to the contact form', () => {
+    expect(matchIntent('how can I contact him').actions).toContainEqual({ type: 'compose', target: 'message' });
+    expect(matchIntent('hello').actions).toEqual([]);
   });
 
   it('handles very long input', () => {
@@ -120,4 +128,9 @@ describe('planTools', () => {
       expect(c.ms).toBeLessThanOrEqual(900);
     }
   });
+});
+
+describe('isEmail', () => {
+  it.each(['ana@example.com', ' a.b+c@sub.example.es '])('accepts %j', (v) => expect(isEmail(v)).toBe(true));
+  it.each(['', 'ana', 'ana@', 'ana@example', 'ana @example.com', 'a@b@c.com'])('rejects %j', (v) => expect(isEmail(v)).toBe(false));
 });

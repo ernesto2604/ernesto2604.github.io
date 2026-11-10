@@ -471,7 +471,20 @@
       "skills": "Show the stack",
       "contact": "Go to contact",
       "es": "Switch to Spanish",
-      "en": "Switch to English"
+      "en": "Switch to English",
+      "message": "Send him a message"
+    },
+    "compose": {
+      "askMessage": "Tell me the message you want to send Ernesto:",
+      "askEmail": "What email can he reply to?",
+      "badEmail": "That email doesn't look right. Type it again:",
+      "sending": "Sending…",
+      "sent": "Sent. Ernesto will reply to {email}.",
+      "error": "It couldn't be sent. Try the contact form or write to {email}.",
+      "cancel": "Cancel",
+      "cancelled": "OK, I won't send anything.",
+      "messageHint": "Your message…",
+      "emailHint": "you@email.com"
     }
   }
 }

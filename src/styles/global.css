@@ -806,6 +806,19 @@ html:has(.agent-dialog[open]) { overflow: hidden; }
   color: var(--text-muted);
   pointer-events: none;
 }
+/* Agent "Sending…" while the message goes out: a light band sweeps across the text, so it reads as working, not stuck. */
+.text-shimmer {
+  background: linear-gradient(90deg, var(--text-muted) 40%, var(--text) 50%, var(--text-muted) 60%) no-repeat;
+  background-size: 250% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: text-shimmer 1.2s linear infinite;
+}
+@keyframes text-shimmer { from { background-position: 100% center; } to { background-position: 0% center; } }
+@media (prefers-reduced-motion: reduce) {
+  .text-shimmer { animation: none; color: var(--text-muted); background: none; }
+}
 .agent-key { margin-left: 0.75em; font-family: var(--font-mono); font-size: var(--text-2xs); letter-spacing: 0.06em; text-transform: uppercase; }
 .agent-send {
   flex: none;

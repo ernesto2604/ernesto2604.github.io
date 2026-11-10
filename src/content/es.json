@@ -471,7 +471,20 @@
       "skills": "Ver las tecnologías",
       "contact": "Ir a contacto",
       "es": "Cambiar a español",
-      "en": "Cambiar a inglés"
+      "en": "Cambiar a inglés",
+      "message": "Enviarle un mensaje"
+    },
+    "compose": {
+      "askMessage": "Dime qué mensaje quieres poner para Ernesto:",
+      "askEmail": "¿A qué correo te puede responder?",
+      "badEmail": "Ese correo no parece válido. Escríbelo otra vez:",
+      "sending": "Enviando…",
+      "sent": "Enviado. Ernesto te responderá a {email}.",
+      "error": "No se ha podido enviar. Prueba con el formulario de contacto o escribe a {email}.",
+      "cancel": "Cancelar",
+      "cancelled": "Vale, no envío nada.",
+      "messageHint": "Tu mensaje…",
+      "emailHint": "tu@correo.com"
     }
   }
 }
