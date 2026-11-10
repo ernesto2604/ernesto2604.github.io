@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, Download } from 'lucide-react';
-import { useMessages, useT } from '../i18n';
+import profile from '../content/profile.json';
+import { useLocale, useMessages, useT } from '../i18n';
 import { overlayBack, overlayPush } from '../lib/overlayHistory';
 import { focusTarget, scrollToElement, setScrollLock } from '../lib/scroll';
 import { Guides } from './Background';
@@ -11,10 +12,21 @@ import BlurReveal from './ui/BlurReveal';
 type Stage = 'closed' | 'in' | 'shown' | 'open' | 'out' | 'gone';
 const STEP_MS = 520;
 
+// functions/api/count.ts; the GitHub Pages mirror has no functions, so it posts to the Cloudflare site. text/plain avoids a CORS preflight.
+const countUrl = () => (location.hostname.endsWith('github.io') ? new URL('api/count', profile.siteUrl).href : '/api/count');
+const count = (event: 'view' | 'get', lang: string) => {
+  try {
+    navigator.sendBeacon(countUrl(), new Blob([JSON.stringify({ event, lang })], { type: 'text/plain' }));
+  } catch {
+    // Counting never blocks the CV.
+  }
+};
+
 const MONO_LINK = 'ink-auto inline-flex min-h-11 w-fit items-center gap-2 font-mono text-xs uppercase tracking-[0.06em] underline-offset-4 hover:underline';
 
 export default function CvDialog() {
   const t = useT();
+  const locale = useLocale();
   const o = useMessages().output;
   const dialogRef = useRef<HTMLDialogElement>(null);
   const openerRef = useRef<HTMLElement | null>(null);
@@ -30,6 +42,7 @@ export default function CvDialog() {
   const reduce = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const open = () => {
+    count('view', locale);
     fetch(o.cvFile, { method: 'HEAD' })
       .then((r) => setReady(r.ok && (r.headers.get('content-type') ?? '').includes('pdf')))
       .catch(() => setReady(false));
@@ -126,8 +139,7 @@ export default function CvDialog() {
             {ready ? (
               <>
               <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-2">
-                {/* /cv/download is the single download URL, so counting downloads later means changing one place. */}
-                <a href={o.cvDownload} download className="flex h-12 items-center gap-2 rounded-2xl bg-accent-fill px-5 text-lg font-medium text-accent-ink transition-transform duration-200 active:scale-95">
+                <a href={o.cvDownload} download onClick={() => count('get', locale)} className="flex h-12 items-center gap-2 rounded-2xl bg-accent-fill px-5 text-lg font-medium text-accent-ink transition-transform duration-200 active:scale-95">
                   <Download className="size-5" aria-hidden="true" strokeWidth={2} />
                   {o.cvGet}
                 </a>
