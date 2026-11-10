@@ -1,5 +1,6 @@
 // Renders the app to static HTML per locale, plus 404.html and sitemap.xml.
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 
 const dist = new URL('../dist/', import.meta.url);
 const ssr = new URL('../dist-ssr/', import.meta.url);
@@ -9,6 +10,20 @@ const template = await readFile(new URL('index.html', dist), 'utf8');
 const inline = async (file) => (await readFile(new URL(file, dist), 'utf8')).replace(/^(\/\/.*\n)+/, '').trim();
 const boot = await inline('boot.js');
 const welcomeJs = await inline('welcome.js');
+
+// Inline scripts run only if their hash is listed. wasm-unsafe-eval is for the meshopt decoder of the 3D model,
+// blob: for its textures (fetched, then drawn); the contact form posts to FormSubmit and Web3Forms; the GitHub Pages mirror calls the Cloudflare functions.
+const sha = (code) => `'sha256-${createHash('sha256').update(code).digest('base64')}'`;
+const csp = [
+  "default-src 'self'",
+  `script-src 'self' ${sha(boot)} ${sha(welcomeJs)} 'wasm-unsafe-eval'`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "connect-src 'self' blob: https://ernesto2406.pages.dev https://formsubmit.co https://api.web3forms.com",
+  "form-action 'self' https://formsubmit.co",
+  "base-uri 'self'",
+  "object-src 'none'",
+].join('; ');
 
 // The hero shows a neutral "photo pending" panel when no photo is set; that must never ship unnoticed.
 const profile = JSON.parse(await readFile(new URL('../src/content/profile.json', import.meta.url), 'utf8'));
@@ -26,6 +41,7 @@ const localePreload = (locale) => `<link rel="modulepreload" href="/${manifest[`
 const page = (locale, head, body, overlay = '') =>
   template
     .replace('<html lang="en"', `<html lang="${locale}"`)
+    .replace('<meta charset="UTF-8" />', `<meta charset="UTF-8" />\n    <meta http-equiv="Content-Security-Policy" content="${csp}">`)
     .replace('<!--head-->', head)
     .replace('<script src="/boot.js"></script>', `<script>${boot}</script>`)
     .replace('<!--welcome-->', overlay)

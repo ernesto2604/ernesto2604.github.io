@@ -3,8 +3,9 @@
 // browser falls back to the local matcher, so the agent keeps working without this function (dev server, rate limits).
 // The GitHub Pages mirror calls it cross-origin, so the key stays on Cloudflare.
 import { systemPrompt } from '../../src/agent/context';
+import { overLimit, type D1 } from '../_lib/rateLimit';
 
-type Env = { GROQ_API_KEY?: string; GROQ_MODEL?: string };
+type Env = { GROQ_API_KEY?: string; GROQ_MODEL?: string; DB?: D1 };
 type Turn = { q: string; a: string };
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
@@ -12,6 +13,8 @@ const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MODELS = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
 const MAX_QUESTION = 300;
 const MAX_HISTORY = 3;
+// Questions per IP and hour; past it the browser falls back to the local matcher.
+const MAX_PER_HOUR = 30;
 // Other sites allowed to spend the key's quota, besides this one.
 const MIRRORS = ['https://ernesto2604.github.io'];
 
@@ -46,6 +49,8 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
 
 async function answer(request: Request, env: Env): Promise<Response> {
   if (!env.GROQ_API_KEY) return json({ error: 'not configured' }, 503);
+  // Without the D1 binding (local dev) there is no limit.
+  if (env.DB && (await overLimit(env.DB, request, 'agent', MAX_PER_HOUR))) return json({ error: 'rate limited' }, 429);
 
   let body: { question?: unknown; locale?: unknown; history?: unknown };
   try {

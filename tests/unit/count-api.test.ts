@@ -1,9 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import { onRequestPost } from '../../functions/api/count';
 
-const fakeDb = () => {
-  const calls: string[][] = [];
-  return { calls, prepare: () => ({ bind: (...v: string[]) => ({ run: async () => calls.push(v) }) }) };
+// Records the counts inserts; the rate-limit row answers with `hits`.
+const fakeDb = (hits = 1) => {
+  const calls: (string | number)[][] = [];
+  return {
+    calls,
+    prepare: (sql: string) => ({
+      bind: (...v: (string | number)[]) => ({
+        run: async () => (sql.includes('counts') ? calls.push(v) : 0),
+        first: async <T,>() => ({ n: hits }) as T,
+      }),
+    }),
+  };
 };
 const post = (body: string, origin?: string) =>
   new Request('https://ernesto2406.pages.dev/api/count', { method: 'POST', headers: origin ? { origin } : {}, body });
@@ -25,6 +34,13 @@ describe('count api', () => {
     expect((await onRequestPost({ request: post('{"event":"hack","lang":"es"}', site), env: { DB } })).status).toBe(400);
     expect((await onRequestPost({ request: post('nope', site), env: { DB } })).status).toBe(400);
     expect((await onRequestPost({ request: post('{"event":"view","lang":"es"}', site), env: {} })).status).toBe(503);
+    expect(DB.calls).toEqual([]);
+  });
+
+  it('stops counting past the hourly limit per IP', async () => {
+    const DB = fakeDb(21);
+    const res = await onRequestPost({ request: post('{"event":"view","lang":"es"}', 'https://ernesto2406.pages.dev'), env: { DB } });
+    expect(res.status).toBe(429);
     expect(DB.calls).toEqual([]);
   });
 });
