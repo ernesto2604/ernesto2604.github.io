@@ -122,7 +122,9 @@ Cloudflare Pages builds and deploys from Git on every push to `main`; other bran
    - **Build output directory:** `dist`
    - Node version comes from `.node-version` (22).
 4. Optional: add a `GITHUB_TOKEN` environment variable (a read-only token) to raise the GitHub API rate limit.
-5. For the LLM agent: create a free API key at https://console.groq.com/keys and add it under **Settings → Variables and Secrets** as the secret `GROQ_API_KEY` (Production and Preview), then redeploy. Optional `GROQ_MODEL` overrides the default `openai/gpt-oss-120b`; on rate limits or a retired model the function falls back to `openai/gpt-oss-20b`. Without the key the agent uses the local matcher.
+5. Create a D1 database (**Storage & Databases → D1**), run `db/schema.sql` in its console, and bind it to the project as `DB` under **Settings → Bindings** (Production). It holds the request limits and the CV counters.
+6. For the LLM agent: create a free API key at https://console.groq.com/keys and add it under **Settings → Variables and Secrets** as the secret `GROQ_API_KEY` for **Production only**, then redeploy. Optional `GROQ_MODEL` overrides the default `openai/gpt-oss-120b`; on rate limits or a retired model the function falls back to `openai/gpt-oss-20b`. Without the key, or without the `DB` binding, the function answers 503 and the agent uses the local matcher: the key is never spent without the limit (30 questions per client and hour, 300 in total).
+7. After changing the limits, delete old deployments under **Deployments** (each one keeps the function code it was built with) and rotate `GROQ_API_KEY` if older builds had it.
 
 The build asks the GitHub API for repository metadata. If that fails, it falls back to the committed snapshot, so the build never breaks on rate limits.
 

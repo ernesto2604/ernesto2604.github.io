@@ -3,7 +3,8 @@
 // browser falls back to the local matcher, so the agent keeps working without this function (dev server, rate limits).
 // The GitHub Pages mirror calls it cross-origin, so the key stays on Cloudflare.
 import { systemPrompt } from '../../src/agent/context';
-import { overLimit, type D1 } from '../_lib/rateLimit';
+import { clientKey, overLimit, type D1 } from '../_lib/rateLimit';
+import { sameHost } from '../_lib/origin';
 
 type Env = { GROQ_API_KEY?: string; GROQ_MODEL?: string; DB?: D1 };
 type Turn = { q: string; a: string };
@@ -13,8 +14,10 @@ const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MODELS = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
 const MAX_QUESTION = 300;
 const MAX_HISTORY = 3;
-// Questions per IP and hour; past it the browser falls back to the local matcher.
+// Questions per client (IP, or IPv6 /64) and hour; past it the browser falls back to the local matcher.
 const MAX_PER_HOUR = 30;
+// Questions per hour from everyone together, so rotating addresses cannot drain the key's quota.
+const MAX_TOTAL_PER_HOUR = 300;
 // Other sites allowed to spend the key's quota, besides this one.
 const MIRRORS = ['https://ernesto2604.github.io'];
 
@@ -41,16 +44,19 @@ export async function onRequestPost({ request, env }: { request: Request; env: E
   const origin = request.headers.get('origin');
   const mirror = !!origin && MIRRORS.includes(origin);
   // Only this site and its mirror may spend the key's quota.
-  if (origin && !mirror && new URL(origin).host !== new URL(request.url).host) return json({ error: 'forbidden' }, 403);
+  if (origin && !mirror && !sameHost(origin, request.url)) return json({ error: 'forbidden' }, 403);
   const res = await answer(request, env);
   if (mirror) for (const [k, v] of Object.entries(cors(origin))) res.headers.set(k, v);
   return res;
 }
 
 async function answer(request: Request, env: Env): Promise<Response> {
-  if (!env.GROQ_API_KEY) return json({ error: 'not configured' }, 503);
-  // Without the D1 binding (local dev) there is no limit.
-  if (env.DB && (await overLimit(env.DB, request, 'agent', MAX_PER_HOUR))) return json({ error: 'rate limited' }, 429);
+  // Never spend the key without the limit: an environment with the key but no D1 binding answers like one without the key.
+  if (!env.GROQ_API_KEY || !env.DB) return json({ error: 'not configured' }, 503);
+  // JSON only, so a cross-origin browser POST always needs the preflight that onRequestOptions answers.
+  if (!request.headers.get('content-type')?.startsWith('application/json')) return json({ error: 'unsupported media type' }, 415);
+  if ((await overLimit(env.DB, clientKey(request), 'agent', MAX_PER_HOUR)) || (await overLimit(env.DB, 'all', 'agent-all', MAX_TOTAL_PER_HOUR)))
+    return json({ error: 'rate limited' }, 429);
 
   let body: { question?: unknown; locale?: unknown; history?: unknown };
   try {

@@ -40,13 +40,14 @@ const localePreload = (locale) => `<link rel="modulepreload" href="/${manifest[`
 
 const page = (locale, head, body, overlay = '') =>
   template
-    .replace('<html lang="en"', `<html lang="${locale}"`)
-    .replace('<meta charset="UTF-8" />', `<meta charset="UTF-8" />\n    <meta http-equiv="Content-Security-Policy" content="${csp}">`)
-    .replace('<!--head-->', head)
-    .replace('<script src="/boot.js"></script>', `<script>${boot}</script>`)
-    .replace('<!--welcome-->', overlay)
-    .replace('<script src="/welcome.js"></script>', `<script>${welcomeJs}</script>`)
-    .replace('<!--app-->', body);
+    // Replacer functions, so a `$&` or `$'` in the content is inserted as text, not read as a replace pattern.
+    .replace('<html lang="en"', () => `<html lang="${locale}"`)
+    .replace('<meta charset="UTF-8" />', () => `<meta charset="UTF-8" />\n    <meta http-equiv="Content-Security-Policy" content="${csp}">`)
+    .replace('<!--head-->', () => head)
+    .replace('<script src="/boot.js"></script>', () => `<script>${boot}</script>`)
+    .replace('<!--welcome-->', () => overlay)
+    .replace('<script src="/welcome.js"></script>', () => `<script>${welcomeJs}</script>`)
+    .replace('<!--app-->', () => body);
 
 for (const locale of ['en', 'es']) {
   const dir = locale === 'en' ? dist : new URL('es/', dist);
